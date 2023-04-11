@@ -132,7 +132,7 @@ function NavLinks(props) {
 ];
   return (
     <div className="card">
-            <Menubar model={items} breakpoint="360px"  />
+            <Menubar model={items} breakpoint="360px" />
         </div>
   );
 }
