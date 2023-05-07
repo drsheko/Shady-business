@@ -1,6 +1,7 @@
 var User = require("../models/userModel");
 var Address = require("../models/addressModal");
 const bcrypt = require("bcryptjs");
+const passport = require('passport')
 const { body, validationResult } = require("express-validator");
 
 // Add User
@@ -18,16 +19,15 @@ exports.signup_post = async (req, res) => {
   const isEmailTaken = await User.findOne({ email: req.body.form.email });
   if (isEmailTaken != null) {
     console.log(1);
-    return res.status(401).json({
+    return res.status(500).json({
       success: false,
-      errors: ["Email is aleardy a member !!"],
+      error: "Email is aleardy in use !!",
       form,
     });
   }
 
   bcrypt.hash(req.body.form.password, 10, (error, hash) => {
     if (error) {
-      console.log(form.password);
       return res.status(500).json({ success: false, error, form });
     }
 
@@ -48,26 +48,29 @@ exports.signup_post = async (req, res) => {
           city: req.body.form.state,
           state: req.body.form.state,
           country: req.body.form.country,
-          zipcode:req.body.form.zipcode
+          zipcode: req.body.form.zipcode,
         })
           .save()
-          .then((address) => {
-            User.findOneAndUpdate(user._id, {
-              address: address._id,
-            })
-            .then( user =>{return res
-              .status(200)
-              .json({
-                success: true,
-                msg: "Account has created successfully",
-              });})
-              .catch(error => {
-                return res.status(500).json({ success: false, error });
+          .then((newAddress) => {
+            User.findByIdAndUpdate(user._id, {
+              $push:{
+                address: newAddress._id
+              }
+              
+            },{new:true})
+              .then((user) => {
+                return res.status(200).json({
+                  success: true,
+                  msg: "Account has created successfully",
+                  user
+                });
               })
-            
-        
+              .catch((error) => {
+                return res.status(500).json({ success: false, error });
+              });
           })
-          .catch((error) => {console.log("err1",error)
+          .catch((error) => {
+            console.log("err1", error);
             return res.status(500).json({ success: false, error });
           });
       })
@@ -75,6 +78,29 @@ exports.signup_post = async (req, res) => {
         return res.status(500).json({ success: false, error });
       });
   });
+};
+
+
+// Login 
+exports.login_post = function (req, res, next) {
+  console.log(req.body)
+  passport.authenticate("local", function (error, user, info) {
+    if (error) {
+      return res.status(401).json({success:false, error });
+    }
+    if (!user) {console.log('running')
+      return res.status(401).json({ success:false, error: info });
+    }
+    req.logIn(user, function (error) {
+      if (error) {
+        return res.status(401).json({ success:false, error });
+      } else {
+        return res.status(200).json({ success: true, user });
+        
+      }
+      
+    });
+  })(req, res, next);
 };
 
 // Change Password

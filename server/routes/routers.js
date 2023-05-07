@@ -7,4 +7,9 @@ router.get('/', function(req, res, next) {
 });
 // Sign Up
 router.post('/api/signup',UserController.signup_post )
+
+// login
+router.post("/api/login", UserController.login_post);
+
+
 module.exports = router;
