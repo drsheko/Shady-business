@@ -22,5 +22,11 @@ router.get('/api/logout', UserController.log_out);
 // Add a Category
 router.post('/api/categories/addCategory',CategoryController.addCategory);
 
+// Edit Category PHOTO By Category ID
+router.post('/api/categories/editPhoto', CategoryController.Edit_Category_photo_BY_ID);
+
+// Get ALL Categories 
+router.get('/api/categories/all', CategoryController.All_Categories); 
+
 
 module.exports = router;
