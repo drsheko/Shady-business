@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var UserController = require('../controllers/userController');
 var CategoryController = require('../controllers/categoryController');
+var SubCategoryController =require('../controllers/subCategoryController');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -27,6 +28,10 @@ router.post('/api/categories/editPhoto', CategoryController.Edit_Category_photo_
 
 // Get ALL Categories 
 router.get('/api/categories/all', CategoryController.All_Categories); 
+
+//-------------------SUB-CATEGORIES------------------------------------
+// ADD A SUB-CATEGORY
+router.post('/api/subCategories/addOne', SubCategoryController.ADD_SubCatgeory);
 
 
 module.exports = router;
