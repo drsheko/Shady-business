@@ -3,7 +3,7 @@ var router = express.Router();
 var UserController = require('../controllers/userController');
 var CategoryController = require('../controllers/categoryController');
 var SubCategoryController =require('../controllers/subCategoryController');
-
+var ProductController = require('../controllers/productController');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -32,6 +32,11 @@ router.get('/api/categories/all', CategoryController.All_Categories);
 //-------------------SUB-CATEGORIES------------------------------------
 // ADD A SUB-CATEGORY
 router.post('/api/subCategories/addOne', SubCategoryController.ADD_SubCatgeory);
+// GET ALL SUB-Categories
+router.get('/api/subCategories/all', SubCategoryController.GET_ALL_SUB_CATEGORIES);
 
 
+// ----------------------PRODUCT-----------------------------------------
+// Create A Product
+router.post('/api/products/addProduct', ProductController.CREATE_PRODUCT)
 module.exports = router;
