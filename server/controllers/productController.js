@@ -65,3 +65,13 @@ exports.CREATE_PRODUCT = [
       });
   },
 ];
+
+// GET PRODUCT BY ID 
+exports.GET_PRODUCT_By_Id = async(req, res) => {
+  try{
+    let product = await Product.findById(req.body.id).populate(['options', 'subCategory']);
+    return res.status(200).json({success:true, product})
+  }catch(error){
+    return res.status(401).json({success:false, error})
+  }
+}

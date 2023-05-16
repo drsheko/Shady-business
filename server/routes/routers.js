@@ -45,6 +45,9 @@ router.get(
 // ----------------------PRODUCT-----------------------------------------
 // Create A Product
 router.post("/api/products/addProduct", ProductController.CREATE_PRODUCT);
+// Get Product By Id
+router.get('/api/products/product', ProductController.GET_PRODUCT_By_Id)
+
 
 //------------------------OPTION----------------------------------
 // Create A Product-OPTION
