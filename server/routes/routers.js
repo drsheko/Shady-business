@@ -5,6 +5,7 @@ var CategoryController = require("../controllers/categoryController");
 var SubCategoryController = require("../controllers/subCategoryController");
 var ProductController = require("../controllers/productController");
 var OptionController = require("../controllers/productOptionController");
+var BrandController =require('../controllers/brandController');
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -52,5 +53,10 @@ router.get('/api/products/product', ProductController.GET_PRODUCT_By_Id)
 //------------------------OPTION----------------------------------
 // Create A Product-OPTION
 router.post("/api/products/product/addOption", OptionController.CREATE_OPTION);
+
+
+// -------------------- BRAND --------------------------------
+router.post('/api/brands/brand/new', BrandController.Create_BRAND);
+
 
 module.exports = router;
