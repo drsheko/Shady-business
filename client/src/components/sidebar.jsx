@@ -1,147 +1,66 @@
-import React from 'react';
-import { useState } from 'react';
-import { Sidebar } from 'primereact/sidebar';
-import { PanelMenu } from 'primereact/panelmenu';
-
-import { Divider } from 'primereact/divider';
-
-
+import React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Sidebar } from "primereact/sidebar";
+import { TieredMenu } from "primereact/tieredmenu";
+import { Divider } from "primereact/divider";
 
 function SideNavbar(props) {
-    const items = [
-        {
-            label: 'File',
-            icon: 'pi pi-fw pi-file',
-            items: [
-                {
-                    label: 'New',
-                    icon: 'pi pi-fw pi-plus',
-                    items: [
-                        {
-                            label: 'Bookmark',
-                            icon: 'pi pi-fw pi-bookmark'
-                        },
-                        {
-                            label: 'Video',
-                            icon: 'pi pi-fw pi-video'
-                        }
-                    ]
-                },
-                {
-                    label: 'Delete',
-                    icon: 'pi pi-fw pi-trash'
-                },
-                {
-                    separator: true
-                },
-                {
-                    label: 'Export',
-                    icon: 'pi pi-fw pi-external-link'
-                }
-            ]
-        },
-        {
-            label: 'Edit',
-            icon: 'pi pi-fw pi-pencil',
-            items: [
-                {
-                    label: 'Left',
-                    icon: 'pi pi-fw pi-align-left'
-                },
-                {
-                    label: 'Right',
-                    icon: 'pi pi-fw pi-align-right'
-                },
-                {
-                    label: 'Center',
-                    icon: 'pi pi-fw pi-align-center'
-                },
-                {
-                    label: 'Justify',
-                    icon: 'pi pi-fw pi-align-justify'
-                }
-            ]
-        },
-        {
-            label: 'Users',
-            icon: 'pi pi-fw pi-user',
-            items: [
-                {
-                    label: 'New',
-                    icon: 'pi pi-fw pi-user-plus'
-                },
-                {
-                    label: 'Delete',
-                    icon: 'pi pi-fw pi-user-minus'
-                },
-                {
-                    label: 'Search',
-                    icon: 'pi pi-fw pi-users',
-                    items: [
-                        {
-                            label: 'Filter',
-                            icon: 'pi pi-fw pi-filter',
-                            items: [
-                                {
-                                    label: 'Print',
-                                    icon: 'pi pi-fw pi-print'
-                                }
-                            ]
-                        },
-                        {
-                            icon: 'pi pi-fw pi-bars',
-                            label: 'List'
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            label: 'Events',
-            icon: 'pi pi-fw pi-calendar',
-            items: [
-                {
-                    label: 'Edit',
-                    icon: 'pi pi-fw pi-pencil',
-                    items: [
-                        {
-                            label: 'Save',
-                            icon: 'pi pi-fw pi-calendar-plus'
-                        },
-                        {
-                            label: 'Delete',
-                            icon: 'pi pi-fw pi-calendar-minus'
-                        }
-                    ]
-                },
-                {
-                    label: 'Archive',
-                    icon: 'pi pi-fw pi-calendar-times',
-                    items: [
-                        {
-                            label: 'Remove',
-                            icon: 'pi pi-fw pi-calendar-minus'
-                        }
-                    ]
-                }
-            ]
-        },
-        
-        {
-            label: 'Quit',
-            icon: 'pi pi-fw pi-power-off'
-        }
-    ];
-    return (
-        <div>
-             <Sidebar visible={props.visible} onHide={() => props.setVisible(false)}>
-                <h2>Vaporesta</h2>
-                <Divider />
-                <PanelMenu model={items} className="" />
-                
-            </Sidebar>
-        </div>
-    );
+  const brands = {
+    label: "Brands",
+    url: "/brands",
+  };
+  const [links, setLinks] = useState([brands]);
+  useEffect(() => {
+    // get All Categories ;
+    const getAllCategories = async () => {
+      let url = "http://localhost:3000/api/categories/all";
+      try {
+        let res = await axios.get(url);
+        let categoryLinks = res.data.allCategories;
+        let updated = categoryLinks.map((category) => {
+          if (category.sub_categories.length === 0) {
+            category = {
+              id: category._id,
+              label: category.name,
+            };
+            return category;
+          } else {
+            let sub = category.sub_categories;
+            let subLinks = sub.map((el) => {
+              el = {
+                id: el._id,
+                label: el.name,
+              };
+              return el;
+            });
+            category = {
+              id: category._id,
+              label: category.name,
+              items: subLinks,
+            };
+            return category;
+          }
+        });
+
+        setLinks([...updated, brands]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAllCategories();
+  }, []);
+
+  return (
+    <div>
+      <Sidebar visible={props.visible} onHide={() => props.setVisible(false)}>
+        <h2>Vaporesta</h2>
+        <Divider />
+        <TieredMenu model={links} className="w-full" breakpoint="990px" />
+      </Sidebar>
+    </div>
+  );
 }
 
 export default SideNavbar;
