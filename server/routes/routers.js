@@ -36,6 +36,7 @@ router.post(
 router.get("/api/categories/all", CategoryController.All_Categories);
 
 //-------------------SUB-CATEGORIES------------------------------------
+
 // ADD A SUB-CATEGORY
 router.post("/api/subCategories/addOne", SubCategoryController.ADD_SubCatgeory);
 // GET ALL SUB-Categories
@@ -43,6 +44,8 @@ router.get(
   "/api/subCategories/all",
   SubCategoryController.GET_ALL_SUB_CATEGORIES
 );
+// Get sub-category by id
+router.get('/api/subcategories/subcategory/:id', SubCategoryController.GET_ONE_BY_Id);
 
 // ----------------------PRODUCT-----------------------------------------
 // Create A Product

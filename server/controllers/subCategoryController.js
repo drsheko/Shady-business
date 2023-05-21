@@ -1,7 +1,6 @@
 const SubCategory = require("../models/sub_categoryModel");
 const Category = require("../models/categoryModel");
 
-
 // Add SUB_CATEGORY
 exports.ADD_SubCatgeory = async (req, res) => {
   let name = req.body.name;
@@ -38,4 +37,28 @@ exports.ADD_SubCatgeory = async (req, res) => {
         return res.status(200).json({ success: false, error });
       });
   }
+};
+
+// Get All SUB
+exports.GET_ALL_SUB_CATEGORIES = async (req, res) => {
+  SubCategory.find()
+    .populate(["category", "products"])
+    .then((subCategories) => {
+      return res.status(200).json({ success: true, subCategories });
+    })
+    .catch((error) => {
+      return res.status(401).json({ success: false, error });
+    });
+};
+
+// Get Sub_category by Id ;
+exports.GET_ONE_BY_Id = async (req, res) => {
+  let id = req.params.id;
+  SubCategory.findById(id)
+    .then((subCategories) => {
+      return res.status(200).json({ success: true, subCategories });
+    })
+    .catch((error) => {
+      return res.status(401).json({ success: false, error });
+    });
 };
