@@ -55,8 +55,28 @@ exports.GET_ALL_SUB_CATEGORIES = async (req, res) => {
 exports.GET_ONE_BY_Id = async (req, res) => {
   let id = req.params.id;
   SubCategory.findById(id)
-    .then((subCategories) => {
-      return res.status(200).json({ success: true, subCategories });
+    .populate({
+      path: "products",
+      populate: [
+        {
+          path: "category",
+        },
+        {
+          path: "reviews",
+          populate: {
+            path: "user",
+          },
+        },
+        {
+          path: "options",
+        },
+        {
+          path: "subCategory",
+        },
+      ],
+    })
+    .then((subCategory) => {
+      return res.status(200).json({ success: true, subCategory });
     })
     .catch((error) => {
       return res.status(401).json({ success: false, error });
