@@ -18,7 +18,7 @@ exports.signup_post = async (req, res) => {
   console.log("form:", form);
   const isEmailTaken = await User.findOne({ email: req.body.form.email });
   if (isEmailTaken != null) {
-    console.log(1);
+    
     return res.status(500).json({
       success: false,
       error: "Email is aleardy in use !!",
@@ -70,7 +70,6 @@ exports.signup_post = async (req, res) => {
               });
           })
           .catch((error) => {
-            console.log("err1", error);
             return res.status(500).json({ success: false, error });
           });
       })
@@ -102,6 +101,18 @@ exports.login_post = function (req, res, next) {
     });
   })(req, res, next);
 };
+
+// Log Out 
+exports.log_out = (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      return res.json({ success: false, errors: err });
+    }
+    var msg = "Log out successfully";
+    res.status(200).json({ success: true, msg });
+  });
+};
+
 
 // Change Password
 exports.changePassword = (req, res) => {
