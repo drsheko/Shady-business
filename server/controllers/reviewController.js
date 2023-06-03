@@ -52,6 +52,51 @@ exports.CREATE_Review = [
           reviews: review._id,
         },
       });
+
+      // get average rating
+      let avgRating;
+      await Product.aggregate([
+        {
+          $match: {
+            $expr: {
+              $eq: [
+                {
+                  $toString: "$_id",
+                },
+                req.body.product,
+              ],
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "reviews",
+            localField: "reviews",
+            foreignField: "_id",
+            as: "average",
+          },
+        },
+        {
+          $unwind: "$average",
+        },
+        {
+          $group: {
+            _id: 1,
+            rating: {
+              $avg: "$average.rating",
+            },
+          },
+        },
+      ]).then((result) => {
+        avgRating = result[0].rating;
+      });
+
+      // save avg rating to product
+      await Product.findByIdAndUpdate(req.body.product, {
+        $set: {
+          rating: avgRating,
+        },
+      });
       // save review to user
       await User.findByIdAndUpdate(req.body.user, {
         $push: {
