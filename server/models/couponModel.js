@@ -2,8 +2,8 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 const couponSchema = new Schema({
-  name: { type: String, minLength: 3, required: true },
-  code: { required: true },
+  name: { type: String, required:true },
+  code: { type: String, required: true },
   description: { type: String },
   type: {
     type: String,
@@ -15,6 +15,7 @@ const couponSchema = new Schema({
       "free gift",
     ],
   },
+  automated: { type: Boolean, default: false },
   active: { type: Boolean, default: true },
   startDate: { type: Date, default: Date.now },
   expireDate: { type: Date },
