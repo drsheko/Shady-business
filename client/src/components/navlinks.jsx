@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Menubar } from "primereact/menubar";
 
 function NavLinks(props) {
+  const navigate = useNavigate();
+
   const brands = {
     label: "Brands",
-    url: "/brands",
+    command: () => {
+      navigate(`/brands`);
+    },
+  };
+  const coupons = {
+    label: "coupons",
+    command: () => {
+      navigate(`/coupons`);
+    },
   };
   const [links, setLinks] = useState([brands]);
 
@@ -18,17 +29,25 @@ function NavLinks(props) {
         let categoryLinks = res.data.allCategories;
         let updated = categoryLinks.map((category) => {
           if (category.sub_categories.length === 0) {
-            category = {
+            let link = {
               id: category._id,
               label: category.name,
+              command: () => {
+                navigate(`/category/${category.name}`, { state: category });
+              },
             };
-            return category;
+            return link;
           } else {
             let sub = category.sub_categories;
             let subLinks = sub.map((el) => {
+              let id = el._id;
+              let name = el.name;
               el = {
-                id: el._id,
-                label: el.name,
+                id: id,
+                label: name,
+                command: () => {
+                  navigate(`/${name}/${id}`);
+                },
               };
               return el;
             });
@@ -41,7 +60,7 @@ function NavLinks(props) {
           }
         });
 
-        setLinks([brands, ...updated]);
+        setLinks([brands, ...updated, coupons]);
       } catch (error) {
         console.log(error);
       }
