@@ -7,6 +7,7 @@ const categorySchema = new Schema({
   sub_categories: [
     { type: Schema.Types.ObjectId, ref: "subCategory", default: [] },
   ],
+  products: [{ type: Schema.Types.ObjectId, ref: "product", default: [] }],
   deals: [{ type: Schema.Types.ObjectId, ref: "deal", default: [] }],
 });
 
