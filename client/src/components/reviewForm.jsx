@@ -28,6 +28,17 @@ function ReviewForm({ product }) {
     comment: "",
   });
 
+  const onFormClose = () =>{
+    setVisible(false);
+    setError(false);
+    setSuccess(false);
+    setForm({
+      product: product._id,
+      rating: "",
+      comment: "",
+    })
+
+  }
   const onFormChange = (e) => {
     let value = e.target.value;
     let name = e.target.name;
@@ -183,7 +194,7 @@ function ReviewForm({ product }) {
       <Dialog
         header="PLEASE SHARE YOUR EXPERIENCE"
         visible={visible}
-        onHide={() => setVisible(false)}
+        onHide={onFormClose}
         style={{ minWidth: "70%" }}
       >
         {

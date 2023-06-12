@@ -23,7 +23,7 @@ function Reviews(props) {
   useEffect(() => {
     onSortChange(props.sortKey);
   }, [props.sortKey]);
-  
+
   const reviewTemplate = (review) => {
     return (
       <div className="col-12 md:col-6 p-1 sm:p-2 md:p-3">
@@ -44,10 +44,11 @@ function Reviews(props) {
             </p>
           </div>
           {review.photos.length > 0 ? (
-            <div className="review-image ">
+            review.photos.map(photo =>{
+<div className="review-image ">
               <Image
                 style={{ objectFit: "fill" }}
-                src={review.photos[0]}
+                src={photo}
                 onError={(e) =>
                   (e.target.src =
                     "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
@@ -58,6 +59,8 @@ function Reviews(props) {
                 height="100"
               />
             </div>
+            })
+            
           ) : (
             ""
           )}
