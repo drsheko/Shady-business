@@ -1,0 +1,15 @@
+html{
+    scroll-behavior: smooth;
+    padding: 0;
+    margin: 0;
+}
+body{
+    margin: 0;
+    padding: 0;
+}
+
+/* side Navigation*/
+.p-tieredmenu {
+    border: none;
+    background-color: transparent;
+}
