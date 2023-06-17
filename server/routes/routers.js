@@ -34,6 +34,9 @@ router.post(
 
 // Get ALL Categories
 router.get("/api/categories/all", CategoryController.All_Categories);
+// Get Category By Id
+router.post("/api/categories/category", CategoryController.GET_CATEGORY_BY_Id);
+
 
 //-------------------SUB-CATEGORIES------------------------------------
 
@@ -71,7 +74,8 @@ router.post("/api/reviews/review/new", ReviewController.CREATE_Review);
 //-------------------------COUPONS------------------------------------
 // Create new coupon
 router.post("/api/coupons/new/coupon", CouponController.Create_COUPON);
-
+// Edit coupon 
+router.post('/api/coupons/edit/coupon',CouponController.Edit_Coupon)
 // delete coupon by id
 router.post("/api/coupons/remove/coupon", CouponController.REMOVE_COUPON_BY_ID);
 // get all coupons

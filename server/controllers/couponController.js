@@ -40,10 +40,12 @@ exports.Create_COUPON = [
       products: req.body.products,
       redeemedBy: req.body.redeemedBy,
       userMaxRedeem: req.body.userMaxRedeem,
+      freeGift: req.body.freeGift,
+      giftCount: req.body.giftCount,
+      percentageOff: req.body.percentageOff,
+      amountOff: req.body.amountOff,
       data: {
         photo: uploadedFileURL,
-        freeGift: req.body.freeGift,
-        giftRatio: req.body.giftRatio,
       },
     });
     newCoupon
@@ -70,6 +72,36 @@ exports.Get_ALL_COUPONS = async (req, res) => {
   try {
     let coupons = await Coupon.find();
     return res.status(200).json({ success: true, coupons });
+  } catch (error) {
+    return res.status(401).json({ success: false, error });
+  }
+};
+exports.Edit_Coupon = async (req, res) => {
+  try {
+    let id = req.body._id;
+   let coupon =  await Coupon.findByIdAndUpdate(id, {
+      $set: {
+        name: req.body.name,
+        code: req.body.code,
+        description: req.body.description,
+        type: req.body.type,
+        automated: req.body.automated,
+        active: req.body.active,
+        startDate: req.body.startDate,
+        expireDate: req.body.expireDate,
+        minimumPurchase: req.body.minimumPurchase,
+        maximumPurchase: req.body.maximumPurchase,
+        products: req.body.products,
+        redeemedBy: req.body.redeemedBy,
+        userMaxRedeem: req.body.userMaxRedeem,
+        freeGift: req.body.freeGift,
+        giftCount: req.body.giftCount,
+        percentageOff: req.body.percentageOff,
+        amountOff: req.body.amountOff,
+      },
+    },{new:true});
+    return res.status(200).json({ success: true, coupon });
+
   } catch (error) {
     return res.status(401).json({ success: false, error });
   }
