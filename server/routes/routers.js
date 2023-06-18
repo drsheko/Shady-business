@@ -78,6 +78,8 @@ router.post("/api/coupons/new/coupon", CouponController.Create_COUPON);
 router.post('/api/coupons/edit/coupon',CouponController.Edit_Coupon)
 // delete coupon by id
 router.post("/api/coupons/remove/coupon", CouponController.REMOVE_COUPON_BY_ID);
+//delete MANY COUPONS BY Ids
+router.post('/api/coupons/removeMany/coupons', CouponController.Delete_MANY_COUPONS_BY_Id)
 // get all coupons
 router.get("/api/coupons/all", CouponController.Get_ALL_COUPONS);
 

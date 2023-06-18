@@ -7,7 +7,9 @@ const upload = multer({ memoStorage });
 
 exports.Create_COUPON = [
   upload.single("photo"),
-  async (req, res) => {
+  async (req, res) => { 
+    console.log(req.body);
+    
     var uploadedFileURL;
 
     // upload coupon image
@@ -44,9 +46,7 @@ exports.Create_COUPON = [
       giftCount: req.body.giftCount,
       percentageOff: req.body.percentageOff,
       amountOff: req.body.amountOff,
-      data: {
-        photo: uploadedFileURL,
-      },
+      photo: uploadedFileURL,
     });
     newCoupon
       .save()
@@ -67,6 +67,18 @@ exports.REMOVE_COUPON_BY_ID = async (req, res) => {
     return res.status(401).json({ success: false, error });
   }
 };
+exports.Delete_MANY_COUPONS_BY_Id = async (req, res) => {
+  let ids = req.body.ids;
+  try {
+    await Coupon.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    });
+  } catch (error) {
+    return res.status(401).json({ success: false, error });
+  }
+};
 
 exports.Get_ALL_COUPONS = async (req, res) => {
   try {
@@ -77,31 +89,35 @@ exports.Get_ALL_COUPONS = async (req, res) => {
   }
 };
 exports.Edit_Coupon = async (req, res) => {
+  console.log(req.body);
   try {
     let id = req.body._id;
-   let coupon =  await Coupon.findByIdAndUpdate(id, {
-      $set: {
-        name: req.body.name,
-        code: req.body.code,
-        description: req.body.description,
-        type: req.body.type,
-        automated: req.body.automated,
-        active: req.body.active,
-        startDate: req.body.startDate,
-        expireDate: req.body.expireDate,
-        minimumPurchase: req.body.minimumPurchase,
-        maximumPurchase: req.body.maximumPurchase,
-        products: req.body.products,
-        redeemedBy: req.body.redeemedBy,
-        userMaxRedeem: req.body.userMaxRedeem,
-        freeGift: req.body.freeGift,
-        giftCount: req.body.giftCount,
-        percentageOff: req.body.percentageOff,
-        amountOff: req.body.amountOff,
+    let coupon = await Coupon.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          name: req.body.name,
+          code: req.body.code,
+          description: req.body.description,
+          type: req.body.type,
+          automated: req.body.automated,
+          active: req.body.active,
+          startDate: req.body.startDate,
+          expireDate: req.body.expireDate,
+          minimumPurchase: req.body.minimumPurchase,
+          maximumPurchase: req.body.maximumPurchase,
+          products: req.body.products,
+          redeemedBy: req.body.redeemedBy,
+          userMaxRedeem: req.body.userMaxRedeem,
+          freeGift: req.body.freeGift,
+          giftCount: req.body.giftCount,
+          percentageOff: req.body.percentageOff,
+          amountOff: req.body.amountOff,
+        },
       },
-    },{new:true});
+      { new: true }
+    );
     return res.status(200).json({ success: true, coupon });
-
   } catch (error) {
     return res.status(401).json({ success: false, error });
   }
