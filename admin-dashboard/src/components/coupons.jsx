@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import moment from "moment";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
@@ -138,7 +139,17 @@ function Coupons(props) {
     );
   };
   const header = renderHeader();
-
+  const expireDateTemplate = (element) => {
+    let now = moment();
+    let expire = moment(element.expireDate);
+    let duration = expire.diff(now, "days");
+    let color = duration < 0 ? "red" : duration < 4 ? "orange" : "green";
+    return (
+      <p className={`text-${color}-500 font-semibold`}>
+        {moment(element.expireDate).format("MMM Do, YY")}
+      </p>
+    );
+  };
   const photoBodyTemplate = (element) => {
     return (
       <img src={element.photo} height={50} width={70} className="shadow-4" />
@@ -162,20 +173,22 @@ function Coupons(props) {
 
   const actionBodyTemplate = (rowData) => {
     return (
-      <React.Fragment>
+      <div className="flex flex-row flex-nowrap justify-content-center">
         <Button
           icon="pi pi-pencil"
           rounded
+          size="small"
           className="mr-2"
           onClick={() => editCoupon(rowData)}
         />
         <Button
           icon="pi pi-trash"
           rounded
+          size="small"
           severity="danger"
           onClick={() => confirmDeleteCoupon(rowData)}
         />
-      </React.Fragment>
+      </div>
     );
   };
 
@@ -185,26 +198,15 @@ function Coupons(props) {
   const onFormChange = (e) => {
     let name = e.target.name;
     let value = e.target.value;
-    /*if(name ==='products'){
-        let _value =e.target.value 
-        value =_value.map(val => val._id)
-    }else if(name==='freeGift'){
-        value = e.target.value._id
-    }else{
-        value = e.target.value;
-    }*/
     setCoupon({ ...coupon, [name]: value });
-    console.log(value);
-    console.log(name)
-    console.log(coupon)
   };
   const editCoupon = (coupon) => {
+    setSelectedProducts(coupon.products);
     setCoupon({ ...coupon });
-    console.log('edit ', coupon.products)
-     setSelectedProducts(coupon.products)
     setCouponDialog(true);
   };
   const openNew = () => {
+    setSelectedProducts([]);
     setCoupon(couponForm);
     setSubmitted(false);
     setCouponDialog(true);
@@ -212,7 +214,6 @@ function Coupons(props) {
   const hideDialog = () => {
     setSubmitted(false);
     setUploadedPhoto(null);
-    setSelectedProducts(null);
     setCouponDialog(false);
   };
   const saveCoupon = async () => {
@@ -225,7 +226,6 @@ function Coupons(props) {
         let res = await axios.postForm(url, data);
         if (res.data.success && res.data.coupon) {
           let index = coupons.findIndex((el) => el._id === coupon._id);
-          console.log(res.data.coupon, index);
           let _coupons = [...coupons];
           let _coupon = res.data.coupon;
           _coupons[index] = _coupon;
@@ -275,7 +275,6 @@ function Coupons(props) {
           });
         }
       } catch (error) {
-        console.log(error);
         setSubmitted(false);
         setUploadedPhoto(null);
         setCouponDialog(false);
@@ -289,6 +288,20 @@ function Coupons(props) {
     }
   };
   //####################...(2-B) CREATE/EDIT LAYOUT ...#####################
+  const productItemTemplate = (option) => {
+    return (
+      <div className="flex align-items-center">
+        <img
+          alt={option.name}
+          src={option.photos[0]}
+          className="mr-2"
+          style={{ width: "18px" }}
+        />
+        <div>{option.name}</div>
+      </div>
+    );
+  };
+
   const couponDialogFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
@@ -308,7 +321,6 @@ function Coupons(props) {
       let id = coupon._id;
       let url = "http://localhost:3000/api/coupons/remove/coupon";
       let res = await axios.post(url, { id });
-      console.log(res.data);
       if (res.data.success) {
         let _coupons = coupons.filter((val) => val._id !== coupon._id);
         setCoupons(_coupons);
@@ -330,7 +342,6 @@ function Coupons(props) {
         detail: "Can't delete coupon!!",
         life: 3000,
       });
-      console.log(error);
     }
   };
   //################### (3-B) DELETE ONE COUPON LAYOUT  ##########################################
@@ -380,7 +391,6 @@ function Coupons(props) {
         setDeleteCouponsDialog(false);
       }
     } catch (error) {
-      console.log(error);
       setDeleteCouponsDialog(false);
       toast.current.show({
         severity: "error",
@@ -416,7 +426,12 @@ function Coupons(props) {
         let res = await axios.get(url);
         setCoupons(res.data.coupons);
       } catch (error) {
-        console.log(error);
+        toast.current.show({
+          severity: "error",
+          summary: "SERVER ERROR",
+          detail: "Internal error occured, please try again.",
+          life: 3000,
+        });
       }
     };
     const getProducts = async () => {
@@ -425,7 +440,12 @@ function Coupons(props) {
         let res = await axios.get(url);
         setProducts(res.data.products);
       } catch (error) {
-        console.log(error);
+        toast.current.show({
+          severity: "error",
+          summary: "SERVER ERROR",
+          detail: "Internal error occured, please try again.",
+          life: 3000,
+        });
       }
     };
     getCoupons();
@@ -441,30 +461,71 @@ function Coupons(props) {
         stripedRows
         removableSort
         dataKey="_id"
+        scrollable
+        scrollHeight="400px"
+        paginator
+        rows={5}
+        rowsPerPageOptions={[5, 10, 25]}
         filters={filters}
         globalFilterFields={["name", "code"]}
         selection={selectedCoupons}
         onSelectionChange={(e) => setSelectedCoupons(e.value)}
         header={header}
         className="w-full"
-        breakpoint="768px"
+        breakpoint="968px"
         columnResizeMode="fit"
+        size="small"
         responsiveLayout="stack"
       >
-        <Column selectionMode="multiple" exportable={false}></Column>
-        <Column field="name" header="Name" sortable></Column>
-        <Column field="code" header="Code" sortable></Column>
+        <Column
+          selectionMode="multiple"
+          exportable={false}
+          align="center"
+        ></Column>
+        <Column
+          field="name"
+          header="Name"
+          headerClassName="font-bold "
+          sortable
+        ></Column>
+        <Column
+          field="code"
+          header="Code"
+          headerClassName="font-bold"
+          sortable
+        ></Column>
+        <Column
+          field="type"
+          header="Type"
+          headerClassName="font-bold"
+          sortable
+        ></Column>
+        <Column
+          field="expireDate"
+          header="Expiration"
+          headerClassName="font-bold"
+          body={expireDateTemplate}
+          sortable
+        ></Column>
         <Column
           field="data.photo"
           header="Photo"
+          headerClassName="font-bold"
+          align="center"
           body={photoBodyTemplate}
         ></Column>
         <Column
           field="active"
           header="Active"
+          headerClassName="font-bold text-center"
           body={activeBodyTemplate}
         ></Column>
-        <Column header="Actions" body={actionBodyTemplate}></Column>
+        <Column
+          header="Actions"
+          body={actionBodyTemplate}
+          align="center"
+          headerClassName="font-bold"
+        ></Column>
       </DataTable>
 
       <Dialog
@@ -500,7 +561,7 @@ function Coupons(props) {
             )}
             <div className="flex flex-row justify-content-center">
               <div className="image-upload">
-                <label for="file-input">
+                <label htmlFor="file-input">
                   <i className="pi pi-plus bg-primary border-round-3xl p-3 mr-2 cursor-pointer">
                     <span className="font-semi-bold"> Upload</span>
                   </i>
@@ -636,11 +697,17 @@ function Coupons(props) {
                   <label htmlFor="gift" className="font-bold">
                     Free gift
                   </label>
-                  <InputText
+
+                  <Dropdown
                     id="gift"
                     name="freeGift"
                     value={coupon.freeGift}
                     onChange={(e) => onFormChange(e)}
+                    options={products}
+                    optionLabel="name"
+                    itemTemplate={productItemTemplate}
+                    filter
+                    dataKey="_id"
                     defaultValue={null}
                     placeholder="Free gift"
                   />
@@ -653,7 +720,7 @@ function Coupons(props) {
                     id="gift count"
                     name="giftCount"
                     value={coupon.giftCount}
-                    onChange={(e) => onFormChange(e)}
+                    onValueChange={(e) => onFormChange(e)}
                     placeholder="Gift count"
                     required={true}
                   />
@@ -662,22 +729,28 @@ function Coupons(props) {
             )}
             {coupon.type !== "free shipping" && (
               <div className="formgrid grid">
-                <div className="field col">
+                <div className="field col max-w-full">
                   <label htmlFor="products" className="font-bold">
                     Products
                   </label>
                   <MultiSelect
                     value={selectedProducts}
-                    onChange={(e) => {setSelectedProducts(e.value) ; onFormChange(e)}}
-                    onFocus={e=>console.log(selectedProducts)}
+                    onChange={(e) => {
+                      setSelectedProducts(e.value);
+                      onFormChange(e);
+                    }}
+                    onFocus={(e) => console.log(selectedProducts)}
                     options={products}
                     name="products"
+                    dataKey="name"
                     optionLabel="name"
+                    display="chip"
                     filter
                     placeholder="Select products"
-                    maxSelectedLabels={4}
-                    className="w-full md:w-20rem"
-                    required={coupon.type==='BOGO'?true:false}
+                    itemTemplate={productItemTemplate}
+                    maxSelectedLabels={50}
+                    className="max-w-full		"
+                    required={coupon.type === "BOGO" ? true : false}
                   />
                   <small className="text-green-500 ml-1">
                     {coupon.type === "BOGO"
@@ -754,7 +827,9 @@ function Coupons(props) {
                     required
                   />
                 </div>
-                <small className="text-green-500 ml-1">Tip: add 0 or negative value for no minimum</small>
+                <small className="text-green-500 ml-1">
+                  Tip: add 0 or negative value for no minimum
+                </small>
               </div>
               <div className="field col">
                 <label htmlFor="maximum" className="font-bold">
@@ -771,7 +846,9 @@ function Coupons(props) {
                     required
                   />
                 </div>
-                <small className="text-green-500 ml-1">Tip: add 0 or negative value for no maximum</small>
+                <small className="text-green-500 ml-1">
+                  Tip: add 0 or negative value for no maximum
+                </small>
               </div>
             </div>
             <div className="formgrid grid my-4">
