@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import moment from "moment";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { classNames } from "primereact/utils";
 import { DataTable } from "primereact/datatable";
@@ -11,15 +10,15 @@ import { Toolbar } from "primereact/toolbar";
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
-import { Carousel } from 'primereact/carousel';
+import { Carousel } from "primereact/carousel";
 import { FileUpload } from "primereact/fileupload";
 import { Tooltip } from "primereact/tooltip";
 import { Tag } from "primereact/tag";
 import { Badge } from "primereact/badge";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Toast } from "primereact/toast";
+import { Rating } from "primereact/rating";
 
 function Products(props) {
   let productForm = {
@@ -43,10 +42,11 @@ function Products(props) {
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [categories, setCategories] = useState(null);
-  const [subCategories, setSubCategories] = useState(null)
+  const [subCategories, setSubCategories] = useState(null);
+  const [photoError, setPhotoError] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [files, setFiles] = useState([]);
-  const [photos, setPhotos] =useState([])
+  const [photos, setPhotos] = useState([]);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -162,6 +162,16 @@ function Products(props) {
       </div>
     );
   };
+  const ratingBodyTemplate = (rowData) => {
+    return (
+      <div className="flex flex-row align-items-center gap-2">
+        <Rating value={rowData.rating} readOnly cancel={false} />
+        <span className="text-primary text-sm">
+          ({rowData.rating.toFixed(2)})
+        </span>
+      </div>
+    );
+  };
   // #############################//...(2) CREATE/EDIT PROCUCT DIALOG ...\\##############################################
 
   //####################...(2-A) CREATE/EDIT FUNCTIONS ...#################
@@ -172,86 +182,100 @@ function Products(props) {
   };
   const editProduct = (product) => {
     setProduct({ ...product });
-    setPhotos(product.photos)
+    setPhotos(product.photos);
     setProductDialog(true);
   };
   const openNew = () => {
-    setSelectedProducts([]);
+    setPhotos([])
     setProduct(productForm);
+    setSelectedProducts([]);
     setSubmitted(false);
+    setPhotoError(false);
     setProductDialog(true);
   };
   const hideDialog = () => {
     setSubmitted(false);
     setProductDialog(false);
-    setFiles([])
+    setFiles([]);
+    setPhotoError(false);
   };
-  const saveProduct = async () => {
+
+  const saveProduct = async (e) => {
+    e.preventDefault();
+   
+    if (product.photos.length === 0 && files.length === 0) {
+      setPhotoError(true);
+      const div =()=> document.getElementById('productForm')
+       div().scrollIntoView()
+      return;
+    } else {
+      setPhotoError(false);
+    }
     setSubmitted(true);
     if (product._id) {
       // save edited product
-      let url = "http://localhost:3000/api/coupons/edit/coupon";
+      let url = "http://localhost:3000/api/products/edit/product";
       try {
-        let data = { ...product, photo: uploadedPhoto };
+        let data = { ...product, FileList: files };
         let res = await axios.postForm(url, data);
-        if (res.data.success && res.data.coupon) {
-          let index = coupons.findIndex((el) => el._id === coupon._id);
-          let _coupons = [...coupons];
-          let _coupon = res.data.coupon;
-          _coupons[index] = _coupon;
-          setCoupons(_coupons);
-          setSubmitted(false);
-          setUploadedPhoto(null);
-          setCouponDialog(false);
+        if (res.data.success && res.data.product) {
+          let index = products.findIndex((el) => el._id === product._id);
+          let _products = [...products];
+          let _product = res.data.product;
+          _products[index] = _product;
+          setProducts(_products);
+          setFiles([]);
+          setProductDialog(false);
           toast.current.show({
             severity: "success",
             summary: "Successful",
-            detail: `${_coupon.name} coupon updated`,
+            detail: `${_product.name} product updated`,
             life: 3000,
           });
+          setSubmitted(false);
         }
       } catch (error) {
         setSubmitted(false);
-        setUploadedPhoto(null);
-        setCouponDialog(false);
+        setFiles([]);
+        setProductDialog(false);
         toast.current.show({
           severity: "error",
           summary: "ERROR",
-          detail: `${coupon.name} coupon update failed.`,
+          detail: `${product.name} product update failed.`,
           life: 3000,
         });
       }
     } else {
-      //---------------CREATE A NEW COUPON------------------
-      let url = "http://localhost:3000/api/coupons/new/coupon";
-
+      //---------------CREATE A NEW Product------------------
+      let url = "http://localhost:3000/api/products/addProduct";
       try {
-        let data = { ...coupon, photo: uploadedPhoto };
+        let data = { ...product, FileList: files };
         let res = await axios.postForm(url, data);
-        let newCoupon = res.data.coupon;
-        let _coupons = [...coupons];
-        if (res.data.success && res.data.coupon) {
-          _coupons.push(newCoupon);
-          setCoupons(_coupons);
+        console.log(res);
+        let newProduct = res.data.product;
+        let _products = [...products];
+        if (res.data.success && res.data.product) {
+          _products.push(newProduct);
+          setProducts(_products);
           setSubmitted(false);
-          setCoupon(couponForm);
-          setUploadedPhoto(null);
-          setCouponDialog(false);
+          setProduct(productForm);
+          setFiles([]);
+          setProductDialog(false);
           toast.current.show({
             severity: "success",
             summary: "Successful",
-            detail: `${newCoupon.name} coupon created`,
+            detail: `${newProduct.name} product created`,
             life: 3000,
           });
         }
       } catch (error) {
         setSubmitted(false);
-        setUploadedPhoto(null);
-        setCouponDialog(false);
+        setFiles([]);
+        setProductDialog(false);
         toast.current.show({
           severity: "error",
           summary: "ERROR",
-          detail: `Create a new coupon failed.`,
+          detail: `Create a new product failed.`,
           life: 3000,
         });
       }
@@ -269,37 +293,40 @@ function Products(props) {
     callback();
     let updatedFiles = files.filter((f) => f !== file);
     setFiles(updatedFiles);
-    
   };
- 
-  useEffect(()=>{
-    if(files.length>0){
-      let urls = files.map(file => file.objectURL);
-      setPhotos([...product.photos,...urls])
-    }else{
-      setPhotos(product.photos)
+
+  useEffect(() => {
+    if (files.length > 0) {
+      let urls = files.map((file) => file.objectURL);
+      setPhotos([...product.photos, ...urls]);
+    } else {
+      setPhotos(product.photos);
     }
-  },[files])
+  }, [files]);
   //####################...(2-B) CREATE/EDIT LAYOUT ...#####################
   const itemTemplate = (file, props) => {
     let unit = props.formatSize.slice(-2);
     let size = props.formatSize.slice(0, -2);
     size = Number(size).toFixed(1);
-    let key=Date.now
+    let key = Date.now;
     return (
-      <div className="flex flex-column align-items-start justify-content-between" style={{height:'200px'}} key={key}>
+      <div
+        className="flex flex-column align-items-start justify-content-between"
+        style={{ height: "200px" }}
+        key={key}
+      >
         <div
           className="flex flex-column align-items-center justify-content-between "
           style={{ width: "100px" }}
         >
           <div className="relative">
             <img
-              alt={file.name}
+              alt=""
               role="presentation"
               src={file.objectURL}
               width={100}
               height={100}
-              className="w-full shadow-4"
+              className="w-full shadow-4 "
             />
             <span className="flex  text-left  text-overflow-ellipsis">
               {file.name}
@@ -329,7 +356,7 @@ function Products(props) {
     return (
       <div className="flex align-items-center flex-column">
         <i
-          className="pi pi-image mt-0 p-5"
+          className="pi pi-image mt-0 p-1 sm:p-3 md:p-5"
           style={{
             fontSize: "2em",
             borderRadius: "50%",
@@ -355,8 +382,7 @@ function Products(props) {
   const cancelOptions = {
     icon: "pi pi-fw pi-times",
     iconOnly: true,
-    className:
-      " p-button-danger p-button-rounded ",
+    className: " p-button-danger p-button-rounded ",
   };
   const onTemplateClear = () => {};
   const headerTemplate = (options) => {
@@ -379,13 +405,13 @@ function Products(props) {
       </div>
     );
   };
-  const carouselBodyTemplate = (image) =>{
+  const carouselBodyTemplate = (image) => {
     return (
-        <div className="text-center">
-            <img src={image} alt={image} width={260} height={220}/>
-        </div>
-    )
-  }
+      <div className="text-center">
+        <img src={image} alt={image}  className='w-7rem sm:w-11rem' />
+      </div>
+    );
+  };
 
   const productDialogFooter = (
     <React.Fragment>
@@ -406,11 +432,13 @@ function Products(props) {
     setProduct(product);
     setDeleteProductDialog(true);
   };
-  const deleteProduct = async () => {
+  const deleteProduct = async (product) => {
     try {
+      let name = product.name;
       let id = product._id;
-      let url = "http://localhost:3000/api/coupons/remove/coupon";
-      let res = await axios.post(url, { id });
+      let photos = product.photos;
+      let url = "http://localhost:3000/api/products/remove/product";
+      let res = await axios.post(url, { id, photos });
       if (res.data.success) {
         let _products = products.filter((val) => val._id !== product._id);
         setProducts(_products);
@@ -419,7 +447,7 @@ function Products(props) {
         toast.current.show({
           severity: "success",
           summary: "Successful",
-          detail: "Product Deleted",
+          detail: `Product ${name} Deleted`,
           life: 3000,
         });
       }
@@ -447,7 +475,7 @@ function Products(props) {
         label="Yes"
         icon="pi pi-check"
         severity="danger"
-        onClick={deleteProduct}
+        onClick={() => deleteProduct(product)}
       />
     </React.Fragment>
   );
@@ -455,33 +483,10 @@ function Products(props) {
 
   //#######################(4-A) DELETE MANY PRODUCTS FUNCTIONS #####################################
   const deleteSelectedProducts = async () => {
-    let ids = [];
-    selectedProducts.map((product) => ids.push(product._id));
     try {
-      let url = "http://localhost:3000/api/coupons/removeMany/coupons";
-      let res = await axios.post(url, { ids });
-      if (res.data.success) {
-        let _products = products.filter(
-          (val) => !selectedProducts.includes(val)
-        );
-        setProducts(_products);
-        setDeleteProductsDialog(false);
-        setSelectedProducts(null);
-        toast.current.show({
-          severity: "success",
-          summary: "Successful",
-          detail: "Coupons Deleted",
-          life: 3000,
-        });
-      } else {
-        toast.current.show({
-          severity: "danger",
-          summary: "Failed",
-          detail: "Cannot delete products",
-          life: 3000,
-        });
-        setDeleteProductsDialog(false);
-      }
+      selectedProducts.map((product) => deleteProduct(product));
+      setDeleteProductsDialog(false);
+      setSelectedProducts(null);
     } catch (error) {
       setDeleteProductsDialog(false);
       toast.current.show({
@@ -509,7 +514,7 @@ function Products(props) {
       />
     </React.Fragment>
   );
-  //######## GettingProducts From DB ###########
+  //######## Get Data From DB ###########
   useEffect(() => {
     const getProducts = async () => {
       let url = "http://localhost:3000/api/products/all";
@@ -541,8 +546,8 @@ function Products(props) {
         });
       }
     };
-    const getSubCategories = async () =>{
-        let url = "http://localhost:3000/api/subCategories/all";
+    const getSubCategories = async () => {
+      let url = "http://localhost:3000/api/subCategories/all";
       try {
         let res = await axios.get(url);
         if (res.data.subCategories) {
@@ -556,13 +561,13 @@ function Products(props) {
           life: 3000,
         });
       }
-    }
+    };
 
     getProducts();
     getCategories();
     getSubCategories();
   }, []);
-
+ 
   return (
     <div className="p-2 sm:p-3 card flex flex-column flex-wrap gap-3 align-items-center justify-content-center sm:flex-row">
       <Toolbar className="mb-4" left={toolbarTemplate}></Toolbar>
@@ -593,12 +598,50 @@ function Products(props) {
           exportable={false}
           align="center"
         ></Column>
-        <Column field="name" header="Name" sortable></Column>
+        <Column
+          field="name"
+          header="Name"
+          sortable
+          headerClassName="font-bold "
+        ></Column>
+        <Column
+          field="category.name"
+          header="Category"
+          sortable
+          headerClassName="font-bold "
+        ></Column>
+        <Column
+          field="subCategory.name"
+          header="Sub_Category"
+          sortable
+          headerClassName="font-bold "
+        ></Column>
+        <Column
+          field="total_stock"
+          header="Stock"
+          sortable
+          headerClassName="font-bold "
+        ></Column>
+
+        <Column
+          field="price"
+          header="Price"
+          sortable
+          headerClassName="font-bold "
+        ></Column>
+        <Column
+          field="rating"
+          header="Raing"
+          body={ratingBodyTemplate}
+          sortable
+          headerClassName="font-bold "
+        ></Column>
 
         <Column
           header="Actions"
           body={actionBodyTemplate}
           alignHeader="center"
+          headerClassName="font-bold "
         ></Column>
       </DataTable>
       <Dialog
@@ -617,8 +660,22 @@ function Products(props) {
           </div>
         ) : (
           <form id="productForm" onSubmit={saveProduct}>
-            <Carousel value={photos} numVisible={1} numScroll={1}  verticalViewPortHeight="220px"
-            itemTemplate={carouselBodyTemplate}  circular/>
+            {photoError && (
+              <div
+                id="photoError"
+                className="card shadow-4 w-full p-1 text-center mb-2 border-round-lg bg-red-500"
+              >
+                <p className="font-bold text-50">Product photo required, Please upload one.</p>
+              </div>
+              
+            )}
+            <Carousel
+              value={photos}
+              itemTemplate={carouselBodyTemplate}
+              circular={photos.length > 1}
+              showIndicators={photos.length > 1}
+              showNavigators={photos.length > 1}
+            />
 
             <div className="field">
               <label htmlFor="name" className="font-bold">
@@ -629,17 +686,16 @@ function Products(props) {
                 name="name"
                 value={product.name}
                 onChange={(e) => onFormChange(e)}
-                required
                 autoFocus
+                required
                 className={classNames({
-                  "p-invalid": submitted && !product.name,
+                  "p-invalid": submitted && product.name === "",
                 })}
               />
               {submitted && !product.name && (
                 <small className="p-error">Name is required.</small>
               )}
             </div>
-
             <div className="field">
               <label htmlFor="description" className="font-bold">
                 Description
@@ -654,71 +710,73 @@ function Products(props) {
                 cols={20}
               />
             </div>
-          </form>
-        )}
-        <div className="formgrid grid">
-          <div className="field col">
-            <label htmlFor="price" className="font-bold">
-              Price
-            </label>
-            <div className="p-inputgroup">
-              <span className="p-inputgroup-addon bg-primary">$</span>
-              <InputNumber
-                id="price"
-                name="price"
-                value={product.price}
-                onValueChange={(e) => onFormChange(e)}
-                placeholder="Price"
-                required
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="price" className="font-bold">
+                  Price
+                </label>
+                <div className="p-inputgroup">
+                  <span className="p-inputgroup-addon bg-primary">$</span>
+                  <InputNumber
+                    id="price"
+                    name="price"
+                    value={product.price}
+                    onValueChange={(e) => onFormChange(e)}
+                    placeholder="Price"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="field col">
+                <label htmlFor="retail" className="font-bold">
+                  Stock Price
+                </label>
+                <div className="p-inputgroup">
+                  <span className="p-inputgroup-addon bg-primary">$</span>
+                  <InputNumber
+                    id="retail"
+                    name="retail"
+                    value={product.retail_price}
+                    onValueChange={(e) => onFormChange(e)}
+                    placeholder="Stock Price"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="category" className="mb-3 font-bold">
+                Category
+              </label>
+              <Dropdown
+                id="category"
+                value={product.category}
+                name="category"
+                onChange={(e) => onFormChange(e)}
+                options={categories}
+                optionLabel="name"
+                dataKey="_id"
+                placeholder="choose category.."
+                required={true}
               />
             </div>
-          </div>
-          <div className="field col">
-            <label htmlFor="retail" className="font-bold">
-              Stock Price
-            </label>
-            <div className="p-inputgroup">
-              <span className="p-inputgroup-addon bg-primary">$</span>
-              <InputNumber
-                id="retail"
-                name="retail"
-                value={product.retail_price}
-                onValueChange={(e) => onFormChange(e)}
-                placeholder="Stock Price"
-                required
+            <div className="field">
+              <label htmlFor="subcategory" className="mb-3 font-bold">
+                Sub_Category
+              </label>
+              <Dropdown
+                id="subcategory"
+                value={product.subCategory}
+                name="subCategory"
+                onChange={(e) => onFormChange(e)}
+                options={subCategories}
+                optionLabel="name"
+                dataKey="_id"
+                placeholder="choose sub_category.."
               />
             </div>
-          </div>
-        </div>
-        <div className="field">
-          <label htmlFor="category" className="mb-3 font-bold">Category</label>
-          <Dropdown
-            id="category"
-            value={product.category}
-            name="category"
-            onChange={(e) => onFormChange(e)}
-            options={categories}
-            optionLabel='name'
-            dataKey="_id"
-            placeholder="choose category.."
-            required={true}
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="subcategory" className="mb-3 font-bold">Sub_Category</label>
-          <Dropdown
-            id="subcategory"
-            value={product.subCategory}
-            name="subCategory"
-            onChange={(e) => onFormChange(e)}
-            options={subCategories}
-            optionLabel='name'
-            dataKey="_id"
-            placeholder="choose sub_category.."
-            required={true}
-          />
-        </div>
-        <div className="upload my-2">
+            <div className="upload my-2">
               <Tooltip
                 target=".custom-choose-btn"
                 content="Choose"
@@ -745,6 +803,8 @@ function Products(props) {
                 cancelOptions={cancelOptions}
               />
             </div>
+          </form>
+        )}
       </Dialog>
       <Dialog
         visible={deleteProductDialog}
