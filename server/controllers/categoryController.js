@@ -1,4 +1,6 @@
 var Category = require("../models/categoryModel");
+const subCategory =require('../models/sub_categoryModel');
+const Product =require('../models/productModel');
 const multer = require("multer");
 const { ref, uploadBytes } = require("firebase/storage");
 const storage = require("../firebase");
@@ -97,9 +99,138 @@ exports.Edit_Category_photo_BY_ID = [
 // Get All Categories
 exports.All_Categories = async (req, res) => {
   try {
-    let allCategories = await Category.find();
+    let allCategories = await Category.find()
+      .populate({
+        path: "sub_categories",
+        populate: [
+          {
+            path:'products'
+          },
+          {
+            path:'category'
+          }
+        ]
+      })
+      .populate("products");
     return res.status(200).json({ success: true, allCategories });
   } catch (error) {
-    return res.status(200).json({ success: false, error });
+    console.log(error);
+    return res.status(401).json({ success: false, error });
   }
 };
+
+//get category by id
+exports.GET_CATEGORY_BY_Id = async (req, res) => {
+  console.log(req.body.id);
+  try {
+    let category = await Category.findById(req.body.id).populate({
+      path: "products",
+      populate: [
+        {
+          path: "category",
+        },
+        {
+          path: "reviews",
+          populate: {
+            path: "user",
+          },
+        },
+        {
+          path: "options",
+        },
+        {
+          path: "subCategory",
+        },
+      ],
+    });
+    return res.status(200).json({ success: true, category });
+  } catch (error) {
+    return res.status(401).json({ success: false, error });
+  }
+};
+exports.update = async (req, res) => {
+  try {
+    let data = await Category.updateMany(
+      {},
+      {
+        $set: {
+          products: [],
+        },
+      }
+    );
+    return res.status(200).json({ success: true, data });
+  } catch (error) {
+    return res.status(401).json({ success: false, error });
+  }
+};
+
+exports.EDIT_CATEGORY_BY_ID = [
+  upload.single("photo"),
+async (req, res) => { console.log(req.body)
+  var uploadedFileURL;
+  // upload category image
+  const file = req.file;
+  if (file) {
+    const fileName = file.originalname + new Date();
+    const imageRef = ref(storage, fileName);
+    const metatype = { contentType: file.mimetype, name: file.originalname };
+    await uploadBytes(imageRef, file.buffer, metatype)
+      .then((snapshot) => {
+        uploadedFileURL = `https://firebasestorage.googleapis.com/v0/b/${snapshot.ref._location.bucket}/o/${snapshot.ref._location.path_}?alt=media`;
+      })
+      .catch((error) => {
+        return res.status(401).json({ error: error });
+      });
+  }else {
+    // NO FILE  => KEEP THE PREVIOUS PHOTO
+    uploadedFileURL = req.body.photo;
+  }
+
+  try {
+    let id = req.body._id;
+     await Category.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          name: req.body.name,
+          sub_categories:req.body.subCategories,
+          products: req.body.products,
+          photo: uploadedFileURL,
+        },
+      },
+      { new: true }
+    );
+    await subCategory.updateMany({
+      _id:{
+        $in:req.body.subCategories}
+      },{
+        $set:{
+          category:id
+        }
+      });
+      await Product.updateMany({
+        _id:{
+          $in:req.body.products}
+        },{
+          $set:{
+            category:id
+          }
+        });
+    let category = await Category.findById(id).populate({
+        path: "sub_categories",
+        populate: [
+          {
+            path:'products'
+          },
+          {
+            path:'category'
+          }
+        ]
+      })
+      .populate("products");
+    return res.status(200).json({ success: true, category });
+  } catch (error) { console.log('up', error)
+    return res.status(401).json({ success: false, error });
+  }
+},
+];

@@ -25,7 +25,8 @@ router.get("/api/logout", UserController.log_out);
 //-------------------CATEGORIES------------------------
 // Add a Category
 router.post("/api/categories/addCategory", CategoryController.addCategory);
-
+// EDIT CATEGORY BY ID
+router.post('/api/categories/edit/category', CategoryController.EDIT_CATEGORY_BY_ID)
 // Edit Category PHOTO By Category ID
 router.post(
   "/api/categories/editPhoto",
@@ -56,10 +57,14 @@ router.get(
 // ----------------------PRODUCT-----------------------------------------
 // Create A Product
 router.post("/api/products/addProduct", ProductController.CREATE_PRODUCT);
+// EDIT PRODUCT
+router.post('/api/products/edit/product', ProductController.EDIT_PRODUCT);
+// DELETE ONE PRODUCT 
+router.post('/api/products/remove/product', ProductController.DELETE_PRODUCT_BY_ID)
 // Get Product By Id
 router.get("/api/products/product", ProductController.GET_PRODUCT_By_Id);
 router.post("/api/products/edit", ProductController.edit);
-router.get('/api/product/all', ProductController.GET_All_PRODUCTS)
+router.get('/api/products/all', ProductController.GET_All_PRODUCTS)
 //------------------------OPTION----------------------------------
 // Create A Product-OPTION
 router.post("/api/products/product/addOption", OptionController.CREATE_OPTION);
