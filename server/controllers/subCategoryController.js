@@ -10,42 +10,69 @@ const memoStorage = multer.memoryStorage();
 const upload = multer({ memoStorage });
 
 // Add SUB_CATEGORY
-exports.ADD_SubCatgeory = async (req, res) => {
-  let name = req.body.name;
-  let description = req.body.description;
-  let categoryId = req.body.category;
-  let isNameTaken = await SubCategory.findOne({ name: name });
-  if (isNameTaken != null) {
-    return res.status(401).json({
-      success: false,
-      error: "This sub-category is already in Database",
-    });
-  } else {
-    let newSub = new SubCategory({
-      name: name,
-      description: description,
-      category: categoryId,
-    });
-    newSub
-      .save()
-      .then((subCategory) => {
-        Category.findByIdAndUpdate(categoryId, {
-          $push: {
-            sub_categories: subCategory._id,
-          },
-        })
-          .then(() => {
-            return res.status(200).json({ success: true, subCategory });
-          })
-          .catch((error) => {
-            return res.status(200).json({ success: false, error });
-          });
-      })
-      .catch((error) => {
-        return res.status(200).json({ success: false, error });
+exports.ADD_SubCatgeory = [
+  upload.single("photo"),
+  async (req, res) => {
+    var uploadedFileURL;
+    const isNameTaken = await Category.findOne({ name: req.body.name });
+    if (isNameTaken != null) {
+      return res.status(401).json({
+        success: false,
+        error: "This Sub-Category is already in Database",
       });
-  }
-};
+    }
+    // upload category image
+    const file = req.file;
+    if (file) {
+      const fileName = file.originalname + new Date();
+      const imageRef = ref(storage, fileName);
+      const metatype = { contentType: file.mimetype, name: file.originalname };
+      await uploadBytes(imageRef, file.buffer, metatype)
+        .then((snapshot) => {
+          uploadedFileURL = `https://firebasestorage.googleapis.com/v0/b/${snapshot.ref._location.bucket}/o/${snapshot.ref._location.path_}?alt=media`;
+        })
+        .catch((error) => {
+          return res.status(401).json({ error: error });
+        });
+    }
+    try {
+      // create a new sub-category
+      let newSubCategory = new SubCategory({
+        name: req.body.name,
+        photo: uploadedFileURL,
+        description: req.body.description,
+        products: req.body.products,
+        category: req.body.category,
+      });
+      let savedSubCategory = await newSubCategory.save();
+      let subCategory = await SubCategory.findById(
+        savedSubCategory._id
+      ).populate(["products", "category"]);
+      // update category
+      await Category.findByIdAndUpdate(savedSubCategory.category, {
+        $addToSet: {
+          sub_categories: savedSubCategory._id,
+        },
+      });
+      // update products
+      await Product.updateMany(
+        {
+          _id: {
+            $in: req.body.products,
+          },
+        },
+        {
+          $set: {
+            subCategory: savedSubCategory._id,
+          },
+        }
+      );
+      return res.status(200).json({ success: true, subCategory });
+    } catch (error) {
+      return res.status(401).json({ success: false, error });
+    }
+  },
+];
 
 // Get All SUB
 exports.GET_ALL_SUB_CATEGORIES = async (req, res) => {
@@ -105,9 +132,9 @@ exports.EDIT_SUB_CATEGORY_BY_ID = [
         .then((snapshot) => {
           //set new photo
           uploadedFileURL = `https://firebasestorage.googleapis.com/v0/b/${snapshot.ref._location.bucket}/o/${snapshot.ref._location.path_}?alt=media`;
-        
         })
-        .catch((error) => { console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
+        .catch((error) => {
+          console.log("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
           return res.status(401).json({ error: error });
         });
     } else {
@@ -123,6 +150,7 @@ exports.EDIT_SUB_CATEGORY_BY_ID = [
             name: req.body.name,
             category: req.body.category,
             products: req.body.products,
+            description: req.body.description,
             photo: uploadedFileURL,
           },
         },
@@ -145,7 +173,10 @@ exports.EDIT_SUB_CATEGORY_BY_ID = [
           },
         }
       );
-      let subCategory = await SubCategory.findById(id).populate(["products",'category']);
+      let subCategory = await SubCategory.findById(id).populate([
+        "products",
+        "category",
+      ]);
       return res.status(200).json({ success: true, subCategory });
     } catch (error) {
       return res.status(401).json({ success: false, error });

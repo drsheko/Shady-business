@@ -44,7 +44,7 @@ router.post("/api/categories/delete/category", CategoryController.DELETE_CATEGOR
 //-------------------SUB-CATEGORIES------------------------------------
 
 // ADD A SUB-CATEGORY
-router.post("/api/subCategories/addOne", SubCategoryController.ADD_SubCatgeory);
+router.post("/api/subCategories/add/subCategory", SubCategoryController.ADD_SubCatgeory);
 // GET ALL SUB-Categories
 router.get(
   "/api/subCategories/all",
