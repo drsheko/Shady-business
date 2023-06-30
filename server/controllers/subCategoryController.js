@@ -1,5 +1,13 @@
 const SubCategory = require("../models/sub_categoryModel");
 const Category = require("../models/categoryModel");
+const Product = require("../models/productModel");
+const ProductOption = require("../models/productOption");
+const Review = require("../models/reviewModel");
+const multer = require("multer");
+const { ref, uploadBytes } = require("firebase/storage");
+const storage = require("../firebase");
+const memoStorage = multer.memoryStorage();
+const upload = multer({ memoStorage });
 
 // Add SUB_CATEGORY
 exports.ADD_SubCatgeory = async (req, res) => {
@@ -82,3 +90,65 @@ exports.GET_ONE_BY_Id = async (req, res) => {
       return res.status(401).json({ success: false, error });
     });
 };
+
+exports.EDIT_SUB_CATEGORY_BY_ID = [
+  upload.single("photo"),
+  async (req, res) => {
+    var uploadedFileURL;
+    // upload sub-category image
+    const file = req.file;
+    if (file) {
+      const fileName = file.originalname + new Date();
+      const imageRef = ref(storage, fileName);
+      const metatype = { contentType: file.mimetype, name: file.originalname };
+      await uploadBytes(imageRef, file.buffer, metatype)
+        .then((snapshot) => {
+          //set new photo
+          uploadedFileURL = `https://firebasestorage.googleapis.com/v0/b/${snapshot.ref._location.bucket}/o/${snapshot.ref._location.path_}?alt=media`;
+        
+        })
+        .catch((error) => { console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
+          return res.status(401).json({ error: error });
+        });
+    } else {
+      // NO FILE  => KEEP THE PREVIOUS PHOTO
+      uploadedFileURL = req.body.photo;
+    }
+    try {
+      let id = req.body._id;
+      await SubCategory.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            name: req.body.name,
+            category: req.body.category,
+            products: req.body.products,
+            photo: uploadedFileURL,
+          },
+        },
+        { new: true }
+      );
+      await Category.findByIdAndUpdate(req.body.category, {
+        $addToSet: {
+          sub_categories: id,
+        },
+      });
+      await Product.updateMany(
+        {
+          _id: {
+            $in: req.body.products,
+          },
+        },
+        {
+          $set: {
+            subCategory: id,
+          },
+        }
+      );
+      let subCategory = await SubCategory.findById(id).populate(["products",'category']);
+      return res.status(200).json({ success: true, subCategory });
+    } catch (error) {
+      return res.status(401).json({ success: false, error });
+    }
+  },
+];

@@ -23,7 +23,7 @@ router.post("/api/login", UserController.login_post);
 router.get("/api/logout", UserController.log_out);
 
 //-------------------CATEGORIES------------------------
-// Add a Category
+//CREATE A NEW Category
 router.post("/api/categories/addCategory", CategoryController.addCategory);
 // EDIT CATEGORY BY ID
 router.post('/api/categories/edit/category', CategoryController.EDIT_CATEGORY_BY_ID)
@@ -37,6 +37,8 @@ router.post(
 router.get("/api/categories/all", CategoryController.All_Categories);
 // Get Category By Id
 router.post("/api/categories/category", CategoryController.GET_CATEGORY_BY_Id);
+// DELETE CATEGORY 
+router.post("/api/categories/delete/category", CategoryController.DELETE_CATEGORY_BY_ID)
 
 
 //-------------------SUB-CATEGORIES------------------------------------
@@ -48,6 +50,9 @@ router.get(
   "/api/subCategories/all",
   SubCategoryController.GET_ALL_SUB_CATEGORIES
 );
+// EDIT A SUB_CATEGORY
+router.post("/api/subCategories/edit/subCategory", SubCategoryController.EDIT_SUB_CATEGORY_BY_ID);
+
 // Get sub-category by id
 router.get(
   "/api/subcategories/subcategory/:id",
