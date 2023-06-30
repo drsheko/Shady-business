@@ -52,7 +52,8 @@ router.get(
 );
 // EDIT A SUB_CATEGORY
 router.post("/api/subCategories/edit/subCategory", SubCategoryController.EDIT_SUB_CATEGORY_BY_ID);
-
+// DELETE SUBCATEGORY
+router.post("/api/subCategories/delete/subCategory", SubCategoryController.DELETE_SUB_CATEGORY_BY_ID);
 // Get sub-category by id
 router.get(
   "/api/subcategories/subcategory/:id",

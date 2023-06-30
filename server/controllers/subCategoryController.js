@@ -183,3 +183,40 @@ exports.EDIT_SUB_CATEGORY_BY_ID = [
     }
   },
 ];
+
+// DELETE Sub-CATEGORY BY ID
+exports.DELETE_SUB_CATEGORY_BY_ID = async (req, res) => {
+  let subId = req.body._id;
+  try {
+    // delete sub-category
+    await SubCategory.findByIdAndDelete(subId);
+
+    // delete from category
+    await Category.findByIdAndUpdate(req.body.category, {
+      $pull: {
+        sub_categories: subId,
+      },
+    });
+    // delete products
+    await Product.deleteMany({
+      _id: {
+        $in: req.body.Products,
+      },
+    });
+    // delete PRoducts Options
+    await ProductOption.deleteMany({
+      product: {
+        $in: req.body.Products,
+      },
+    });
+    // delete products reviews
+    await Review.deleteMany({
+      product: {
+        $in: req.body.Products,
+      },
+    });
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(401).json({ success: false, error });
+  }
+};
