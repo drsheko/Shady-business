@@ -1,6 +1,8 @@
 var Category = require("../models/categoryModel");
 const subCategory = require("../models/sub_categoryModel");
 const Product = require("../models/productModel");
+const ProductOption =require('../models/productOption');
+const Review =require('../models/reviewModel');
 const multer = require("multer");
 const { ref, uploadBytes } = require("firebase/storage");
 const storage = require("../firebase");
@@ -19,7 +21,6 @@ exports.addCategory = [
         error: "This Category is already in Database",
       });
     }
-
     // upload category image
     const file = req.file;
     if (file) {
@@ -281,3 +282,32 @@ exports.EDIT_CATEGORY_BY_ID = [
     }
   },
 ];
+
+
+// DELETE CATEGORY BY ID 
+exports.DELETE_CATEGORY_BY_ID = async(req, res) =>{
+  let categoryId =req.body._id
+  try{
+    // delete category 
+    await Category.findByIdAndDelete(categoryId);
+    // delete subCategories 
+    await subCategory.deleteMany({_id:{
+      $in:req.body.subCategories
+    }});
+    // delete products 
+    await Product.deleteMany({_id:{
+      $in:req.body.Products
+    }});
+    // delete PRoducts Options
+    await ProductOption.deleteMany({product:{
+      $in:req.body.Products
+    }});
+    // delete products reviews
+    await Review.deleteMany({product:{
+      $in:req.body.Products
+    }});
+    return res.status(200).json({success:true})
+  }catch(error){
+    return res.status(401).json({success:false, error})
+  }
+}
