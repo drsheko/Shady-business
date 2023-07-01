@@ -8,6 +8,7 @@ var OptionController = require("../controllers/productOptionController");
 var BrandController = require("../controllers/brandController");
 var ReviewController = require("../controllers/reviewController");
 var CouponController = require("../controllers/couponController");
+var AddressController =require('../controllers/addressController');
 /* GET home page. */
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
@@ -93,5 +94,9 @@ router.post("/api/coupons/remove/coupon", CouponController.REMOVE_COUPON_BY_ID);
 router.post('/api/coupons/removeMany/coupons', CouponController.Delete_MANY_COUPONS_BY_Id)
 // get all coupons
 router.get("/api/coupons/all", CouponController.Get_ALL_COUPONS);
+
+// ########################### ADDRESS ###################################
+// Create A NEW ADDRESS 
+router.post('/api/addresses/create/address', AddressController.Create_ADDRESS);
 
 module.exports = router;
