@@ -61,7 +61,7 @@ function Billing(props) {
   const editBilling = () => {
     props.setBillingState((state) => ({ ...state, isSubmitted: false }));
   };
-  const onBillingSubmit = async () => {
+  const onBillingSubmit = () => {
     setAddressError(false);
     let score = 0;
     if (!selectedAddress) {
@@ -71,17 +71,12 @@ function Billing(props) {
       div().scrollIntoView({ behavior: "smooth", block: "end" });
       return;
     }
-    try {
-      console.log(score);
-      if (score == 0) {
-        props.setBillingState((state) => ({ ...state, isSubmitted: true }));
-        props.setCheckoutData((state) => ({
-          ...state,
-          billingAddress: selectedAddress,
-        }));
-      }
-    } catch (error) {
-      console.log(error);
+    if (score == 0) {
+      props.setBillingState((state) => ({ ...state, isSubmitted: true }));
+      props.setCheckoutData((state) => ({
+        ...state,
+        billingAddress: selectedAddress,
+      }));
     }
   };
   const countries = [
