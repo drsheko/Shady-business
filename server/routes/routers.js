@@ -9,6 +9,7 @@ var BrandController = require("../controllers/brandController");
 var ReviewController = require("../controllers/reviewController");
 var CouponController = require("../controllers/couponController");
 var AddressController =require('../controllers/addressController');
+var PaymentController =require('../controllers/paymentController');
 /* GET home page. */
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
@@ -98,5 +99,7 @@ router.get("/api/coupons/all", CouponController.Get_ALL_COUPONS);
 // ########################### ADDRESS ###################################
 // Create A NEW ADDRESS 
 router.post('/api/addresses/create/address', AddressController.Create_ADDRESS);
-
+//####################### PAYMENTS ########################
+//create a new payment 
+router.post('/api/payments/new/payment', PaymentController.Create_NEW_CARD);
 module.exports = router;
