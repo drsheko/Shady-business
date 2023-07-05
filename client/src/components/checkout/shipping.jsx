@@ -113,8 +113,12 @@ function Shipping(props) {
     }
   };
   const editShipping = () => {
-    props.setShippingState((state) => ({ ...state, isSubmitted: false }));
-    props.setBillingState((state) => ({ ...state, isSubmitted: false }));
+    if (billingSameAddress) {
+      props.setShippingState((state) => ({ ...state, isSubmitted: false }));
+      props.setBillingState((state) => ({ ...state, isSubmitted: false }));
+    } else {
+      props.setShippingState((state) => ({ ...state, isSubmitted: false }));
+    }
   };
 
   useEffect(() => {

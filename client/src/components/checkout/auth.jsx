@@ -1,11 +1,12 @@
 import React from "react";
-import { useState, useContext,useEffect, useRef } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { UserContext } from "../../App";
-import axios from "axios";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Toast } from "primereact/toast";
+import axios from "axios";
+
 function Auth(props) {
   let { user, setUser } = useContext(UserContext);
   let toast = useRef(null);
@@ -26,14 +27,15 @@ function Auth(props) {
       });
       let success = res.data.success;
       if (success) {
-        props.setAccountState((state) =>({...state, isSubmitted:true}))
+        props.setAccountState((state) => ({ ...state, isSubmitted: true }));
         var loggedUser = res.data.user;
+        props.setCheckoutData((state) => ({ ...state, user: loggedUser }));
         // Save logged user to local storage
         localStorage.setItem("SHADY_BUSINESS_user", JSON.stringify(loggedUser));
         setUser(loggedUser);
       }
     } catch (err) {
-        props.setAccountState((state) =>({...state, isSubmitted:false}))
+      props.setAccountState((state) => ({ ...state, isSubmitted: false }));
       toast.current.show({
         sticky: true,
         severity: "error",
@@ -48,7 +50,8 @@ function Auth(props) {
     let url = "http://localhost:3000/api/logout";
     const res = await axios.get(url);
     if (res.data.success) {
-        props.setAccountState((state) =>({...state, isSubmitted:false}))
+      props.setAccountState((state) => ({ ...state, isSubmitted: false }));
+      props.setCheckoutData((state) => ({ ...state, user: null }));
       localStorage.removeItem("SHADY_BUSINESS_user");
       setUser(null);
       toast.current.show({
@@ -61,16 +64,16 @@ function Auth(props) {
   };
   useEffect(() => {
     if (!user) {
-      props.setAccountState({ isActive:true, isSubmitted: false });
-    }else{
-        props.setAccountState({ isActive:false, isSubmitted: true });
+      props.setAccountState({ isActive: true, isSubmitted: false });
+    } else {
+      props.setAccountState({ isActive: false, isSubmitted: true });
     }
   }, [user]);
   return (
     <div>
       {user ? (
         <div className="flex felx-row justify-content-between align-items-center">
-          <div className="flex felx-row align-items-center">
+          <div className="flex felx-row align-items-center flex-wrap sm:flex-nowrap">
             <p className="font-semibold text-lg mr-1 sm:text-2xl sm:mr-3">
               Customer
             </p>
@@ -80,11 +83,11 @@ function Auth(props) {
           </div>
 
           <Button
-            label="sign out"
+            label="Sign out"
             outlined
             onClick={handleLogout}
             size="small"
-            className="hover:bg-primary "
+            className="hover:bg-primary white-space-nowrap	"
           />
         </div>
       ) : (
@@ -117,7 +120,13 @@ function Auth(props) {
               required
             />
           </div>
-          <Button label="Sign In" icon="pi pi-user" type="submit" />
+          <Button
+            label="Sign In"
+            icon="pi pi-user"
+            type="submit"
+            size="small"
+            className="mt-2"
+          />
         </form>
       )}
       <Toast ref={toast} />
