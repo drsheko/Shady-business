@@ -95,6 +95,8 @@ router.post("/api/coupons/remove/coupon", CouponController.REMOVE_COUPON_BY_ID);
 router.post('/api/coupons/removeMany/coupons', CouponController.Delete_MANY_COUPONS_BY_Id)
 // get all coupons
 router.get("/api/coupons/all", CouponController.Get_ALL_COUPONS);
+// Get COUPON BY IT'S CODE 
+router.post("/api/coupons/code/coupon", CouponController.GET_CCOUPON_BY_CODE);
 
 // ########################### ADDRESS ###################################
 // Create A NEW ADDRESS 

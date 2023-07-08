@@ -111,7 +111,7 @@ exports.Edit_Coupon = [
 
     try {
       let id = req.body._id;
-      let coupon = await Coupon.findByIdAndUpdate(
+      let editedCoupon = await Coupon.findByIdAndUpdate(
         id,
         {
           $set: {
@@ -137,9 +137,20 @@ exports.Edit_Coupon = [
         },
         { new: true }
       );
+      let coupon = await editedCoupon.populate(["products", "freeGift"]);
       return res.status(200).json({ success: true, coupon });
     } catch (error) {
       return res.status(401).json({ success: false, error });
     }
   },
 ];
+
+// GET COUPON BY IT's CODE
+exports.GET_CCOUPON_BY_CODE = async (req, res) => {
+  try {
+    let coupon =await Coupon.find({code:req.body.code}).populate(["freeGift, products"])
+    return res.status(200).json({success:true, coupon})
+  } catch (error) {
+    return res.status(401).json({ success: false, error: "Invalid code" });
+  }
+};
