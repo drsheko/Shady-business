@@ -148,9 +148,14 @@ exports.Edit_Coupon = [
 // GET COUPON BY IT's CODE
 exports.GET_CCOUPON_BY_CODE = async (req, res) => {
   try {
-    let coupon =await Coupon.find({code:req.body.code}).populate(["freeGift, products"])
-    return res.status(200).json({success:true, coupon})
-  } catch (error) {
-    return res.status(401).json({ success: false, error: "Invalid code" });
+    let coupon = await Coupon.find({ code: req.body.code }).populate([
+      "freeGift","products"
+    ]);
+    if (coupon) {
+      return res.status(200).json({ success: true, coupon });
+    }
+    return res.status(200).json({ success: false, error: "Invalid code" });
+  } catch (error) { 
+    return res.status(401).json({ success: false, error });
   }
 };
