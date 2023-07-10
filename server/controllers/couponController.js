@@ -28,7 +28,7 @@ exports.Create_COUPON = [
       // create a new coupon
       let newCoupon = new Coupon({
         name: req.body.name,
-        code: req.body.code,
+        code: req.body.code.toLowerCase(),
         description: req.body.description,
         type: req.body.type,
         automated: req.body.automated,
@@ -116,7 +116,7 @@ exports.Edit_Coupon = [
         {
           $set: {
             name: req.body.name,
-            code: req.body.code,
+            code: req.body.code.toLowerCase(),
             description: req.body.description,
             type: req.body.type,
             automated: req.body.automated,
