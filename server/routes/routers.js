@@ -8,8 +8,9 @@ var OptionController = require("../controllers/productOptionController");
 var BrandController = require("../controllers/brandController");
 var ReviewController = require("../controllers/reviewController");
 var CouponController = require("../controllers/couponController");
-var AddressController =require('../controllers/addressController');
-var PaymentController =require('../controllers/paymentController');
+var AddressController = require("../controllers/addressController");
+var PaymentController = require("../controllers/paymentController");
+var OrderController = require("../controllers/orderController");
 /* GET home page. */
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
@@ -28,7 +29,10 @@ router.get("/api/logout", UserController.log_out);
 //CREATE A NEW Category
 router.post("/api/categories/addCategory", CategoryController.addCategory);
 // EDIT CATEGORY BY ID
-router.post('/api/categories/edit/category', CategoryController.EDIT_CATEGORY_BY_ID)
+router.post(
+  "/api/categories/edit/category",
+  CategoryController.EDIT_CATEGORY_BY_ID
+);
 // Edit Category PHOTO By Category ID
 router.post(
   "/api/categories/editPhoto",
@@ -39,23 +43,34 @@ router.post(
 router.get("/api/categories/all", CategoryController.All_Categories);
 // Get Category By Id
 router.post("/api/categories/category", CategoryController.GET_CATEGORY_BY_Id);
-// DELETE CATEGORY 
-router.post("/api/categories/delete/category", CategoryController.DELETE_CATEGORY_BY_ID)
-
+// DELETE CATEGORY
+router.post(
+  "/api/categories/delete/category",
+  CategoryController.DELETE_CATEGORY_BY_ID
+);
 
 //-------------------SUB-CATEGORIES------------------------------------
 
 // ADD A SUB-CATEGORY
-router.post("/api/subCategories/add/subCategory", SubCategoryController.ADD_SubCatgeory);
+router.post(
+  "/api/subCategories/add/subCategory",
+  SubCategoryController.ADD_SubCatgeory
+);
 // GET ALL SUB-Categories
 router.get(
   "/api/subCategories/all",
   SubCategoryController.GET_ALL_SUB_CATEGORIES
 );
 // EDIT A SUB_CATEGORY
-router.post("/api/subCategories/edit/subCategory", SubCategoryController.EDIT_SUB_CATEGORY_BY_ID);
+router.post(
+  "/api/subCategories/edit/subCategory",
+  SubCategoryController.EDIT_SUB_CATEGORY_BY_ID
+);
 // DELETE SUBCATEGORY
-router.post("/api/subCategories/delete/subCategory", SubCategoryController.DELETE_SUB_CATEGORY_BY_ID);
+router.post(
+  "/api/subCategories/delete/subCategory",
+  SubCategoryController.DELETE_SUB_CATEGORY_BY_ID
+);
 // Get sub-category by id
 router.get(
   "/api/subcategories/subcategory/:id",
@@ -66,13 +81,16 @@ router.get(
 // Create A Product
 router.post("/api/products/addProduct", ProductController.CREATE_PRODUCT);
 // EDIT PRODUCT
-router.post('/api/products/edit/product', ProductController.EDIT_PRODUCT);
-// DELETE ONE PRODUCT 
-router.post('/api/products/remove/product', ProductController.DELETE_PRODUCT_BY_ID)
+router.post("/api/products/edit/product", ProductController.EDIT_PRODUCT);
+// DELETE ONE PRODUCT
+router.post(
+  "/api/products/remove/product",
+  ProductController.DELETE_PRODUCT_BY_ID
+);
 // Get Product By Id
 router.get("/api/products/product", ProductController.GET_PRODUCT_By_Id);
 router.post("/api/products/edit", ProductController.edit);
-router.get('/api/products/all', ProductController.GET_All_PRODUCTS)
+router.get("/api/products/all", ProductController.GET_All_PRODUCTS);
 //------------------------OPTION----------------------------------
 // Create A Product-OPTION
 router.post("/api/products/product/addOption", OptionController.CREATE_OPTION);
@@ -87,21 +105,28 @@ router.post("/api/reviews/review/new", ReviewController.CREATE_Review);
 //-------------------------COUPONS------------------------------------
 // Create new coupon
 router.post("/api/coupons/new/coupon", CouponController.Create_COUPON);
-// Edit coupon 
-router.post('/api/coupons/edit/coupon',CouponController.Edit_Coupon)
+// Edit coupon
+router.post("/api/coupons/edit/coupon", CouponController.Edit_Coupon);
 // delete coupon by id
 router.post("/api/coupons/remove/coupon", CouponController.REMOVE_COUPON_BY_ID);
 //delete MANY COUPONS BY Ids
-router.post('/api/coupons/removeMany/coupons', CouponController.Delete_MANY_COUPONS_BY_Id)
+router.post(
+  "/api/coupons/removeMany/coupons",
+  CouponController.Delete_MANY_COUPONS_BY_Id
+);
 // get all coupons
 router.get("/api/coupons/all", CouponController.Get_ALL_COUPONS);
-// Get COUPON BY IT'S CODE 
+// Get COUPON BY IT'S CODE
 router.post("/api/coupons/code/coupon", CouponController.GET_CCOUPON_BY_CODE);
 
 // ########################### ADDRESS ###################################
-// Create A NEW ADDRESS 
-router.post('/api/addresses/create/address', AddressController.Create_ADDRESS);
+// Create A NEW ADDRESS
+router.post("/api/addresses/create/address", AddressController.Create_ADDRESS);
 //####################### PAYMENTS ########################
-//create a new payment 
-router.post('/api/payments/new/payment', PaymentController.Create_NEW_CARD);
+//create a new payment
+router.post("/api/payments/new/payment", PaymentController.Create_NEW_CARD);
+
+// ##################### ORDER ######################################
+// CREATE A NEW ORDER
+router.post("/api/orders/new/order", OrderController.CREATE_NEW_ORDER);
 module.exports = router;

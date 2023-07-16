@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "user", required: true },
-  phone: { type: Number },
+  phone: { type: String },
   email: { type: String },
   billingAddress: {
     type: Schema.Types.ObjectId,
