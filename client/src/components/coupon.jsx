@@ -14,9 +14,9 @@ function Coupon(props) {
           discount coupon
         </p>
       </div>
-      {props.item.data.photo ? (
+      {props.item.photo ? (
         <img
-          src={props.item.data.photo}
+          src={props.item.photo}
           alt={props.item.name}
           className="w-full"
           height={150}
@@ -28,7 +28,7 @@ function Coupon(props) {
       ) : (
         ""
       )}
-      <div className="flex flex-column px-3 py-1">
+      <div className="flex flex-column px-3 py-1 h-7rem">
         <p
           className="font-bold text-2xl text-center mb-2 text-teal-700 font-italic"
           style={{ textShadow: "1px 0px var(--teal-600)" }}
@@ -37,7 +37,7 @@ function Coupon(props) {
         </p>
 
         <p className="font-normal text-lg">{props.item.description}. </p>
-        {props.item.minimumPurchase < 0 ? (
+        {props.item.minimumPurchase <= 0 ? (
           <p className="font-semibold font-italic text-teal-700 capitalize">
             No minimum purchase.
           </p>
