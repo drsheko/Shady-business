@@ -17,7 +17,6 @@ function CartItem({ product }) {
     shoppingListQty,
   } = useShoppingCart();
 
-  
   const handleQtyChange = () => {
     if (product.inCart === itemQty) {
       return;
@@ -44,13 +43,14 @@ function CartItem({ product }) {
         <div className="cart-item-information flex flex-row lg:col-6">
           <div className="cart-item-figure">
             <img
-              src="../src/assets/vape/vape1.avif"
+              src={product.photos[0]}
               alt=""
               width="100px"
               height={"100px"}
+              className="mr-2"
             />
           </div>
-          <div className="cart-item-info flex flex-column justify-content-between">
+          <div className="cart-item-info flex flex-column justify-content-center">
             <p className="cart-item-category text-lg text-400 capitalize">
               {product.status === "option"
                 ? product.product.category.name
@@ -87,21 +87,32 @@ function CartItem({ product }) {
           <div className="cart-item-price p-1 flex flex-row sm:flex-column">
             <p className="price-title text-lg text-400 lg:hidden align-self-center mr-2">
               {" "}
-              Price:
+              Price
             </p>
 
-            <p className="text-lg">${product.price}</p>
+            {typeof product.discountedPrice === "undefined" ? (
+              <p className="text-lg">$ {product.price}</p>
+            ) : (
+              <div className="flex flex-row">
+                <p className="line-through text-300 font-medium text-lg">
+                  $ {product.price}
+                </p>
+                <p className="text-green-500 font-semibold text-lg ml-2 ">
+                  $ {product.discountedPrice}
+                </p>
+              </div>
+            )}
           </div>
           <div className=" p-1 flex flex-row sm:flex-column">
             <p className="qty-title text-lg text-400 lg:hidden align-self-center mr-2">
               {" "}
-              Quantity:
+              Quantity
             </p>
             <InputNumber
               className="cart-item-qty"
               value={itemQty}
               onValueChange={(e) => setItemQty(e.value)}
-              onChange={(e) =>  setItemQty(e.value)}
+              onChange={(e) => setItemQty(e.value)}
               showButtons
               buttonLayout="horizontal"
               step={1}
@@ -117,9 +128,9 @@ function CartItem({ product }) {
           <div className="cart-item-total p-1 flex flex-row sm:flex-column">
             <p className="total-title text-lg text-400 lg:hidden mr-2">
               {" "}
-              Total:
+              Total
             </p>
-            <p className="text-lg">${itemTotalPrice(product)}</p>
+            <p className="text-lg">${itemTotalPrice(product).toFixed(2)}</p>
           </div>
         </div>
       </div>
@@ -139,7 +150,6 @@ function CartItem({ product }) {
           removeItem(product);
         }}
         reject={() => {
-          console.log("no");
         }}
       />
     </div>
