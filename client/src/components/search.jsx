@@ -42,10 +42,10 @@ function Search(props) {
   };
   useEffect(() => {
     const getData = async () => {
-      let url = "http://localhost:3000/api/product/all";
+      let url = "http://localhost:3000/api/products/all";
       try {
         let res = await axios.get(url);
-        await setProducts(res.data.products);
+         setProducts(res.data.products);
       } catch (error) {
         console.log(error);
       }
