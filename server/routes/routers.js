@@ -122,6 +122,9 @@ router.post("/api/coupons/code/coupon", CouponController.GET_CCOUPON_BY_CODE);
 // ########################### ADDRESS ###################################
 // Create A NEW ADDRESS
 router.post("/api/addresses/create/address", AddressController.Create_ADDRESS);
+// Edit Address
+router.post("/api/addresses/edit/address", AddressController.EDIT_ADDRESS);
+
 //####################### PAYMENTS ########################
 //create a new payment
 router.post("/api/payments/new/payment", PaymentController.Create_NEW_CARD);
