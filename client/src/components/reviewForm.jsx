@@ -3,7 +3,6 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
 import { Rating } from "primereact/rating";
 import { InputTextarea } from "primereact/inputtextarea";
 import { FileUpload } from "primereact/fileupload";
@@ -75,13 +74,9 @@ function ReviewForm({ product }) {
 
   const onTemplateRemove = (file, callback) => {
     callback();
-    let updatedFiles = files.filter((f) => f === file);
+    let updatedFiles = files.filter((f) => f !== file);
     setFiles(updatedFiles);
   };
-
-  useEffect(() => {
-    console.log("myfilessss", files);
-  }, [files]);
 
   const onTemplateClear = () => {};
   const headerTemplate = (options) => {
@@ -111,7 +106,7 @@ function ReviewForm({ product }) {
     let size = props.formatSize.slice(0, -2);
     size = Number(size).toFixed(1);
     return (
-      <div className="flex flex-column align-items-start justify-content-start">
+      <div className="flex flex-column align-items-start justify-content-between" style={{height:'200px'}}>
         <div
           className="flex flex-column align-items-center justify-content-between "
           style={{ width: "100px" }}
@@ -123,7 +118,7 @@ function ReviewForm({ product }) {
               src={file.objectURL}
               width={100}
               height={100}
-              className="w-full"
+              className="w-full shadow-5"
             />
             <span className="flex flex-column text-left  text-overflow-ellipsis">
               {file.name}
@@ -196,11 +191,19 @@ function ReviewForm({ product }) {
         visible={visible}
         onHide={onFormClose}
         style={{ minWidth: "70%" }}
+        pt={{
+          headerTitle:{
+            className:"text-base sm:text-lg"
+          },
+          closeButtonIcon:{
+            className:' text-primary font-bold'
+          }
+        }}
       >
         {
         !user? 
         <div className=" text-center">
-          <p className="capitalize font-semibold text-lg my-4 align-self-center">
+          <p className="capitalize font-semibold text-800 text-lg my-4 align-self-center">
             members only can review our products
               
               
@@ -260,7 +263,7 @@ function ReviewForm({ product }) {
                   alt={product.name}
                 />
                 <div className="product-title">
-                  <p className="capitalize text-lg font-semibold ">
+                  <p className="capitalize text-lg text-primary font-semibold ">
                     {product.name}
                   </p>
                 </div>
@@ -268,8 +271,8 @@ function ReviewForm({ product }) {
               <div className=" col-12  ">
                 <form action="">
                   <div className="flex flex-column gap-2 mb-3">
-                    <label htmlFor="rating">
-                      Overall rating<span className="text-pink-600">*</span>
+                    <label htmlFor="rating" className="text-800 font-semibold">
+                      Overall rating<span className="text-red-600">*</span>
                     </label>
                     <Rating
                       id="rating"
@@ -279,11 +282,19 @@ function ReviewForm({ product }) {
                       aria-describedby="rating"
                       cancel={false}
                       required
+                      pt={{
+                        offIcon:{
+                          className:"text-800"
+                        },
+                        onIcon:{
+                          className:"text-primary"
+                        }
+                      }}
                     />
                   </div>
                   <div className="flex flex-column gap-2 w-full">
-                    <label htmlFor="comment ">
-                      Comment<span className="text-pink-600">*</span>
+                    <label htmlFor="comment " className="font-semibold text-800">
+                      Comment<span className="text-red-600">*</span>
                     </label>
                     <InputTextarea
                       id="comment"
@@ -293,6 +304,7 @@ function ReviewForm({ product }) {
                       rows={8}
                       placeholder="write a comment"
                       aria-describedby="comment"
+                      className="text-700"
                       required
                     />
                   </div>
