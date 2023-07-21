@@ -11,11 +11,10 @@ import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
 
 function Addresses(props) {
-  const { user } = useContext(UserContext);
-  const toastRef = useRef();
+  const { user, setUser } = useContext(UserContext);
+  const toast = useRef();
   const [addresses, setAddresses] = useState([]);
   const [formVisible, setFormVisible] = useState(false);
-
   const [form, setForm] = useState({});
   const emptyForm = {
     line1: "",
@@ -40,8 +39,8 @@ function Addresses(props) {
   const footer = () => {
     return (
       <div className="flex flex-row justify-content-end">
-        <Button label="Cancel" />
-        <Button label="Confirm" />
+        <Button label="Cancel" size="small" />
+        <Button label="Confirm" size="small" type="submit" form="addressForm" />
       </div>
     );
   };
@@ -65,22 +64,49 @@ function Addresses(props) {
   const onFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      let url = "http://localhost:3000/api/addresses/create/address";
-      let data = { ...form, user: user._id, saveNewAddress };
-      let res = await axios.post(url, data);
-      if (res.data.success && res.data.address) {
-        let adds = [...user.address];
-        adds.push(res.data.address);
-        setUser({ ...user, address: adds });
-        setShippingAddress(res.data.address);
-        toast.current.show({
-          severity: "success",
-          summary: "Success",
-          detail: "New Address Saved.",
-          life: 5000,
-        });
+      if (form._id) {
+        let url = "http://localhost:3000/api/addresses/create/address";
+        let data = { ...form, user: user._id };
+        let res = await axios.post(url, data);
+        if (res.data.success && res.data.address) {
+          console.log(res.data)
+          let index = addresses.findIndex((el) => el._id === form._id);
+          let _addresses = [...addresses];
+          let _address = res.data.address;
+          _addresses[index] = _address;
+          setAddresses(_addresses);
+          setUser({ ...user, address: _addresses });
+          localStorage.setItem("SHADY_BUSINESS_user", JSON.stringify(user));
+          setFormVisible(false);
+          setForm(emptyForm);
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: " Address updated successfully.",
+            life: 5000,
+          });
+        }
+      } else {
+        let url = "http://localhost:3000/api/addresses/create/address";
+        let data = { ...form, user: user._id ,saveNewAddress:true};
+        console.log(data)
+        let res = await axios.post(url, data);
+        if (res.data.success && res.data.address) {
+          let adds = [...user.address];
+          adds.push(res.data.address);
+          setUser({ ...user, address: adds });
+          localStorage.setItem("SHADY_BUSINESS_user", JSON.stringify(user));
+          setFormVisible(false);
+          toast.current.show({
+            severity: "success",
+            summary: "Success",
+            detail: "New Address Saved.",
+            life: 5000,
+          });
+        }
       }
     } catch (error) {
+      console.log(error)
       toast.current.show({
         severity: "error",
         summary: "Error",
@@ -93,45 +119,44 @@ function Addresses(props) {
     if (user) {
       setAddresses(user.address);
     }
-  }, []);
+  }, [user]);
 
   return (
     <div className="flex flex-column">
       {addresses.length > 0 ? (
-        <div className="flex flex-row">
+        <div className="flex flex-row flex-wrap">
           {addresses.map((address) => {
             return (
               <div
-                className=" p-3 my-2 border-round-lg  col-12 sm:col-6 md:col-4  "
+                className=" p-1 sm:p-3 my-2 border-round-lg w-12 sm:w-8 md:w-6 "
                 key={address._id}
               >
-                <div className="card shadow-2 flex flex-row justify-content-between p-3">
-                <div className="">
-                  <p className="text-800 text-lg font-semibold">
-                    {address.line1}
-                  </p>
-                  <p className="text-800 text-lg font-semibold">
-                    {address.line2}
-                  </p>
-                  <p className="text-800 text-lg font-semibold">
-                    {address.city},{address.state},{address.zipcode}
-                  </p>
-                  <p className="text-800 text-lg font-semibold">
-                    {address.country}
-                  </p>
-                </div>
+                <div className="card shadow-6 border-round-lg flex flex-row justify-content-between py-5 px-3 sm:px-5 ">
+                  <div className="">
+                    <p className="text-800 text-base sm:text-lg font-semibold">
+                      {address.line1}
+                    </p>
+                    <p className="text-800 text-base sm:text-lg font-semibold">
+                      {address.line2}
+                    </p>
+                    <p className="text-800 text-base sm:text-lg font-semibold">
+                      {address.city},{address.state},{address.zipcode}
+                    </p>
+                    <p className="text-800 text-base sm:text-lg font-semibold">
+                      {address.country}
+                    </p>
+                  </div>
 
-                <Button
-                  icon="pi pi-pencil"
-                  size="small"
-                  rounded
-                  text
-                  raised
-                  onClick={() => onEdit(address)}
-                  className="hover:bg-primary"
-                />
+                  <Button
+                    icon="pi pi-pencil"
+                    size="small"
+                    rounded
+                    text
+                    raised
+                    onClick={() => onEdit(address)}
+                    className="hover:bg-primary"
+                  />
                 </div>
-                
               </div>
             );
           })}
@@ -150,7 +175,7 @@ function Addresses(props) {
         footer={footer}
         onHide={() => setFormVisible(false)}
       >
-        <form onSubmit={onFormSubmit}>
+        <form onSubmit={onFormSubmit} id="addressForm">
           <div className="flex flex-column p-0">
             <label
               htmlFor="address1"
@@ -257,8 +282,15 @@ function Addresses(props) {
           </div>
         </form>
       </Dialog>
-      <Button label="Add Address" onClick={openNew} />
-      <Toast ref={toastRef} />
+      <div className="flex w-full my-5 p-1 sm:p-3">
+        <Button
+          label="Add Address"
+          icon="pi pi-plus"
+          onClick={openNew}
+          className="w-12 sm:w-8 md:w-6 shadow-6"
+        />
+      </div>
+      <Toast ref={toast} />
     </div>
   );
 }
