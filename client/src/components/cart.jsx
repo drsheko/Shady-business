@@ -1,16 +1,34 @@
 import { Button } from "primereact/button";
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import CartItem from "./cartItem";
 import { useShoppingCart } from "../contexts/shoppingCartContext";
+
 function Cart(props) {
+  const navigate = useNavigate();
   const {
     shoppingList,
+    discountedShoppingList,
     getItemQty,
     increaseQty,
     decreaseQty,
     removeItem,
+    shippingCost,
+    setShippingCost,
     shoppingListQty,
+    itemTotalPrice,
     cartTotalPrice,
+    cartTotalPriceAfterDiscount,
+    totalTax,
+    orderTotalPrice,
+    couponError,
+    setCouponError,
+    discount,
+    coupon,
+    clipCoupon,
+    unClipCoupon,
+    couponCode,
+    setCouponCode,
   } = useShoppingCart();
   return (
     <div className="p-2">
@@ -31,33 +49,44 @@ function Cart(props) {
               </div>
               <div className="border-1  text-200"></div>
             </div>
-            {shoppingList &&
-              shoppingList.map((product) => {
-                return <CartItem product={product} />;
-              })}
+            {coupon && discountedShoppingList.length > 0
+              ? discountedShoppingList.map((product) => {
+                  return <CartItem product={product} />;
+                })
+              : shoppingList.length > 0
+              ? shoppingList.map((product) => {
+                  return <CartItem product={product} />;
+                })
+              : ""}
           </div>
 
           <div className="checkout col-10 sm:col-9 md:col-7 lg:col-6 mt-4 mx-auto md:mr-0 md:ml-auto">
             <div className="subtotal flex flex-row justify-content-between p-3 text-400">
               <p>Subtotal:</p>
-              <p className="text-900">${cartTotalPrice()}</p>
+              <p className="text-900">${cartTotalPrice().toFixed(2)}</p>
             </div>
             <div className="border-1 px-2 text-100"></div>
             <div className="shipping flex flex-row justify-content-between p-3 text-400">
               <p>Shipping:</p>
-              <p className="text-900">${28}</p>
+              <p className="text-900">{shippingCost?`$ ${shippingCost}`:"----"}</p>
             </div>
             <div className="border-1 px-2 text-100"></div>
             <div className="shipping flex flex-row justify-content-between p-3 text-400">
               <p>Coupon Code:</p>
-              <p className="text-900">${28}</p>
+              <p className="underline font-semibold cursor-pointer text-800">
+                Add coupon
+              </p>
             </div>
             <div className="border-1 px-2 text-100"></div>
             <div className=" flex flex-row justify-content-between p-3 text-400">
               <p>Grand total:</p>
-              <p className="text-900">${28}</p>
+              <p className="text-900">${cartTotalPriceAfterDiscount()}</p>
             </div>
-            <Button label="CheckOut" className="w-full my-3" />
+            <Button
+              label="Checkout"
+              className="w-full my-3"
+              onClick={() => navigate("/checkout")}
+            />
           </div>
         </>
       ) : (
