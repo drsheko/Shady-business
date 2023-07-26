@@ -133,4 +133,6 @@ router.post("/api/payments/new/payment", PaymentController.Create_NEW_CARD);
 // ##################### ORDER ######################################
 // CREATE A NEW ORDER
 router.post("/api/orders/new/order", OrderController.CREATE_NEW_ORDER);
+// GET ORDERS BY USER ID
+router.post("/api/orders/user/all", OrderController.GET_ORDERS_BY_USER_ID);
 module.exports = router;
