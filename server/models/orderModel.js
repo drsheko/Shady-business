@@ -17,6 +17,7 @@ const orderSchema = new Schema({
   products: [
     {
       product: { type: Schema.Types.ObjectId, ref: "product" },
+      option: { type: Schema.Types.ObjectId, ref: "productOption" , default:null},
       quantity: { type: Number, default: 1 },
       price: { type: Number },
     },
@@ -27,9 +28,10 @@ const orderSchema = new Schema({
     cost: { type: Number },
   },
   return: [{ type: Schema.Types.ObjectId, ref: "product", default: [] }],
+  discount:{type:Number},
   tax: { type: Number, required: true },
   total: { type: Number, required: true },
-  createAt: { type: Date, default: Date.now()},
+  createAt: { type: Date, default: Date.now},
   shippedAt: { type: Date },
   deliveredAt: { type: Date },
 });
