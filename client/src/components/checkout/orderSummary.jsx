@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CartItem from "../cartItem";
 import { useShoppingCart } from "../../contexts/shoppingCartContext";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
@@ -10,15 +9,60 @@ function OrderSummary(props) {
   let navigate = useNavigate();
   const {
     shoppingList,
+    discountedShoppingList,
     shippingCost,
     shoppingListQty,
     cartTotalPrice,
+    cartTotalPriceAfterDiscount,
     totalTax,
     orderTotalPrice,
+    couponError,
+    setCouponError,
+    discount,
+    coupon,
+    clipCoupon,
+    unClipCoupon,
+    couponCode,
+    setCouponCode,
   } = useShoppingCart();
-  const [cartItems, setCartItems] = useState(shoppingList);
-  const [promoCode, setPromoCode] = useState(null);
+  const [promoCode, setPromoCode] = useState("");
+  const [codeError, setCodeError] = useState(false);
+  const [promoCodeSubmitted, setPromoCodeSubmitted] = useState(false);
+  const handleChange = (e) => {
+    setCouponError(null);
+    setPromoCode(e.target.value.toLowerCase());
+    e.target.value.trim !== "" ? setCodeError(false) : "";
+  };
 
+  const handleSubmitPromoCode = () => {
+    if (promoCode.trim() === "") {
+      setCodeError(true);
+      return;
+    }
+
+    setCouponCode(promoCode);
+
+    clipCoupon(promoCode);
+    if (couponError) {
+      setCouponCode(null);
+      setCodeError(true);
+      setPromoCodeSubmitted(false);
+    } else {
+      setPromoCodeSubmitted(true);
+    }
+  };
+  useEffect(() => {
+    if (couponError) {
+      setCouponCode(null);
+      setPromoCodeSubmitted(false);
+    }
+  }, [couponError]);
+  const handleRemovePromoCode = () => {
+    setPromoCodeSubmitted(false);
+    unClipCoupon();
+    setPromoCode("");
+    setCouponCode(null);
+  };
   const header = (
     <div className="flex flex-row p-3 justify-content-between align-items-center border-bottom-1 border-200 border-round-top">
       <p className="font-medium text-xl text-900"> Order Summary</p>
@@ -37,7 +81,18 @@ function OrderSummary(props) {
               {item.inCart} X{" "}
               {item.status === "main" ? item.name : item.product.name}
             </p>
-            <p className="text-800 align-self-end">$ {item.price}</p>
+            {typeof item.discountedPrice === "undefined" ? (
+              <p className="text-800 align-self-end">$ {item.price}</p>
+            ) : (
+              <div className="flex flex-column">
+                <p className="line-through text-300 font-medium">
+                  $ {item.price}
+                </p>
+                <p className="text-green-500 font-semibold align-self-end">
+                  $ {item.discountedPrice}
+                </p>
+              </div>
+            )}
           </div>
           {item.status === "option" && (
             <p className="text-600 capitalize">Option: {item.name}</p>
@@ -53,11 +108,25 @@ function OrderSummary(props) {
           <p className="text-800">Subtotal</p>
           <p className="text-800">$ {cartTotalPrice().toFixed(2)}</p>
         </div>
+        {discount ? (
+          <>
+            <div className="flex flex-row justify-content-between w-full my-2">
+              <p className="text-red-500">Discount</p>
+              <p className="text-red-500">$ -{discount}</p>
+            </div>
+            <div className="flex flex-row justify-content-between w-full my-2">
+              <p className="text-800">After discount</p>
+              <p className="text-800">$ {cartTotalPriceAfterDiscount()}</p>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
         <div className="flex flex-row justify-content-between w-full my-2">
           <p className="text-800">Shipping</p>
           <p className="text-800">
             {" "}
-            {shippingCost ? `$ ${shippingCost}` : "______"}
+            {shippingCost !== null ? `$ ${shippingCost}` : "______"}
           </p>
         </div>
         <div className="flex flex-row justify-content-between w-full my-2">
@@ -66,15 +135,44 @@ function OrderSummary(props) {
         </div>
         <div className="flex flex-column my-2">
           <p className="text-800 mb-2">Promo/Gift</p>
-          <div className="flex flex-row w-full justify-content-between">
-            <InputText
-              name="promoCode"
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.value)}
-              className="w-full mr-2"
-            />
-            <Button label="Apply" outlined className="w-7rem" />
-          </div>
+          {promoCodeSubmitted || couponCode ? (
+            <div className="flex flex-row w-full justify-content-between">
+              <p className="text-800 font-bold uppercase font-italic">
+                {couponCode}
+              </p>
+              <i
+                className="pi pi-times cursor-pointer text-red-600 text-lg"
+                size="small"
+                onClick={handleRemovePromoCode}
+              />
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-row w-full justify-content-between">
+                <InputText
+                  id="promoCode"
+                  name="promoCode"
+                  value={promoCode}
+                  onChange={handleChange}
+                  className="w-full mr-2 uppercase"
+                />
+                <Button
+                  label="Apply"
+                  outlined
+                  className="w-7rem"
+                  onClick={handleSubmitPromoCode}
+                />
+              </div>
+              {codeError && (
+                <small className="text-red-500">
+                  Please enter a valid code.
+                </small>
+              )}
+              {couponError && (
+                <small className="text-red-500">{couponError}.</small>
+              )}
+            </>
+          )}
         </div>
       </div>
       <div className="flex flex-row justify-content-between w-full my-2 border-top-1 border-200 p-4">
@@ -94,10 +192,17 @@ function OrderSummary(props) {
           body: { className: "p-0" },
         }}
       >
-        {cartItems.length > 0 ? (
+        {coupon && discountedShoppingList.length > 0 ? (
           <div className="overflow-y-auto px-2	max-h-16rem	">
             <p className="text-600 ml-3">{shoppingListQty()} item(s)</p>
-            {cartItems.map((item) => {
+            {discountedShoppingList.map((item) => {
+              return cartItem(item);
+            })}
+          </div>
+        ) : shoppingList.length > 0 ? (
+          <div className="overflow-y-auto px-2	max-h-16rem	">
+            <p className="text-600 ml-3">{shoppingListQty()} item(s)</p>
+            {shoppingList.map((item) => {
               return cartItem(item);
             })}
           </div>
