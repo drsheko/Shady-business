@@ -26,6 +26,8 @@ router.post("/api/login", UserController.login_post);
 router.get("/api/logout", UserController.log_out);
 // Edit USER INFO 
 router.post("/api/account/edit/info", UserController.EDIT_USER_INFO);
+// Edit USER Password
+router.post("/api/account/password/edit" , UserController.changePassword)
 
 //-------------------CATEGORIES------------------------
 //CREATE A NEW Category

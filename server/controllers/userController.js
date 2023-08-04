@@ -3,6 +3,7 @@ var Address = require("../models/addressModal");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
+const { async } = require("@firebase/util");
 
 // Add User
 exports.signup_post = async (req, res) => {
@@ -116,50 +117,40 @@ exports.log_out = (req, res) => {
 };
 
 // Change Password
-exports.changePassword = (req, res) => {
-  let userId = req.body.userId;
-  let oldPassword = req.body.oldPassword;
+exports.changePassword = async (req, res) => {
+  console.log(req.body);
+  let userId = req.body.id;
+  let oldPassword = req.body.currentPassword;
   let newPassword = req.body.newPassword;
-  User.findById(userId, (error, user) => {
-    if (error) {
-      return res.status(401).json({ success: false, error });
-    }
-    if (user) {
-      bcrypt.compare(oldPassword, user.password, (error, response) => {
-        if (error) {
-          return res.status(401).json({ success: false, error });
-        }
-        if (!response) {
-          return res
-            .status(200)
-            .json({ success: false, error: "Incorrect password!!" });
-        }
-        if (response) {
-          bcrypt.hash(newPassword, 10, (error, hash) => {
-            if (error) {
-              return res.status(500).json({ success: false, error });
-            } else {
-              User.findByIdAndUpdate(
-                userId,
-                {
-                  $set: {
-                    password: hash,
-                  },
+  try {
+    let user = await User.findById(userId);
+    bcrypt.compare(oldPassword, user.password, (error, response) => {
+      if (!response) {
+        return res
+          .status(200)
+          .json({ success: false, error: "Incorrect password!!" });
+      }
+      if (response) {
+        bcrypt.hash(newPassword, 10, async (error, hash) => {
+          if (hash) {
+            let savedUser = await User.findByIdAndUpdate(
+              userId,
+              {
+                $set: {
+                  password: hash,
                 },
-                { new: true }
-              ).exec((error, user) => {
-                if (error) {
-                  return res.status(500).json({ success: false, error });
-                } else {
-                  return res.status(200).json({ success: true, user });
-                }
-              });
-            }
-          });
-        }
-      });
-    }
-  });
+              },
+              { new: true }
+            );
+            let user = await savedUser.populate(["address", "payments"]);
+            return res.status(200).json({ success: true, user });
+          }
+        });
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, error });
+  }
 };
 
 // EDIT USER INFO
