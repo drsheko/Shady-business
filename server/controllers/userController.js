@@ -1,7 +1,7 @@
 var User = require("../models/userModel");
 var Address = require("../models/addressModal");
 const bcrypt = require("bcryptjs");
-const passport = require('passport')
+const passport = require("passport");
 const { body, validationResult } = require("express-validator");
 
 // Add User
@@ -15,10 +15,8 @@ exports.signup_post = async (req, res) => {
     phone: req.body.form.phone,
     dateOfBirth: req.body.form.dateOfBirth,
   };
-  console.log("form:", form);
   const isEmailTaken = await User.findOne({ email: req.body.form.email });
   if (isEmailTaken != null) {
-    
     return res.status(500).json({
       success: false,
       error: "Email is aleardy in use !!",
@@ -45,24 +43,28 @@ exports.signup_post = async (req, res) => {
           user: user._id,
           line1: req.body.form.addressLine1,
           line2: req.body.form.addressLine2,
-          city: req.body.form.state,
+          city: req.body.form.city,
           state: req.body.form.state,
           country: req.body.form.country,
           zipcode: req.body.form.zipcode,
         })
           .save()
           .then((newAddress) => {
-            User.findByIdAndUpdate(user._id, {
-              $push:{
-                address: newAddress._id
-              }
-              
-            },{new:true})
+            User.findByIdAndUpdate(
+              user._id,
+              {
+                $push: {
+                  address: newAddress._id,
+                },
+              },
+              { new: true }
+            )
               .then((user) => {
+                user.populate(["address"]);
                 return res.status(200).json({
                   success: true,
                   msg: "Account has created successfully",
-                  user
+                  user,
                 });
               })
               .catch((error) => {
@@ -79,30 +81,30 @@ exports.signup_post = async (req, res) => {
   });
 };
 
-
-// Login 
+// Login
 exports.login_post = function (req, res, next) {
-  console.log(req.body)
   passport.authenticate("local", function (error, user, info) {
     if (error) {
-      return res.status(401).json({success:false, error });
+      return res.status(401).json({ success: false, error });
     }
-    if (!user) {console.log('running')
-      return res.status(401).json({ success:false, error: info });
+    if (!user) {
+      return res.status(401).json({ success: false, error: info });
     }
     req.logIn(user, function (error) {
       if (error) {
-        return res.status(401).json({ success:false, error });
+        return res.status(401).json({ success: false, error });
       } else {
-        return res.status(200).json({ success: true, user });
-        
+        User.findById(user._id)
+          .populate(["address", "payments"])
+          .then((user) => {
+            return res.status(200).json({ success: true, user });
+          });
       }
-      
     });
   })(req, res, next);
 };
 
-// Log Out 
+// Log Out
 exports.log_out = (req, res) => {
   req.logout(function (err) {
     if (err) {
@@ -112,7 +114,6 @@ exports.log_out = (req, res) => {
     res.status(200).json({ success: true, msg });
   });
 };
-
 
 // Change Password
 exports.changePassword = (req, res) => {
@@ -159,4 +160,38 @@ exports.changePassword = (req, res) => {
       });
     }
   });
+};
+
+// EDIT USER INFO
+exports.EDIT_USER_INFO = async (req, res) => {
+  try {
+    let id = req.body.id;
+    const isEmailTaken = await User.findOne({
+      email: req.body.email,
+      _id: { $ne: id },
+    });
+
+    if (isEmailTaken != null) {
+      return res.status(200).json({
+        success: false,
+        error: "Email is aleardy in use !!",
+      });
+    }
+    let savedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          email: req.body.email,
+          phone: req.body.phone,
+        },
+      },
+      { new: true }
+    );
+    let user = await savedUser.populate(["address", "payments"]);
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    return res.status(401).json({ success: false, error });
+  }
 };
