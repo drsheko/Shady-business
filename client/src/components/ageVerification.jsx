@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Message } from "primereact/message";
-import { useNavigate } from "react-router-dom";
 
 function AgeVerification(props) {
   const [visible, setVisible] = useState(true);
-  const navigate = useNavigate();
   const header = (
     <div>
       {" "}
@@ -31,14 +29,14 @@ function AgeVerification(props) {
         autoFocus
         className="uppercase m-1"
       />
-      <Button
-        label="No, I don`t agree"
-        icon="pi pi-times"
-        severity="danger"
-        size="small"
-        onClick={() => navigate(-1)}
-        className=" uppercase m-1"
-      />
+
+      <a
+        href="https://www.google.com/"
+        className="p-button p-button-sm p-button-danger uppercase m-1 no-underline font-semibold hover:bg-red-600 flex flex-row"
+      >
+        <i className="pi pi-times mr-2"></i>{" "}
+        <p className=" mx-auto">No, I don`t agree</p>
+      </a>
     </div>
   );
   return (
@@ -47,7 +45,7 @@ function AgeVerification(props) {
         visible={visible}
         header={header}
         position="top"
-        className="w-10  sm:w-8 md:w-6"
+        className="w-11  sm:w-8 md:w-7 lg:w-6" 
         closable={false}
         closeOnEscape={false}
         onHide={() => setVisible(false)}
