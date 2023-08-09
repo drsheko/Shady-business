@@ -5,10 +5,11 @@ function Footer(props) {
   const { links } = useNavigationlinks();
 
   return (
-    <div>
-      <div className="flex flex-row px-6 py-3 justify-content-between 	 bg-indigo-50">
-        <div className="flex flex-column flex-nowrap">
-          <p className="text-xl mb-3">Categories</p>
+    <div className="mt-auto">
+      <div className="flex flex-column md:flex-row px-3 sm:px-6 pb-3 justify-content-between bg-indigo-50 mt-3 ">
+        <div className="flex flex-row  sm:justify-content-between w-full md:w-7 lg:w-9">
+        <div className="flex flex-column flex-nowrap w-6">
+          <p className="text-xl my-3 underline font-bold">Categories</p>
 
           {links && links.length > 0 && (
             <div className="flex flex-column">
@@ -26,8 +27,8 @@ function Footer(props) {
             </div>
           )}
         </div>
-        <div className="flex flex-column">
-          <p className="text-xl mb-3">INFO</p>
+        <div className="flex flex-column w-6">
+          <p className="text-xl my-3 underline font-bold ">Info</p>
           <a
             href="#"
             className="text-700 font-semibold no-underline hover:underline hover:text-primary my-2"
@@ -65,10 +66,10 @@ function Footer(props) {
             Terms & Conditions
           </a>
         </div>
-
-        <div className="w-3">
-          <p className="text-xl mb-3">Follow us</p>
-          <div className="my-4 flex flex-row justify-content-between">
+        </div>
+        <div className="w-12 md:w-5 lg:w-4 mt-1 sm:mt-0 ">
+          <p className="text-xl my-3 underline font-bold">Follow us</p>
+          <div className="my-4 flex flex-row justify-content-between px-4 sm:px-0">
             <i
               className="pi pi-facebook mr-2 cursor-pointer shadow-3 border-circle p-2"
               style={{ fontSize: "1.5rem", color: "#4267B2" }}
@@ -87,7 +88,7 @@ function Footer(props) {
             ></i>
           </div>
           <div
-            className="bg-primary text-center p-3 my-5 border-3 shadow-3"
+            className="bg-primary text-center mx-4 sm:mx-0 p-3 my-5 border-3 shadow-3"
             style={{
               transform: "skew(15deg)",
               borderRadius: " 0px 25px 0px 25px ",
