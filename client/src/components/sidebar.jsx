@@ -17,13 +17,23 @@ function SideNavbar(props) {
 
   return (
     <div>
-      <Sidebar visible={props.visible} onHide={() => props.setVisible(false)}>
-        <h2>Vaporesta</h2>
+      <Sidebar visible={props.visible} onHide={() => props.setVisible(false)} pt={{closeButton:{
+        className:"bg-primary shadow-3"
+      }}}>
+        <h2 className="font-bold text-primary text-3xl md:text-5xl">Vaporesta</h2>
         <Divider />
         <TieredMenu
           model={links}
           className="w-full"
           breakpoint="990px"
+          pt={{
+            label:{
+              className:"font-semibold text-800 hover:text-primary"
+            },
+            submenuIcon:{
+              className:"font-semibold text-800 "
+            }
+          }}
         />
       </Sidebar>
     </div>
