@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+var ProjectController =require("../controllers/projectController");
 var UserController = require("../controllers/userController");
 var CategoryController = require("../controllers/categoryController");
 var SubCategoryController = require("../controllers/subCategoryController");
@@ -15,6 +16,9 @@ var OrderController = require("../controllers/orderController");
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
+//###################### Project #######################
+// get Project Configuration
+router.get("/api/project/configuration", ProjectController.get_Configuration)
 //----------------USERS-------------------------------------------
 // Sign Up
 router.post("/api/signup", UserController.signup_post);
@@ -139,4 +143,7 @@ router.post("/api/payments/new/payment", PaymentController.Create_NEW_CARD);
 router.post("/api/orders/new/order", OrderController.CREATE_NEW_ORDER);
 // GET ORDERS BY USER ID
 router.post("/api/orders/user/all", OrderController.GET_ORDERS_BY_USER_ID);
+// GET ALL ORDERS 
+router.get("/api/orders/all", OrderController.GET_ALL_ORDERS);
+
 module.exports = router;

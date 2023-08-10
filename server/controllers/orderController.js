@@ -62,7 +62,6 @@ exports.CREATE_NEW_ORDER = async (req, res) => {
 exports.GET_ORDERS_BY_USER_ID = async (req, res) => {
   try {
     let id = req.body.userId;
-    console.log(id)
     let orders = await Order.find({ user: id }).populate([
       {
         path: "user",
@@ -90,9 +89,48 @@ exports.GET_ORDERS_BY_USER_ID = async (req, res) => {
           },
         ],
       },
-    ]);;
+    ]);
     return res.status(200).json({ success: true, orders });
   } catch (error) {
     return res.status(401).json({ success: false, error });
   }
 };
+
+// GET ALL ORDERS 
+
+exports.GET_ALL_ORDERS = async(req, res) =>{
+try{
+  let orders = await Order.find({}).populate([
+    {
+      path: "user",
+    },
+    {
+      path: "billingAddress",
+    },
+    {
+      path: "payment",
+    },
+    {
+      path: "shipping",
+      populate: {
+        path: "address",
+      },
+    },
+    {
+      path: "products",
+      populate: [
+        {
+          path: "product",
+        },
+        {
+          path: "option",
+        },
+      ],
+    },
+  ]);
+  return res.status(200).json({ success: true, orders });
+
+}catch(error){
+  return res.status(401).json({ success: false, error });
+}
+}
