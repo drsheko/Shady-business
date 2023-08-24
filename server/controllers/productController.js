@@ -157,7 +157,18 @@ exports.GET_PRODUCT_By_Id = async (req, res) => {
       "category",
       "brand",
       "related_products",
-    ]);
+    ])
+    .populate({
+      path:"options",
+      path:"subCategory",
+      path:"category",
+      path:"brand",
+      path:"related_products",
+      path:"reviews",
+      populate:{
+        path:"user"
+      }
+    });
     return res.status(200).json({ success: true, product });
   } catch (error) {
     return res.status(401).json({ success: false, error });
