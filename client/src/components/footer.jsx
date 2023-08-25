@@ -1,9 +1,17 @@
 import React from "react";
 import useNavigationlinks from "./useNavigationLinks";
-
+import {useNavigate} from "react-router-dom";
 function Footer(props) {
   const { links } = useNavigationlinks();
+  const navigate =useNavigate();
 
+  const getLink = (link) =>{
+    if(link.label.toLowerCase() === "coupons"|| link.label.toLowerCase() === "brands"){
+      navigate(`/${link.label.toLowerCase()}`)
+    } else{ 
+      navigate(`/category/${link.label}/${link.id}`)
+    }
+  }
   return (
     <div className="mt-auto">
       <div className="flex flex-column md:flex-row px-3 sm:px-6 pb-3 justify-content-between bg-indigo-50 mt-3 ">
@@ -13,15 +21,15 @@ function Footer(props) {
 
           {links && links.length > 0 && (
             <div className="flex flex-column">
-              {links.map((link) => {
+              {links.map((link) => { 
                 return (
-                  <a
-                    key={link}
-                    href={`/category/${link.label}`}
-                    className="text-700 font-semibold no-underline hover:underline hover:text-primary my-2"
+                  <p
+                    key={link.label}
+                    onClick={()=> getLink(link)}
+                    className="text-700 font-semibold no-underline hover:underline cursor-pointer hover:text-primary my-2"
                   >
                     {link.label}
-                  </a>
+                  </p>
                 );
               })}
             </div>
