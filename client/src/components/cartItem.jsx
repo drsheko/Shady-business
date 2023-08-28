@@ -1,21 +1,23 @@
-import { Button } from "primereact/button";
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "primereact/button";
 import { InputNumber } from "primereact/inputnumber";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { Dialog } from "primereact/dialog";
+import { Checkbox } from "primereact/checkbox";
 import { useShoppingCart } from "../contexts/shoppingCartContext";
 
 function CartItem({ product }) {
+  const navigate = useNavigate();
   const [itemQty, setItemQty] = useState(product.inCart);
   const [visible, setVisible] = useState(false);
-  const {
-    shoppingList,
-    getItemQty,
-    increaseQty,
-    decreaseQty,
-    removeItem,
-    itemTotalPrice,
-    shoppingListQty,
-  } = useShoppingCart();
+  const [optionDialog, setOptionDialog] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [option, setOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [optionQuantity, setOptionQuantity] = useState(1);
+  const { increaseQty, decreaseQty, removeItem, changeOption, itemTotalPrice } =
+    useShoppingCart();
 
   const handleQtyChange = () => {
     if (product.inCart === itemQty) {
@@ -30,7 +32,20 @@ function CartItem({ product }) {
       decreaseQty(product, removed);
     }
   };
-
+  const handleOptionChange = (product) => {
+    setOption(product);
+    setSelectedProduct(product.product);
+    setSelectedOption(product);
+    setOptionQuantity(product.inCart);
+    setOptionDialog(true);
+  };
+  const submitOptionChange = () => {
+    changeOption(
+      option,
+      { ...selectedOption, product: selectedProduct, status: "option" },
+      optionQuantity
+    );
+  };
   useEffect(() => {
     handleQtyChange();
     if (itemQty === 0) {
@@ -47,7 +62,20 @@ function CartItem({ product }) {
               alt=""
               width="100px"
               height={"100px"}
-              className="mr-2"
+              className="mr-2 cursor-pointer"
+              onClick={() =>
+                navigate(
+                  `/product/${
+                    product.status === "main"
+                      ? product.name
+                      : product.product.name
+                  }/${
+                    product.status === "main"
+                      ? product._id
+                      : product.product._id
+                  }`
+                )
+              }
             />
           </div>
           <div className="cart-item-info flex flex-column justify-content-center">
@@ -56,9 +84,16 @@ function CartItem({ product }) {
                 ? product.product.category.name
                 : product.category.name}
             </p>
-            <p className="cart-item-name text-xl link">
+            <Link
+              to={`/product/${
+                product.status === "main" ? product.name : product.product.name
+              }/${
+                product.status === "main" ? product._id : product.product._id
+              }`}
+              className="cart-item-name text-xl link no-underline text-900 capitalize hover:underline"
+            >
               {product.status === "main" ? product.name : product.product.name}
-            </p>
+            </Link>
             {product.status === "option" ? (
               <div className="option">
                 <p className="text-400 uppercase">
@@ -70,7 +105,17 @@ function CartItem({ product }) {
             )}
 
             <div className="actions">
-              <Button label="change" className="mr-2 p-0" link size="small" />
+              {product.status === "option" && (
+                <Button
+                  label="change"
+                  className="mr-2 p-0"
+                  link
+                  size="small"
+                  onClick={() => {
+                    handleOptionChange(product);
+                  }}
+                />
+              )}
 
               <Button
                 label="remove"
@@ -149,9 +194,76 @@ function CartItem({ product }) {
         accept={() => {
           removeItem(product);
         }}
-        reject={() => {
-        }}
+        reject={() => {}}
       />
+      <Dialog
+        visible={optionDialog}
+        onHide={() => setOptionDialog(false)}
+        draggable={false}
+        style={{ minWidth: "70%" }}
+        header="Select Option"
+      >
+        {selectedProduct && selectedOption && (
+          <div>
+            <p className="capitalize text-800 font-semibold text-center">
+              {selectedProduct.name}
+            </p>
+            <p className="text-800 font-semibold my-2">
+              Options <span className="text-red-500">*</span>
+            </p>
+
+            <div className="flex flex-column gap-3 p-3">
+              {selectedProduct.options.map((option) => {
+                return (
+                  <div
+                    key={option._id}
+                    className="flex align-items-center justify-content-between"
+                  >
+                    <div>
+                      <Checkbox
+                        inputId={option._id}
+                        name="options"
+                        value={option}
+                        onChange={() => setSelectedOption(option)}
+                        checked={option._id === selectedOption._id}
+                      />
+
+                      <label htmlFor={option._id} className="ml-2 capitalize">
+                        {option.name}
+                      </label>
+                    </div>
+                    <img
+                      src={option.photos[0]}
+                      alt=""
+                      width={50}
+                      className="mx-2"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex justify-content-end border-top-1 border-100 pt-3">
+              <Button
+                label="Cancel"
+                size="small"
+                icon="pi pi-times"
+                onClick={() => setOptionDialog(false)}
+                className="p-button-text mr-2"
+              />
+              <Button
+                label="Confirm"
+                size="small"
+                icon="pi pi-check"
+                onClick={() => {
+                  submitOptionChange();
+                  setOptionDialog(false);
+                }}
+                autoFocus
+              />
+            </div>
+          </div>
+        )}
+      </Dialog>
     </div>
   );
 }
