@@ -77,6 +77,10 @@ export function ShoppingCartProvider({ children }) {
     });
   };
 
+  const changeOption = (removedOption, selectedOption, qty) => {
+    removeItem(removedOption);
+    increaseQty(selectedOption, qty);
+  };
   const itemTotalPrice = (product) => {
     let qty = getItemQty(product);
     let total = qty * product.price;
@@ -232,6 +236,7 @@ export function ShoppingCartProvider({ children }) {
         increaseQty,
         decreaseQty,
         removeItem,
+        changeOption,
         shippingMethod,
         shippingCost,
         shippingAddress,
