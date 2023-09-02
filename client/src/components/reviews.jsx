@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { Button } from "primereact/button";
 import { DataView } from "primereact/dataview";
 import { Image } from "primereact/image";
-import { Dropdown } from "primereact/dropdown";
 import { Rating } from "primereact/rating";
-import { Tag } from "primereact/tag";
 function Reviews(props) {
   const [sortOrder, setSortOrder] = useState(0);
   const [sortField, setSortField] = useState("");
@@ -26,44 +23,42 @@ function Reviews(props) {
 
   const reviewTemplate = (review) => {
     return (
-      <div className="col-12 md:col-6 p-1 sm:p-2 md:p-3">
-        <div className="review card  border-round-lg shadow-2 p-2 sm:p-3 md:p-4  flex flex-column row-gap-3 ">
+      <div className="col-12 md:col-6 p-1 sm:p-2 md:p-3 ">
+        <div className="review card  border-round-lg shadow-3 p-2 px-3 sm:p-3 md:p-4 my-1 md:my-0 flex flex-column row-gap-3  h-full">
           <div className="main-review flex flex-column row-gap-2 ">
-            <p className="font-bold text-lg capitalize">
+            <p className="font-bold text-lg capitalize text-900">
               {review.user.firstName + " " + review.user.lastName}
             </p>
-            <p className="font-light text-xs text-500">
+            <p className="font-light text-xs text-800">
               {moment(review.date).format("MMMM Do YYYY, h:mm a")}
             </p>
             <Rating value={review.rating} readOnly cancel={false} />
             <p
-              className="text-basis"
+              className="text-basis text-900"
               style={{ maxHeight: "250px", overflowY: "scroll" }}
             >
               {review.comment}
             </p>
           </div>
-          {review.photos.length > 0 ? (
-            review.photos.map(photo =>{
-<div className="review-image ">
-              <Image
-                style={{ objectFit: "fill" }}
-                src={photo}
-                onError={(e) =>
-                  (e.target.src =
-                    "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-                }
-                alt=""
-                preview
-                width="124"
-                height="100"
-              />
-            </div>
-            })
-            
-          ) : (
-            ""
-          )}
+
+          <div className="flex flex-row flex-wrap ">
+            {review.photos.length > 0
+              ? review.photos.map((photo) => {
+                  return (
+                    <div className="review-image mx-1" dataKey={photo}>
+                      <Image
+                        src={photo}
+                        preview
+                        alt=""
+                        width="64"
+                        height="64"
+                        className="shadow-3"
+                      />
+                    </div>
+                  );
+                })
+              : ""}
+          </div>
         </div>
       </div>
     );
@@ -75,7 +70,7 @@ function Reviews(props) {
         itemTemplate={reviewTemplate}
         sortField={sortField}
         sortOrder={sortOrder}
-        layout="list"
+        layout="grid"
       />
     </div>
   );
