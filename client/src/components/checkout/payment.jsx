@@ -8,7 +8,6 @@ import { Dropdown } from "primereact/dropdown";
 import { RadioButton } from "primereact/radiobutton";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
-import { Panel } from "primereact/panel";
 import { Toast } from "primereact/toast";
 import moment from "moment";
 import axios from "axios";

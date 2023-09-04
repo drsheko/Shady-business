@@ -1,5 +1,6 @@
 import React from "react";
 import { useContext, useState, useRef, useEffect } from "react";
+import { useShoppingCart } from "../../contexts/shoppingCartContext";
 import axios from "axios";
 import { UserContext } from "../../App";
 import { InputText } from "primereact/inputtext";
@@ -13,8 +14,9 @@ import { Toast } from "primereact/toast";
 function Shipping(props) {
   let { user, setUser } = useContext(UserContext);
   const toast = useRef();
-  const [selectedAddress, setSelectedAddress] = useState(null);
-  const [shippingMethod, setShippingMethod] = useState(null);
+  const { setShippingCost ,shippingAddress ,setShippingAddress, shippingMethod,setShippingMethod} = useShoppingCart();
+ // const [ setShippingAddress] = useState(null);
+ // const [shippingMethod, setShippingMethod] = useState(null);
   const [billingSameAddress, setBillingSameAddress] = useState(true);
   const [addressError, setAddressError] = useState(false);
   const [shippingMethodError, setShippingMethodError] = useState(false);
@@ -34,8 +36,8 @@ function Shipping(props) {
   ];
 
   const [form, setForm] = useState({
-    addressLine1: "",
-    addressLine2: "",
+    line1: "",
+    line2: "",
     city: "",
     state: "",
     country: "",
@@ -56,7 +58,7 @@ function Shipping(props) {
         let adds = [...user.address];
         adds.push(res.data.address);
         setUser({ ...user, address: adds });
-        setSelectedAddress(res.data.address);
+        setShippingAddress(res.data.address);
         toast.current.show({
           severity: "success",
           summary: "Success",
@@ -77,7 +79,7 @@ function Shipping(props) {
     setAddressError(false);
     setShippingMethodError(false);
     let score = 0;
-    if (!selectedAddress) {
+    if (!shippingAddress) {
       setAddressError(true);
       score += 1;
       let div = () => document.getElementById("shippingAddress");
@@ -91,25 +93,21 @@ function Shipping(props) {
       div1().scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
-    try {
-      if (billingSameAddress) {
-        props.setBillingState((state) => ({ ...state, isSubmitted: true }));
-        props.setCheckoutData((state) => ({
-          ...state,
-          billingSameAddress: true,
-          billingAddress: selectedAddress,
-        }));
-      }
-      if (score == 0) {
-        props.setShippingState((state) => ({ ...state, isSubmitted: true }));
-        props.setCheckoutData((state) => ({
-          ...state,
-          shippingAddress: selectedAddress,
-          shippingMethod,
-        }));
-      }
-    } catch (error) {
-      console.log(error);
+
+    if (billingSameAddress) {
+      props.setBillingState((state) => ({ ...state, isSubmitted: true }));
+      props.setCheckoutData((state) => ({
+        ...state,
+        billingSameAddress: true,
+        billingAddress: shippingAddress,
+      }));
+    }
+    if (score == 0) {
+      shippingMethod === "standard"
+        ? setShippingCost(4.99)
+        : setShippingCost(9.99);
+      
+      props.setShippingState((state) => ({ ...state, isSubmitted: true })); 
     }
   };
   const editShipping = () => {
@@ -122,10 +120,22 @@ function Shipping(props) {
   };
 
   useEffect(() => {
-    if (selectedAddress) {
-      setAddressError(false);
+    if (!user) {
+      setShippingAddress(null);
+      setShippingMethod(null);
+      setShippingCost(null);
+      props.setShippingState((state) => ({ ...state, isSubmitted: false }));
+      props.setBillingState((state) => ({ ...state, isSubmitted: false }));
     }
-  }, [selectedAddress]);
+  }, [user]);
+  useEffect(() => {
+    if (shippingAddress) {
+      setAddressError(false);
+     // setShippingAddress(shippingAddress)
+    }else{
+      setShippingAddress(null)
+    }
+  }, [shippingAddress]);
   useEffect(() => {
     if (shippingMethod) {
       setShippingMethodError(false);
@@ -154,11 +164,11 @@ function Shipping(props) {
                 {user.firstName} {user.lastName}
               </p>
               <p className="text-800">{user.phone}</p>
-              <p className="text-800">{selectedAddress.line1}</p>
-              <p className="text-800">{selectedAddress.line2}</p>
+              <p className="text-800">{shippingAddress.line1}</p>
+              <p className="text-800">{shippingAddress.line2}</p>
               <p className="text-800">
-                {selectedAddress.city},{selectedAddress.state},
-                {selectedAddress.zipcode} / {selectedAddress.country}{" "}
+                {shippingAddress.city},{shippingAddress.state},
+                {shippingAddress.zipcode} / {shippingAddress.country}{" "}
               </p>
             </div>
             {shippingMethod === "standard" ? (
@@ -197,16 +207,16 @@ function Shipping(props) {
                       name="address"
                       value={add}
                       onChange={(e) => {
-                        setSelectedAddress(e.target.value);
+                        setShippingAddress(e.target.value);
                       }}
-                      checked={selectedAddress === add}
+                      checked={shippingAddress === add}
                       className="mr-2 mt-3"
                     />
                     <Panel
                       header={add.line1}
                       toggleable
-                      collapsed={selectedAddress !== add}
-                      className="w-full"
+                      collapsed={shippingAddress !== add}
+                      className="w-full max-w-28rem"
                     >
                       <p className="m-0 capitalize text-800">
                         {user.firstName} {user.lastName}
@@ -242,8 +252,8 @@ function Shipping(props) {
                       </label>
                       <InputText
                         id="address1"
-                        name="addressLine1"
-                        value={form.addressLine1}
+                        name="line1"
+                        value={form.line1}
                         onChange={onFormChange}
                         type="text"
                         placeholder="Address Line 1"
@@ -260,8 +270,8 @@ function Shipping(props) {
                       </label>
                       <InputText
                         id="address2"
-                        name="addressLine2"
-                        value={form.addressLine2}
+                        name="line2"
+                        value={form.line2}
                         onChange={onFormChange}
                         type="text"
                         placeholder="Address Line 2"
