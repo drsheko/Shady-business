@@ -32,6 +32,9 @@ router.get("/api/logout", UserController.log_out);
 router.post("/api/account/edit/info", UserController.EDIT_USER_INFO);
 // Edit USER Password
 router.post("/api/account/password/edit" , UserController.changePassword)
+router.post("/api/resetpassword/sendcode", UserController.SEND_RESET_PASSWORD_CODE);
+router.post("/api/resetpassword/matchcode", UserController.MATCH_RESET_PASSWORD_CODE);
+router.post("/api/resetpassword/resetpassword", UserController.RESET_PASSWORD);
 
 //-------------------CATEGORIES------------------------
 //CREATE A NEW Category
@@ -96,7 +99,7 @@ router.post(
   ProductController.DELETE_PRODUCT_BY_ID
 );
 // Get Product By Id
-router.get("/api/products/product", ProductController.GET_PRODUCT_By_Id);
+router.post("/api/products/product", ProductController.GET_PRODUCT_By_Id);
 router.post("/api/products/edit", ProductController.edit);
 router.get("/api/products/all", ProductController.GET_All_PRODUCTS);
 //------------------------OPTION----------------------------------
