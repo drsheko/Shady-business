@@ -20,7 +20,7 @@ exports.Create_BRAND = [
         });
       }
   
-      // upload category image
+      // upload brand image
       const file = req.file;
       if (file) {
         const fileName = file.originalname + new Date();
@@ -39,7 +39,7 @@ exports.Create_BRAND = [
           .json({ success: false, error: " Brand photo is required !!" });
       }
   
-      // create a new category
+      // create a new brand
       let newBrand = new Brand({
         name: req.body.name,
         photo: uploadedFileURL,
@@ -54,3 +54,37 @@ exports.Create_BRAND = [
         });
     },
   ];
+
+  // GET ALL BRANDS 
+  exports.GET_ALL_BRANDS =async(req, res) => {
+    try{
+      let brands = await Brand.find().populate("products");
+      return res.status(200).json({success:true, brands});
+    }catch(error){
+      return res.status(401).json({ success: false, error });
+    }
+  }
+  
+  // GET BRAND BY ITS ID 
+  exports.GET_BRAND_BY_ID = async(req, res) => {
+    try{
+      let brand = await Brand.findById(req.body.id).populate(
+        [{
+          path:"products",
+          populate:{
+            path:"category",
+          }
+        },
+        {
+          path:"products",
+          populate:{
+            path:"subCategory"
+          }
+        }
+      ]
+      )
+      return res.status(200).json({success:true, brand});
+    }catch(error){
+      return res.status(401).json({ success: false, error });
+    }
+  }

@@ -107,7 +107,12 @@ router.get("/api/products/all", ProductController.GET_All_PRODUCTS);
 router.post("/api/products/product/addOption", OptionController.CREATE_OPTION);
 
 // -------------------- BRAND --------------------------------
+// Create new brand
 router.post("/api/brands/brand/new", BrandController.Create_BRAND);
+// Get all brands 
+router.get("/api/brands/all", BrandController.GET_ALL_BRANDS);
+// Get BRAND BY ID
+router.post("/api/brands/brand", BrandController.GET_BRAND_BY_ID);
 
 // -----------------------REVIEWS----------------------------------------
 // create new review
