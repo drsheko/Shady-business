@@ -13,10 +13,17 @@ import { Badge } from "primereact/badge";
 import { ProgressSpinner } from "primereact/progressspinner";
 
 import { UserContext } from "../App";
+import SignInSidebar from "./sign-in-sidebar";
 
-function ReviewForm({ product }) {
+function ReviewForm({
+  product,
+  setProduct,
+  reviewFormVisible,
+  setReviewFormVisible,
+}) {
   const { user } = useContext(UserContext);
   const [visible, setVisible] = useState(false);
+  const [signInVisible, setSignInVisible] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,17 +34,17 @@ function ReviewForm({ product }) {
     comment: "",
   });
 
-  const onFormClose = () =>{
+  const onFormClose = () => {
     setVisible(false);
+    setReviewFormVisible(false);
     setError(false);
     setSuccess(false);
     setForm({
       product: product._id,
       rating: "",
       comment: "",
-    })
-
-  }
+    });
+  };
   const onFormChange = (e) => {
     let value = e.target.value;
     let name = e.target.name;
@@ -58,6 +65,10 @@ function ReviewForm({ product }) {
       }
 
       let res = await axios.post(url, formData);
+      if (res.data.success && res.data.review) {
+        let _reviews = [...product.reviews, res.data.review];
+        setProduct((state) => ({ ...product, reviews: _reviews }));
+      }
       setIsLoading(false);
       setSuccess(true);
     } catch (error) {
@@ -106,7 +117,10 @@ function ReviewForm({ product }) {
     let size = props.formatSize.slice(0, -2);
     size = Number(size).toFixed(1);
     return (
-      <div className="flex flex-column align-items-start justify-content-between" style={{height:'200px'}}>
+      <div
+        className="flex flex-column align-items-start justify-content-between"
+        style={{ height: "200px" }}
+      >
         <div
           className="flex flex-column align-items-center justify-content-between "
           style={{ width: "100px" }}
@@ -177,53 +191,60 @@ function ReviewForm({ product }) {
     className:
       "custom-cancel-btn p-button-danger p-button-rounded p-button-outlined",
   };
-
+  useEffect(() => {
+    console.log("reeeeeeeeeeeeeeeeeeeeeeeeeee");
+    if (reviewFormVisible) {
+      setVisible(true);
+      setIsLoading(false);
+    }
+  }, [reviewFormVisible]);
   return (
     <div className="w-full h-full">
-      <Button
-        className="w-full"
-        label="write a review"
-        outlined
-        onClick={() => setVisible(true)}
-      />
       <Dialog
         header="PLEASE SHARE YOUR EXPERIENCE"
         visible={visible}
         onHide={onFormClose}
         style={{ minWidth: "70%" }}
         pt={{
-          headerTitle:{
-            className:"text-base sm:text-lg"
+          headerTitle: {
+            className: "text-base sm:text-lg",
           },
-          closeButtonIcon:{
-            className:' text-primary font-bold'
-          }
+          closeButtonIcon: {
+            className: " text-primary font-bold",
+          },
         }}
       >
-        {
-        !user? 
-        <div className=" text-center">
-          <p className="capitalize font-semibold text-800 text-lg my-4 align-self-center">
-            members only can review our products
-              
-              
+        {!user ? (
+          <div className=" text-center">
+            <p className=" font-semibold text-800 text-lg my-4 align-self-center">
+              Please login to leave a review.
             </p>
             <div>
-              <Button label="log in" className=" uppercase"/>
+              <Button
+                label="log in"
+                outlined
+                size="small"
+                className=" uppercase hover:bg-primary"
+                onClick={() => setSignInVisible((state) => !state)}
+              />
             </div>
-        </div>
-        :
-        error ? (
+          </div>
+        ) : error ? (
           <div className=" text-center">
             <div className="flex justify-content-center">
-            <p className="capitalize font-semibold text-lg my-4 align-self-center">
-            Oops, something went wrong 
-              
-              
-            </p>
-            <Button label="try again" text  onClick={()=>{setError(false)}} className="align-self-center uppercase" />
+              <p className="capitalize font-semibold text-lg my-4 align-self-center">
+                Oops, something went wrong
+              </p>
+              <Button
+                label="try again"
+                text
+                onClick={() => {
+                  setError(false);
+                }}
+                className="align-self-center uppercase"
+              />
             </div>
-            
+
             <i
               className="pi pi-times mt-0 p-5 "
               style={{
@@ -258,7 +279,7 @@ function ReviewForm({ product }) {
             <div className="flex flex-column ">
               <div className="col-12 text-center ">
                 <img
-                  className="max-w-full max-h-full"
+                  className="max-w-full max-h-12rem"
                   src={product.photos[0]}
                   alt={product.name}
                 />
@@ -283,17 +304,26 @@ function ReviewForm({ product }) {
                       cancel={false}
                       required
                       pt={{
-                        offIcon:{
-                          className:"text-800"
+                        root: {
+                          className: "text-sm max-w-7rem",
                         },
-                        onIcon:{
-                          className:"text-primary"
-                        }
+                        item: {
+                          className: "text-800 m-0",
+                        },
+                        onIcon: {
+                          className: "text-yellow-500 m-0",
+                        },
+                        offIcon: {
+                          className: "text-yellow-500 m-0 p-0 ",
+                        },
                       }}
                     />
                   </div>
                   <div className="flex flex-column gap-2 w-full">
-                    <label htmlFor="comment " className="font-semibold text-800">
+                    <label
+                      htmlFor="comment "
+                      className="font-semibold text-800"
+                    >
                       Comment<span className="text-red-600">*</span>
                     </label>
                     <InputTextarea
@@ -349,6 +379,10 @@ function ReviewForm({ product }) {
           </div>
         )}
       </Dialog>
+      <SignInSidebar
+        signInVisible={signInVisible}
+        setSignInVisible={setSignInVisible}
+      />
     </div>
   );
 }
