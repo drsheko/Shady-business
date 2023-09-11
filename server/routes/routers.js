@@ -108,11 +108,17 @@ router.post("/api/products/product/addOption", OptionController.CREATE_OPTION);
 
 // -------------------- BRAND --------------------------------
 // Create new brand
-router.post("/api/brands/brand/new", BrandController.Create_BRAND);
+router.post("/api/brands/new/brand", BrandController.Create_BRAND);
 // Get all brands 
 router.get("/api/brands/all", BrandController.GET_ALL_BRANDS);
 // Get BRAND BY ID
 router.post("/api/brands/brand", BrandController.GET_BRAND_BY_ID);
+// EDIT BRAND 
+router.post("/api/brands/edit/brand", BrandController.EDIT_BRAND_BY_ID);
+// DELETE ONE BRAND
+router.post("/api/brands/delete/onebrand", BrandController.DELETE_ONE_BRAND_BY_ID);
+// DELETE MULTIPLE BRANDS 
+router.post("/api/brands/delete/multiplebrands", BrandController.DELETE_MULTIPLE_BRANDS)
 
 // -----------------------REVIEWS----------------------------------------
 // create new review

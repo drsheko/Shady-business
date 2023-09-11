@@ -1,5 +1,6 @@
 var Category = require("../models/categoryModel");
 var Brand = require("../models/brandModal");
+var Product = require("../models/productModel");
 const multer = require("multer");
 const { ref, uploadBytes } = require("firebase/storage");
 const storage = require("../firebase");
@@ -43,10 +44,25 @@ exports.Create_BRAND = [
     let newBrand = new Brand({
       name: req.body.name,
       photo: uploadedFileURL,
+      products:req.body.products
     });
     newBrand
       .save()
-      .then((brand) => {
+      .then(async(savedBrand) => {
+        let brand = await savedBrand.populate([
+          {
+            path: "products",
+            populate: {
+              path: "category",
+            },
+          },
+          {
+            path: "products",
+            populate: {
+              path: "subCategory",
+            },
+          },
+        ]);
         return res.status(200).json({ success: true, brand });
       })
       .catch((error) => {
@@ -137,7 +153,7 @@ exports.EDIT_BRAND_BY_ID = [
           },
         }
       );
-      let brand = await Brand.findById(id).populatepopulate([
+      let brand = await Brand.findById(id).populate([
         {
           path: "products",
           populate: {
@@ -157,3 +173,51 @@ exports.EDIT_BRAND_BY_ID = [
     }
   },
 ];
+
+// DELETE ONE BRAND
+exports.DELETE_ONE_BRAND_BY_ID = async (req, res) => {
+  try {
+    let id = req.body.id;
+    await Product.updateMany(
+      { brand: id },
+      {
+        $set: {
+          brand: null,
+        },
+      },
+      { new: true }
+    );
+    await Brand.findByIdAndDelete(id);
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(401).json({ success: fasle, error });
+  }
+};
+
+// DELETE MULTIPLE BRANDS
+exports.DELETE_MULTIPLE_BRANDS = async (req, res) => {
+  try {
+    let ids = req.body.ids;
+    await Product.updateMany(
+      {
+        brand: {
+          $in: ids,
+        },
+      },
+      {
+        $set: {
+          brand: null,
+        },
+      },
+      { new: true }
+    );
+    await Brand.deleteMany({
+      _id: {
+        $in: ids,
+      },
+    });
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(401).json({ success: fasle, error });
+  }
+};
