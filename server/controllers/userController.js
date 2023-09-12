@@ -187,17 +187,17 @@ exports.EDIT_USER_INFO = async (req, res) => {
 };
 
 // RESET PASSWORD
-exports.RESET_PASSWORD = async(req, res) => {
-  try{
+exports.RESET_PASSWORD = async (req, res) => {
+  try {
     let email = req.body.email;
     let password = req.body.password;
     bcrypt.hash(password, 10, async (error, hash) => {
-      if(error){
+      if (error) {
         return res.status(401).json({ success: false, error });
       }
       if (hash) {
         let savedUser = await User.findOneAndUpdate(
-          {"email":email},
+          { email: email },
           {
             $set: {
               password: hash,
@@ -205,69 +205,89 @@ exports.RESET_PASSWORD = async(req, res) => {
           },
           { new: true }
         );
-        let user = await savedUser.populate(["address", "payments"]);
+        let user = await savedUser.populate(["address", "payments", "orders"]);
         return res.status(200).json({ success: true, user });
       }
     });
-  }catch(error){
+  } catch (error) {
     return res.status(401).json({ success: false, error });
   }
-}
+};
 
-// SEND RESET PASSWORD CODE 
-exports.SEND_RESET_PASSWORD_CODE = async(req, res) => {
-  try{
+// SEND RESET PASSWORD CODE
+exports.SEND_RESET_PASSWORD_CODE = async (req, res) => {
+  try {
     let email = req.body.email;
-    let user = await User.findOne({"email":email});
-    if(user){
-      let code  = (Math.floor(Math.random() * 1000000)).toString().padStart(6,"0");
+    let user = await User.findOne({ email: email });
+    if (user) {
+      let code = Math.floor(Math.random() * 1000000)
+        .toString()
+        .padStart(6, "0");
       var mailOptions = {
         from: process.env.EMAIL,
         to: email,
-        subject: 'Reset Password',
-        html:`<div> 
+        subject: "Reset Password",
+        html: `<div> 
                 <p style="text-align:center; font-size:36px; font-weight:800; margin:20px auto;"> RESET PASSWORD</p> 
                 <p> copy this code and go back to vaporesta website to reset your password. </p>
                 <p style="font-size:18px; ">YOUR CODE IS <span style="margin:0 0 0 18px; font-size:32px; font-weight:700">${code} </span></p>
-              </div>`
+              </div>`,
       };
-      
-       EmailService.transporter.sendMail(mailOptions, async(error)=>{
+
+      EmailService.transporter.sendMail(mailOptions, async (error) => {
         if (error) {
           return res.status(401).json({ success: false, error });
         } else {
-          await User.findOneAndUpdate({"email":email}, {
-            $set:{
-              temporaryCode:code
+          await User.findOneAndUpdate(
+            { email: email },
+            {
+              $set: {
+                temporaryCode: code,
+              },
             }
-          });
-          return res.status(200).json({success:true})
+          );
+          return res.status(200).json({ success: true });
         }
       });
-      
-    }else{
-      return res.status(200).json({success:false, error:"This email dosen`t match any record."});
+    } else {
+      return res
+        .status(200)
+        .json({
+          success: false,
+          error: "This email dosen`t match any record.",
+        });
     }
-  }catch(error){ console.log(error)
+  } catch (error) {
+    console.log(error);
     return res.status(401).json({ success: false, error });
   }
-}
-// match RESET Code 
-exports.MATCH_RESET_PASSWORD_CODE = async(req, res) =>{
-  try{
+};
+// match RESET Code
+exports.MATCH_RESET_PASSWORD_CODE = async (req, res) => {
+  try {
     let email = req.body.email;
     let code = req.body.code;
-    let user = await User.findOne({"email":email});
-    if(user){
-      if(user.temporaryCode ===code){
-        return res.status(200).json({success:true});
-      }else{
-        return res.status(200).json({success:false});
+    let user = await User.findOne({ email: email });
+    if (user) {
+      if (user.temporaryCode === code) {
+        return res.status(200).json({ success: true });
+      } else {
+        return res.status(200).json({ success: false });
       }
-    }else{
+    } else {
       return res.status(401).json({ success: false, error });
     }
-  }catch(error){
+  } catch (error) {
     return res.status(401).json({ success: false, error });
   }
-}
+};
+
+// GET ALL USERS
+exports.GET_ALL_USERS = async (req, res) => {
+  try {
+    let users = await User.find().populate(["payments", "address", "orders"]);
+    return res.status(200).json({ success: true, users });
+  } catch (error) { 
+    return res.status(401).json({ success: false, error });
+  }
+};

@@ -35,7 +35,8 @@ router.post("/api/account/password/edit" , UserController.changePassword)
 router.post("/api/resetpassword/sendcode", UserController.SEND_RESET_PASSWORD_CODE);
 router.post("/api/resetpassword/matchcode", UserController.MATCH_RESET_PASSWORD_CODE);
 router.post("/api/resetpassword/resetpassword", UserController.RESET_PASSWORD);
-
+// GET ALL USERS 
+router.get("/api/users/all", UserController.GET_ALL_USERS);
 //-------------------CATEGORIES------------------------
 //CREATE A NEW Category
 router.post("/api/categories/addCategory", CategoryController.addCategory);
