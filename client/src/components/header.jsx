@@ -1,38 +1,94 @@
-import React, { useState } from 'react';
-import NavLinks from './navLinks';
-import SideNavbar from './sidebar';
-import CartOverlay from './cartOverlayPanel';
-import SignInSidebar from './sign-in-sidebar';
-import Search from './search';
+import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import { Toast } from "primereact/toast";
+import NavLinks from "./navLinks";
+import SideNavbar from "./sidebar";
+import CartOverlay from "./cartOverlayPanel";
+import SignInSidebar from "./sign-in-sidebar";
+import Warning from "./warning";
+import Search from "./search";
+import { Button } from "primereact/button";
 function Header(props) {
-    const [visible, setVisible] = useState(false);
-    const [search, setSearch] =useState(false);
-    const [ signInVisible, setSignInVisible] = useState(false);
-    return (
-        <>
-        <div className=' card flex justify-content-between border-1 border-900 '>
-            <p className='font-bold text-3xl md:text-5xl mx-3 align-self-center' >
-                Vaporesta
-            </p>
-            <div className='hidden lg:block '>
-                 <NavLinks />
-            </div>
-            
-            <div className='card flex justify-content-between align-items-center text-base py-4 '>
-                <i className='pi pi-search mx-2  md:mx-3 cursor-pointer' onClick={()=>setSearch(state=>!state)}></i>
-                <CartOverlay/>
-                <i className='pi pi-user mx-2  md:mx-3 cursor-pointer' onClick={()=>setSignInVisible(state =>!state)}></i>
-                <i className='pi pi-align-justify mx-2  md:mx-3 cursor-pointer lg:hidden' onClick={()=>{setVisible(prevState=>!prevState)}}></i>
-            </div>
-           
+  const toast = useRef(null);
+  const [visible, setVisible] = useState(false);
+  const [visibleSearch, setVisibleSearch] = useState(false);
+  const [signInVisible, setSignInVisible] = useState(false);
+  return (
+    <div className="sticky top-0 z-5  shadow-3">
+      <Toast ref={toast} />
+      <Warning />
+      
+      <div className=" card flex justify-content-between align-items-center bg-primary-reverse ">
+      <div className="sm:hidden flex justify-content-between align-items-center text-base py-3 ml-1">
+      <Button
+            icon="pi pi-align-justify font-bold"
+            size="small"
+            text
+            raised
+            className="header-button lg:hidden hover:bg-primary"
+            onClick={() => {
+              setVisible((prevState) => !prevState);
+            }}
+          />
+           <Button
+            icon="pi pi-search font-bold"
+            size="small"
+            text
+            raised
+            className="header-button mx-2 hover:bg-primary"
+            onClick={() => setVisibleSearch((state) => !state)}
+          />
+      </div>
+        <p className=" font-bold text-3xl md:text-5xl mx-3 align-self-center">
+          <Link to="/" className="no-underline text-primary">
+            Vaporesta
+          </Link>
+        </p>
+        <div className="hidden lg:block ">
+          <NavLinks />
         </div>
-         <div>
-         <SideNavbar visible={visible} setVisible={setVisible} />
-         <SignInSidebar signInVisible={signInVisible} setSignInVisible={setSignInVisible} />
-          {search?<Search/> :''}
-     </div>
-     </>
-    );
+
+        <div className="card  flex justify-content-between align-items-center text-base py-3 sm:py-4 mr-1 sm:mr-4">
+          <Button
+            icon="pi pi-search font-bold"
+            size="small"
+            text
+            raised
+            className="mx-2 hover:bg-primary hidden sm:flex"
+            onClick={() => setVisibleSearch((state) => !state)}
+          />
+          <CartOverlay />
+          <Button
+            icon="pi pi-user font-bold"
+            size="small"
+            text
+            raised
+            className="header-button mx-2 hover:bg-primary"
+            onClick={() => setSignInVisible((state) => !state)}
+          />
+          <Button
+            icon="pi pi-align-justify font-bold"
+            size="small"
+            text
+            raised
+            className="hidden sm:flex lg:hidden hover:bg-primary"
+            onClick={() => {
+              setVisible((prevState) => !prevState);
+            }}
+          />
+        </div>
+      </div>
+      <div>
+        <SideNavbar visible={visible} setVisible={setVisible} />
+        <SignInSidebar
+          signInVisible={signInVisible}
+          setSignInVisible={setSignInVisible}
+          toast={toast}
+        />
+        {visibleSearch && <Search setVisibleSearch={setVisibleSearch} />}
+      </div>
+    </div>
+  );
 }
 
 export default Header;
