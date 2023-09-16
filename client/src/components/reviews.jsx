@@ -32,7 +32,20 @@ function Reviews(props) {
             <p className="font-light text-xs text-800">
               {moment(review.date).format("MMMM Do YYYY, h:mm a")}
             </p>
-            <Rating value={review.rating} readOnly cancel={false} />
+            <Rating value={review.rating} readOnly cancel={false} pt={{
+                    root: {
+                      className: "text-sm max-w-7rem",
+                    },
+                    item: {
+                      className: "text-800 m-0",
+                    },
+                    onIcon: {
+                      className: "text-yellow-500 m-0",
+                    },
+                    offIcon: {
+                      className: "text-yellow-500 m-0 p-0 ",
+                    },
+                  }} />
             <p
               className="text-basis text-900"
               style={{ maxHeight: "250px", overflowY: "scroll" }}
@@ -71,6 +84,11 @@ function Reviews(props) {
         sortField={sortField}
         sortOrder={sortOrder}
         layout="grid"
+        pt={{
+          grid:{
+            className:"p-0 m-0",
+          }
+        }}
       />
     </div>
   );
