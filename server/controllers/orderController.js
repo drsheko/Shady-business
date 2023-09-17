@@ -186,3 +186,81 @@ exports.GET_ALL_ORDERS = async (req, res) => {
     return res.status(401).json({ success: false, error });
   }
 };
+
+
+// GET BEST SELLER PRODUCTS 
+exports.BEST_SELLER_PRODUCTS =async( req, res) => {
+  try{
+    let productsData = await Order.aggregate([
+   /*   {
+        "$match": {
+          "key": 2
+        }
+      },*/
+      {
+        "$unwind": "$products"
+      },
+      {
+        "$group": {
+          "_id": {
+            "$cond": {
+              "if": "$products.option",
+              "then": "$products.option",
+              "else": "$products.product"
+            }
+          },
+          "count": {
+            "$sum": {
+              "$cond": {
+                "if": "$products.option",
+                "then": "$products.quantity",
+                "else": "$products.quantity"
+              }
+            }
+          },
+
+          "status" :{
+            "$sum": {
+            "$cond": {
+              "if": "$products.option",
+              "then": 0,    //  if status == 0   ====>> option
+              "else": 1     //  id status > 0  ====>> main
+            }
+          }
+        }
+        },
+       
+      }
+    ]);
+     
+    const populateProducts = async() => {
+      
+      try{
+        let products = []
+        if(productsData.length>0){
+         await Promise.all( productsData.map(async(product) => {
+            if (product.status ===0){
+              let _product = await Option.findById(product._id).populate("product");
+              let savedProduct = {..._product._doc, sold:product.count, status:"option"}
+              products.push(savedProduct);
+            }else{
+              let _product = await Product.findById(product._id);
+              _product.sold =await product.count
+              let savedProduct = {..._product._doc, sold:product.count, status:"main"}
+              products.push(savedProduct)
+            }
+          }))
+        }
+        return products
+      }catch(error){ 
+        throw new Error 
+      }
+    }
+    let products = await populateProducts();
+    products = products.sort((a,b)=>b.sold-a.sold)
+   
+    return res.status(200).json({success:true, products})
+  }catch(error){ console.log(error)
+    return res.status(401).json({ success: false, error });
+  }
+}

@@ -160,5 +160,7 @@ router.post("/api/orders/new/order", OrderController.CREATE_NEW_ORDER);
 router.post("/api/orders/user/all", OrderController.GET_ORDERS_BY_USER_ID);
 // GET ALL ORDERS 
 router.get("/api/orders/all", OrderController.GET_ALL_ORDERS);
+// Get Best Selling products
+router.post("/api/orders/bestseller/products", OrderController.BEST_SELLER_PRODUCTS);
 
 module.exports = router;
