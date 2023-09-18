@@ -1,6 +1,7 @@
 var Order = require("../models/orderModel");
 var Address = require("../models/addressModal");
 var User = require("../models/userModel");
+var Category = require("../models/categoryModel");
 var Product = require("../models/productModel");
 var Option = require("../models/productOption");
 // CREATE A NEW ORDER
@@ -260,7 +261,56 @@ exports.BEST_SELLER_PRODUCTS =async( req, res) => {
     products = products.sort((a,b)=>b.sold-a.sold)
    
     return res.status(200).json({success:true, products})
-  }catch(error){ console.log(error)
+  }catch(error){
+    return res.status(401).json({ success: false, error });
+  }
+}
+
+// Get Categories percentage of sold product 
+exports.GET_CAT_PERCENT = async(req, res) =>{
+  try{
+    let categoriesData = await Order.aggregate([
+      /*   {
+           "$match": {
+             "key": 2
+           }
+         },*/
+         {
+           "$unwind": "$products"
+         },
+        
+         { "$lookup": {
+          "from": "products",
+          "localField": "products.product",
+          "foreignField": "_id",
+          pipeline: [ {$project: {category: 1} } ],
+          "as": "product_detail"
+        }},
+        
+        {
+          "$unwind":"$product_detail"
+        },{
+          "$group": {
+            "_id": "$product_detail.category",
+            "soldProducts": {
+              "$sum": 
+                "$products.quantity"
+            },
+          },
+        }
+       ]);
+       let categories = [];
+       if(categoriesData.length >0 ){
+        await Promise.all(categoriesData.map(async(cat) => {
+          let category = await Category.findById(cat._id);
+          let _category = {...category._doc, soldProducts:cat.soldProducts};
+          categories.push(_category);
+        }))
+      }
+       return res.status(200).json({success:true, categories})
+
+  }catch(error){
+    console.log(error)
     return res.status(401).json({ success: false, error });
   }
 }
