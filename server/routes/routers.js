@@ -163,5 +163,8 @@ router.get("/api/orders/all", OrderController.GET_ALL_ORDERS);
 // Get Best Selling products
 router.post("/api/orders/bestseller/products", OrderController.BEST_SELLER_PRODUCTS);
 router.post("/api/orders/cat", OrderController.GET_CAT_PERCENT);
+// Get REvenu && PROFIT
+router.post("/api/orders/revenu", OrderController.GET_GROSS_PROFIT);
+
 
 module.exports = router;

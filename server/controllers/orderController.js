@@ -314,3 +314,93 @@ exports.GET_CAT_PERCENT = async(req, res) =>{
     return res.status(401).json({ success: false, error });
   }
 }
+
+// Get Gross and Profit 
+exports.GET_GROSS_PROFIT = async(req, res) => {
+  try{
+    let data = await Order.aggregate([
+      /*   {
+           "$match": {
+             "key": 2
+           }
+         },*/
+         
+         {
+           "$unwind": "$products"
+         },
+        
+         { "$lookup": {
+          "from": "products",
+          "localField": "products.product",
+          "foreignField": "_id",
+          "as": "product_detail"
+        }},
+        {
+          "$lookup": {
+            "from": "productOptions",
+            "localField": "products.option",
+            "foreignField": "_id",
+            "as": "option_detail"
+        }
+      },
+      
+        {
+          "$unwind":"$product_detail"
+        },
+        {
+          "$addFields":{
+            "cost":{
+              "$cond":{
+                "if":"$products.option",
+                "then":"$option_detail.cost_price",
+                "else":"$product_detail.cost_price"
+              }
+            },
+            "createdAtWeek": {
+              "$year": "$createAt"
+            },
+            "createdAtMonth": {
+              "$month": "$createAt"
+            }
+          }
+        },
+        {
+          "$unwind":"$cost"
+        },
+        {
+          "$group": {
+            "_id": {
+              "createdAtYear": "$createdAtWeek",
+              "createdAtMonth": "$createdAtMonth"
+            },
+            "gross": {
+              "$sum": {
+                "$multiply":["$products.quantity", "$products.price"
+              ]
+              }
+            },
+            "totalCost" :{
+              "$sum":{
+                "$multiply":["$products.quantity", "$cost"
+              ]
+              }
+            }
+          },
+        },
+        { "$project": {
+          "date": "$_id",
+          "gross":"$gross",
+          "cost":"$totalCost",
+          "profit": { "$subtract": [ "$gross", "$totalCost" ] }
+       }},{
+        "$sort":{"date.createdAtYear":-1 ,  "date.createdAtMonth":-1}
+       }
+       ]);
+     
+       return res.status(200).json({success:true, data})
+
+  }catch(error){
+    return res.status(401).json({ success: false, error });
+  }
+}
+
