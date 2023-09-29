@@ -103,9 +103,21 @@ exports.CREATE_Review = [
           reviews: review._id,
         },
       });
-      return res.status(200).json({ success: true, review });
+      let savedReview = await review.populate("user")
+      return res.status(200).json({ success: true, review:savedReview });
     } catch (error) {
       return res.status(401).json({ success: false, error });
     }
   },
 ];
+
+
+exports.Get_PRODUCT_REVIEWS = async(req, res) =>{
+  try{
+    let productId = req.body.id;
+    let reviews = await Review.find({"product":productId}).populate()
+  }catch(error){
+    return res.status(401).json({ success: false, error });
+
+  }
+}
