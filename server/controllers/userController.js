@@ -105,6 +105,31 @@ exports.login_post = function (req, res, next) {
   })(req, res, next);
 };
 
+// ADMIN LOGIN 
+exports.ADMIN_LOGIN = function (req, res, next) {
+  passport.authenticate("local", function (error, user, info) {
+    if (error) {
+      return res.status(500).json({ success: false, error });
+    }
+    if (!user) {
+      return res.status(500).json({ success: false, error: info });
+    }
+    if(user.status ===" admin"){
+      req.logIn(user, function (error) {
+        if (error) {
+          return res.status(500).json({ success: false, error });
+        } else {
+          User.findById(user._id)
+            .then((user) => {
+              return res.status(200).json({ success: true, user });
+            });
+        }
+      });
+    }
+    return res.status(500).json({success:false, error:{message:"You should be admin to gain access."}})
+  })(req, res, next);
+};
+
 // Log Out
 exports.log_out = (req, res) => {
   req.logout(function (err) {

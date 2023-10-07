@@ -25,7 +25,8 @@ router.post("/api/signup", UserController.signup_post);
 
 // login
 router.post("/api/login", UserController.login_post);
-
+// ADMIN LOGIN 
+router.post("/api/admin/login", UserController.ADMIN_LOGIN);
 // logout
 router.get("/api/logout", UserController.log_out);
 // Edit USER INFO 
