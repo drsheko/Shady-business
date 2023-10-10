@@ -29,8 +29,6 @@ function Signup(props) {
   const [accountCreated, setAccountCreated] = useState(false);
   const [signInVisible, setSignInVisible] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [country, setCountry] = useState(null);
-  const [date, setDate] = useState(null);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
