@@ -25,7 +25,7 @@ function Products(props) {
     name: "",
     price: null,
     retail_price: null,
-    total_stock: 0,
+    stock: 0,
     brand: null,
     description: "",
     photos: [],
@@ -251,7 +251,6 @@ function Products(props) {
       try {
         let data = { ...product, FileList: files };
         let res = await axios.postForm(url, data);
-        console.log(res);
         let newProduct = res.data.product;
         let _products = [...products];
         if (res.data.success && res.data.product) {
@@ -569,7 +568,7 @@ function Products(props) {
   }, []);
  
   return (
-    <div className="p-2 sm:p-3 card flex flex-column flex-wrap gap-3 align-items-center justify-content-center sm:flex-row">
+    <div className="p-2 sm:p-3 card flex flex-column flex-wrap gap-3 align-items-center justify-content-center sm:flex-row bg-white border-round-lg shadow-2">
       <Toolbar className="mb-4" left={toolbarTemplate}></Toolbar>
       <DataTable
         value={products}
@@ -721,6 +720,7 @@ function Products(props) {
                   <InputNumber
                     id="price"
                     name="price"
+                    maxFractionDigits={2}
                     value={product.price}
                     onValueChange={(e) => onFormChange(e)}
                     placeholder="Price"
@@ -737,6 +737,7 @@ function Products(props) {
                   <InputNumber
                     id="retail"
                     name="retail"
+                    maxFractionDigits={2}
                     value={product.retail_price}
                     onValueChange={(e) => onFormChange(e)}
                     placeholder="Stock Price"
@@ -744,6 +745,19 @@ function Products(props) {
                   />
                 </div>
               </div>
+            </div>
+            <div className="field">
+              <label htmlFor="stock" className="mb-3 font-bold">
+                Unit count
+              </label>
+              <InputNumber
+                    id="stock"
+                    name="stock"
+                    value={product.stock}
+                    onValueChange={(e) => onFormChange(e)}
+                    placeholder="0"
+                    required
+                  />
             </div>
             <div className="field">
               <label htmlFor="category" className="mb-3 font-bold">

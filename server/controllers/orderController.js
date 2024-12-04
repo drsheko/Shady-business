@@ -310,7 +310,6 @@ exports.GET_CAT_PERCENT = async(req, res) =>{
        return res.status(200).json({success:true, categories})
 
   }catch(error){
-    console.log(error)
     return res.status(401).json({ success: false, error });
   }
 }

@@ -82,7 +82,7 @@ function OrderSummary(props) {
               {item.status === "main" ? item.name : item.product.name}
             </p>
             {typeof item.discountedPrice === "undefined" ? (
-              <p className="text-800 align-self-end">$ {item.price}</p>
+              <p className="text-800 align-self-end">${item.price}</p>
             ) : (
               <div className="flex flex-column">
                 <p className="line-through text-300 font-medium">
@@ -175,9 +175,9 @@ function OrderSummary(props) {
           )}
         </div>
       </div>
-      <div className="flex flex-row justify-content-between w-full my-2 border-top-1 border-200 p-4">
+      <div className="flex flex-row justify-content-between align-items-center w-full my-2 border-top-1 border-200 p-4">
         <p className="text-800 text-lg">Total(USD)</p>
-        <p className="text-800 font-bold text-3xl">$ {orderTotalPrice()}</p>
+        <p className="text-800 font-bold text-3xl">${orderTotalPrice()}</p>
       </div>
     </div>
   );

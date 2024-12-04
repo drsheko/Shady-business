@@ -6,7 +6,8 @@ function NavLinks(props) {
 
   return (
     <div className="card">
-      <Menubar model={links} breakpoint="360px" />
+      <Menubar model={links} breakpoint="360px" 
+    />
     </div>
   );
 }

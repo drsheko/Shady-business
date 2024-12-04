@@ -8,11 +8,13 @@ import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Messages } from "primereact/messages";
 import { UserContext } from "../App";
+import { useShoppingCart } from "../contexts/shoppingCartContext";
 
 function SignInSidebar(props) {
   const [checked, setChecked] = useState(false);
   let navigate = useNavigate();
   let { user, setUser } = useContext(UserContext);
+  let { setShoppingList, shoppingList,processSavedCart } = useShoppingCart();
   let msgs = useRef(null);
   const [form, setForm] = useState({
     email: "",
@@ -22,7 +24,7 @@ function SignInSidebar(props) {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+  
   const handleFormSubmit = async (e) => {
     msgs.current.clear();
     try {
@@ -35,9 +37,16 @@ function SignInSidebar(props) {
       if (success) {
         props.setSignInVisible(false);
         var loggedUser = res.data.user;
+        let savedCart = loggedUser.cart;
+        if (savedCart.length > 0 && shoppingList.length <= 0) {
+          let list = processSavedCart(savedCart);
+          setShoppingList(list);
+        }
         // Save logged user to local storage
         localStorage.setItem("SHADY_BUSINESS_user", JSON.stringify(loggedUser));
+
         setUser(loggedUser);
+        navigate("/");
       }
     } catch (err) {
       msgs.current.show({
@@ -152,7 +161,7 @@ function SignInSidebar(props) {
                 <span className="text-600 font-medium line-height-3">
                   Don't have an account?
                 </span>
-                <a className="font-medium no-underline ml-2 text-primary cursor-pointer">
+                <a className="font-medium no-underline ml-1 text-primary cursor-pointer">
                   <Link
                     to="/signup"
                     className="no-underline text-primary"
@@ -214,9 +223,13 @@ function SignInSidebar(props) {
                       Remember me
                     </label>
                   </div>
-                  <a className="font-medium no-underline m-0 sm:ml-2 text-primary text-right cursor-pointer">
+                  <Link
+                    to="/forgetpassword"
+                    className="font-medium no-underline m-0 sm:ml-2 text-primary text-right cursor-pointer"
+                    onClick={() => props.setSignInVisible(false)}
+                  >
                     Forgot password
-                  </a>
+                  </Link>
                 </div>
                 <Button
                   label="Sign In"

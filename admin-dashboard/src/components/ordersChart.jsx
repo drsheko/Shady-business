@@ -66,6 +66,7 @@ function OrdersChart({ ordersChartMonths, ordersChartGraph }) {
                 backgroundColor: documentStyle.getPropertyValue("--blue-500"),
                 borderColor: documentStyle.getPropertyValue("--blue-500"),
                 data: myData,
+                minBarLength: 1
               },
             ],
           };
@@ -74,8 +75,10 @@ function OrdersChart({ ordersChartMonths, ordersChartGraph }) {
             aspectRatio: 1,
             plugins: {
               legend: {
+                position:"bottom",
                 labels: {
                   fontColor: textColor,
+                 
                 },
               },
             },

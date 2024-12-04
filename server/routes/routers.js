@@ -16,9 +16,7 @@ var OrderController = require("../controllers/orderController");
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
-//###################### Project #######################
-// get Project Configuration
-router.get("/api/project/configuration", ProjectController.get_Configuration)
+
 //----------------USERS-------------------------------------------
 // Sign Up
 router.post("/api/signup", UserController.signup_post);
@@ -38,6 +36,10 @@ router.post("/api/resetpassword/matchcode", UserController.MATCH_RESET_PASSWORD_
 router.post("/api/resetpassword/resetpassword", UserController.RESET_PASSWORD);
 // GET ALL USERS 
 router.get("/api/users/all", UserController.GET_ALL_USERS);
+
+// UPDATE SHOPPING CART 
+
+router.post("/api/shoppingcart", UserController.UPDATE_CART);
 //-------------------CATEGORIES------------------------
 //CREATE A NEW Category
 router.post("/api/categories/addCategory", CategoryController.addCategory);
@@ -167,5 +169,15 @@ router.post("/api/orders/cat", OrderController.GET_CAT_PERCENT);
 // Get REvenu && PROFIT
 router.post("/api/orders/revenu", OrderController.GET_GROSS_PROFIT);
 
+//###################### Project #######################
+// get Project Configuration
+router.get("/api/project/configuration", ProjectController.get_Configuration);
 
+// UPDATE PROJECT NAME 
+router.post("/api/project/name", ProjectController.EDIT_PROJECT_TITLE);
+// UPDATE PROJECT warning banner 
+router.post("/api/project/warningbanner", ProjectController.EDIT_PROJECT_Warning_Banner);
+
+// update PROJECT SLIDE SHOW 
+router.post("/api/project/slideshow", ProjectController.UPDATE_SLIDE_SHOW);
 module.exports = router;

@@ -11,6 +11,13 @@ const userSchema = new Schema({
   address: [{ type:  Schema.Types.ObjectId, ref: "address", default: [] }],
   status: { type: String, required: true, default: "member" }, // memeber // admin // manager
   orders: [{ type: Schema.Types.ObjectId, ref: "order", default: [] }],
+  cart: [
+    {
+      product: { type: Schema.Types.ObjectId, ref: "product" },
+      option: { type: Schema.Types.ObjectId, ref: "productOption" , default:null},
+      inCart: { type: Number, default: 1 },
+    },
+  ],
   lists: {
     like: [],
     wishlist: [],
@@ -18,6 +25,8 @@ const userSchema = new Schema({
   },
   reviews: [{ type: Schema.Types.ObjectId, ref: "review", default: [] }],
   payments: [{ type: Schema.Types.ObjectId, ref: "payment", default: [] }],
+  temporaryCode :{type:String, default:""},
+  createAt:{type: Date, default : Date.now}
 });
 
 module.exports = mongoose.model("user", userSchema, "users");

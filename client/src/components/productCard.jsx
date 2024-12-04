@@ -1,84 +1,152 @@
 import React, { useEffect } from "react";
 import { Button } from "primereact/button";
 import { Rating } from "primereact/rating";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-function ProductCard({product, layout}) {
-  
+function ProductCard({ product, layout }) {
+  const navigate = useNavigate();
+
   return (
     <>
       {layout === "list" ? (
-        <div className="col-12 card shadow-4 p-2 border-round-lg">
-          {" "}
+        <div className="col-12 sm:col-6 lg:col-4  p-2  border-0">
           {/* render product as a List item*/}
-          <div className="product-list-item ">
-            <img
-             
-              src={`../src/assets/vape/${product.image}`}
-              onError={(e) =>
-                (e.target.src =
-                  "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
-              }
-              alt={product.name}
-            />
-            <div className="product-list-detail">
-              <div className="product-name">{product.name}</div>
-              <div className="product-description">{product.description}</div>
-              <Rating value={product.rating} readOnly cancel={false}></Rating>
-              <i className="pi pi-tag product-category-icon"></i>
-              <span className="product-category">{product.category}</span>
+          <div className="flex flex-column">
+            <div className="flex flex-row border-round-md shadow-4 w-full h-full ">
+              <div className="w-5 border-round-md ">
+                <img
+                  src={product.photos[0]}
+                  onError={(e) =>
+                    (e.target.src =
+                      "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+                  }
+                  alt={product.name}
+                  className="max-w-full h-full border-round-md"
+                />
+              </div>
+              <div className="flex flex-column w-7 py-2 pl-2 text-overflow-ellipsis ">
+                <div className="text-primary text-lg sm:text-xl  font-semibold capitalize white-space-nowrap	text-overflow-ellipsis max-w-full	 hover:text-primary hover:underline cursor-pointer">
+                  {product.name}
+                </div>
+                <span className="font-semibold text-400 text-basis md:text-lg capitalize">
+                  {product.category.name}
+                </span>
+
+                <div className="product-list-action my-2">
+                  <div className="flex flex-column">
+                    <Rating
+                      value={product.rating}
+                      readOnly
+                      cancel={false}
+                      pt={{
+                        root: {
+                          className: "text-sm max-w-7rem",
+                        },
+                        item: {
+                          className: "text-800 m-0",
+                        },
+                        onIcon: {
+                          className: "text-yellow-500 m-0",
+                        },
+                        offIcon: {
+                          className: "text-yellow-500 m-0 p-0 text-sm w-1rem ",
+                        },
+                      }}
+                    />
+                    <span className="font-semibold text-400">
+                      {product.reviews.length} review
+                    </span>
+                    <p className="text-green-700 font-semibold align-self-end mr-3">
+                      ${product.price}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  label="Add To Cart"
+                  size="small"
+                  className=" border-round-left-3xl	border-noround-right shadow-4 hover:shadow-6 my-2"
+                  onClick={() =>
+                    navigate(`/product/${product.name}/${product._id}`, {
+                      state: product,
+                    })
+                  }
+                />
+              </div>
             </div>
-            <div className="product-list-action">
-              <span className="product-price">${product.price}</span>
-              <Button
-                icon="pi pi-shopping-cart"
-                label="Add to Cart"
-                disabled={product.inventoryStatus === "OUTOFSTOCK"}
-              ></Button>
-              <span
-                className={`product-badge status-${product.inventoryStatus.toLowerCase()}`}
-              >
-                {product.inventoryStatus}
-              </span>
+            <div>
+              
             </div>
           </div>
         </div>
       ) : (
-        <div className="col-12 sm:col-6 md:col-4  lg:col-3">
+        <div className="col-12 sm:col-6 md:col-4  lg:col-3 m-2 shadow-3 border-round-lg surface-ground	max-w-10rem	sm:max-w-12rem	">
           {" "}
           {/* render product as a grid item*/}
-          <div className="product-grid-item card border-round-lg shadow-4">
-            <div className="product-grid-item-top">
-              <div>
-                <i className="pi pi-tag product-category-icon"></i>
-                <span className="product-category">{product.category}</span>
+          <div className="flex flex-column card border-round-lg shadow-4">
+            <img
+              src={product.photos[0]}
+              alt=""
+              className="w-full border-noround border-round-top-lg h-10rem sm:h-12rem"
+            />
+            <div className="flex flex-column p-3 text-center">
+              <p className="font-semibold text-lg sm:text-xl text-primary cursor-pointer  capitalize">
+                {product.name}
+              </p>
+              <p className="font-medium text-sm sm:text-base capitalize text-600 ">
+                {product.category.name}
+              </p>
+              <div className="flex flex-row justify-content-center">
+                <Rating
+                  value={product.rating}
+                  readOnly
+                  cancel={false}
+                  pt={{
+                    root: {
+                      className: "text-sm max-w-7rem",
+                    },
+                    item: {
+                      className: "text-800 m-0",
+                    },
+                    onIcon: {
+                      className: "text-yellow-500 m-0",
+                    },
+                    offIcon: {
+                      className: "text-yellow-500 m-0 p-0 text-sm w-1rem ",
+                    },
+                  }}
+                ></Rating>
+                <span className="ml-1 text-800">
+                  ({product.reviews.length})
+                </span>
               </div>
-              <span
-                
-              >
-                {product.inventoryStatus}
-              </span>
             </div>
-            <div className="product-grid-item-content">
-              <img className="border-round-lg"
-                src={`../src/assets/vape/${product.image}`}
-                onError={(e) =>
-                  (e.target.src =
-                    "https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png")
+            <div className="flex flex-row justify-content-between align-items-center mb-4">
+              <p className="ml-3 font-semibold text-green-700">
+                {" "}
+                ${product.price}
+              </p>
+              <Button
+                label="Add To Cart"
+                size="small"
+                className="hidden sm:block border-round-left-3xl	border-noround-right shadow-4 hover:shadow-6"
+                onClick={() =>
+                  navigate(`/product/${product.name}/${product._id}`, {
+                    state: product,
+                  })
                 }
-                alt={product.name}
               />
-              <div className="product-name"><Link to='/product' className="no-underline">{product.name}</Link> </div>
-              <div className="product-description">{product.description}</div>
-              <Rating value={product.rating} readOnly cancel={false}></Rating>
-            </div>
-            <div className="product-grid-item-bottom">
-              <span className="product-price">${product.price}</span>
               <Button
                 icon="pi pi-shopping-cart"
-                label="Add to Cart"
-                disabled={product.inventoryStatus === "OUTOFSTOCK"}
-              ></Button>
+                size="small"
+                rounded
+                raised
+                className="sm:hidden shadow-4 hover:shadow-6 mr-3"
+                onClick={() =>
+                  navigate(`/product/${product.name}/${product._id}`, {
+                    state: product,
+                  })
+                }
+              />
             </div>
           </div>
         </div>

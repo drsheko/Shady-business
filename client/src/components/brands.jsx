@@ -43,14 +43,14 @@ function Brands(props) {
             brands.map((brand) => {
               return (
                 <div
-                  className="brand col-6 h-5rem sm:col-4 sm:h-7rem md:col-3 md:h-8rem lg:col-3 lg:h-8rem  cursor-pointer"
+                  className="brand col-12 max-h-12rem sm:col-6 sm:h-9rem md:col-4 md:h-12rem lg:col-4 lg:h-16rem  cursor-pointer"
                   key={brand.name}
                   onClick={()=>navigate(`/brand/${brand.name}/${brand._id}`)}
                 >
                   <img
                     src={brand.photo}
                     alt={brand.name}
-                    className="shadow-5 border-round-lg w-full h-full"
+                    className="  w-full h-full"
                   />
                 </div>
               );

@@ -10,18 +10,19 @@
     "serve": " vite --port 8000"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
-    "@mui/icons-material": "^5.11.11",
-    "@mui/material": "^5.11.15",
     "axios": "^1.3.4",
     "moment": "^2.29.4",
     "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",
-    "primereact": "^9.2.2",
+    "primereact": "^9.6.0",
     "react": "^18.2.0",
+    "react-countdown": "^2.3.5",
+    "react-credit-cards-2": "^1.0.1",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.10.0"
+    "react-form-stepper": "^2.0.3",
+    "react-progress-stepper": "^0.2.2",
+    "react-router-dom": "^6.10.0",
+    "react-step-builder": "^3.0.6"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

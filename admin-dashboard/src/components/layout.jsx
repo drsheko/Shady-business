@@ -10,7 +10,7 @@ function Layout(props) {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [mobileSidebarVisible, setMobileSidebarVisible] = useState(false);
   const contentRef = useRef(null)
-  const toggleSidebar =() =>{ console.log("ssssssssssss")
+  const toggleSidebar =() =>{
     if(sidebarVisible){
       setSidebarVisible(false);
       contentRef.current.style.marginLeft="0"
@@ -24,14 +24,15 @@ function Layout(props) {
     }
   }
   return (
+    
     <div className="flex  w-full min-h-screen p-0">
       <div
-        className=" "
+        className="w-full "
         style={{
           backgroundColor: "#EFF3F8",
           display: "flex",
           flexDirection: "row",
-          height: "90%",
+          minHeight: "100%",
         }}
       >
         <Header

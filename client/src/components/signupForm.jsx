@@ -62,7 +62,6 @@ function Signup(props) {
         setAccountCreated(true);
       }
     } catch (error) {
-      console.log(error);
       window.scrollTo(0, 0);
       msgs.current.show([
         {
@@ -79,7 +78,20 @@ function Signup(props) {
     <div>
       {accountCreated ? (
         <div className="flex flex-column">
-          account created successfully
+             <div className="text-center">
+            <p className="capitalize font-semibold text-lg my-4">
+            account created successfully 
+            </p>
+            <i
+              className="pi pi-check mt-0 p-5 "
+              style={{
+                fontSize: "2em",
+                borderRadius: "50%",
+                backgroundColor: "#0ee85e",
+                color: "var(--surface-b)",
+              }}
+            ></i>
+          </div>
           <Link
             to={".."}
             onClick={(e) => {
@@ -231,7 +243,7 @@ function Signup(props) {
                   className="w-full text-800"
                 />
               </div>
-              <div className="field col-12 sm:col-6">
+              <div className="field col-12 sm:col-4">
                 <label
                   htmlFor="state"
                   className="block text-900 font-medium mb-2"
@@ -249,7 +261,25 @@ function Signup(props) {
                   required
                 />
               </div>
-              <div className="field col-12 sm:col-6">
+              <div className="field col-12 sm:col-4">
+                <label
+                  htmlFor="city"
+                  className="block text-900 font-medium mb-2"
+                >
+                  City <span className="text-red-500">*</span>
+                </label>
+                <InputText
+                  id="city"
+                  name="city"
+                  value={form.city}
+                  onChange={onFormChange}
+                  type="text"
+                  placeholder="State"
+                  className="w-full text-800"
+                  required
+                />
+              </div>
+              <div className="field col-12 sm:col-4">
                 <label
                   htmlFor="country"
                   className="block text-900 font-medium mb-2"

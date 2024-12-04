@@ -62,7 +62,6 @@ function Orders(props) {
   };
   const onCellSelect = (event) => {
     toast.current.show({ severity: 'info', summary: 'Cell Selected', detail: `Name: ${event.value}`, life: 3000 });
-    console.log(event)
 };
 
 const onCellUnselect = (event) => {
@@ -82,7 +81,7 @@ const showCustomer =(data) =>{
     setCustomerDialog({visible:true, customer:data})
 }
 const showOrderStatus = (data) => {
-    console.log('status')
+
 }
   //################### Body Templates#############################
   const imageBodyTemplate = (data) => {
@@ -151,7 +150,6 @@ const showOrderStatus = (data) => {
         let res = await axios.get(url);
         if (res.data.success && res.data.orders) {
           setOrders(res.data.orders);
-          console.log(res.data.orders);
         }
       } catch (error) {
         toast.current.show({
@@ -165,14 +163,14 @@ const showOrderStatus = (data) => {
     getOrders();
   }, []);
   return (
-    <div className="card">
+    <div className="p-2 sm:p-3 card flex flex-column flex-wrap gap-3 align-items-center justify-content-center sm:flex-row bg-white border-round-lg shadow-2">
       <Toast ref={toast} />
       <DataTable
         value={orders}
         dataKey="_id"
         header={header}
         stripedRows
-        tableStyle={{ minWidth: "60rem" }}
+        className="w-full"
         expandedRows={expandedRows}
         onRowToggle={(e) => setExpandedRows(e.data)}
         onRowExpand={onRowExpand}

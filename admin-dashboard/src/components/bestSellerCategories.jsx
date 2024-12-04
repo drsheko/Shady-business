@@ -33,9 +33,7 @@ function BestSellerCategories(props) {
             let res = await axios.post(url);
             if (res.data.success && res.data.categories) {
               setCategories(res.data.categories);
-              console.log("data", res.data.categories)
                 let categoriesData = getCategoriesData(res.data.categories);
-                console.log("catData" , categoriesData)
               const documentStyle = getComputedStyle(document.documentElement);
               const textColor = documentStyle.getPropertyValue("--text-color");
               const textColorSecondary = documentStyle.getPropertyValue(
@@ -49,17 +47,17 @@ function BestSellerCategories(props) {
                   {
                     label: "Categories",
                     backgroundColor: 
-                    [documentStyle.getPropertyValue("--green-500"),
-                    documentStyle.getPropertyValue("--orange-500"),
+                    [documentStyle.getPropertyValue("--cyan-500"),
                     documentStyle.getPropertyValue("--yellow-500"),
+                    documentStyle.getPropertyValue("--orange-500"),
                     documentStyle.getPropertyValue("--blue-500"),
                     documentStyle.getPropertyValue("--red-500"),
                     documentStyle.getPropertyValue("--indigo-500"),
                 ],
                 hoverBackgroundColor :[
-                        documentStyle.getPropertyValue("--green-300"),
-                        documentStyle.getPropertyValue("--orange-300"),
+                        documentStyle.getPropertyValue("--cyan-300"),
                         documentStyle.getPropertyValue("--yellow-300"),
+                        documentStyle.getPropertyValue("--orange-300"),
                         documentStyle.getPropertyValue("--blue-300"),
                         documentStyle.getPropertyValue("--red-300"),
                         documentStyle.getPropertyValue("--indigo-300")
@@ -72,6 +70,7 @@ function BestSellerCategories(props) {
                 
                 plugins: {
                   legend: {
+                    position:"bottom",
                     labels: {
                       fontColor: textColor,
                     },
@@ -92,13 +91,20 @@ function BestSellerCategories(props) {
         getCategories();
       }, []);
     return (
-        <div className="card">
-        <Chart
+        <div className="col-12 md:col-5  p-2  md:min-h-full">
+        <div className="card mb-0 p-3 shadow-2 border-round-lg bg-white h-full">
+       
+            <p className="font-semibold text-lg mb-2">Best Selling Categories</p>
+            <div className="mx-auto max-w-min"> 
+            <Chart
           type="pie"
           data={chartData}
           options={chartOptions}
           className="w-full "
         />
+            </div>
+        
+      </div>
       </div>
     );
 }

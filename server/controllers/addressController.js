@@ -3,7 +3,6 @@ var User = require("../models/userModel");
 
 // Create Address
 exports.Create_ADDRESS = async (req, res) => {
-  console.log(req.body);
   try {
     let newAddress = new Address({
       user: req.body.user,
@@ -53,7 +52,7 @@ exports.EDIT_ADDRESS = async (req, res) => {
 };
 
 // Delete Address
-exports.DELETE_ADDRESS = async (req, res) => {console.log(req.body)
+exports.DELETE_ADDRESS = async (req, res) => {
   let id = req.body._id;
   try {
     await Address.findByIdAndDelete(id);

@@ -136,14 +136,14 @@ function CartItem({ product }) {
             </p>
 
             {typeof product.discountedPrice === "undefined" ? (
-              <p className="text-lg">$ {product.price}</p>
+              <p className="text-lg">${product.price}</p>
             ) : (
               <div className="flex flex-row">
                 <p className="line-through text-300 font-medium text-lg">
-                  $ {product.price}
+                  ${product.price}
                 </p>
                 <p className="text-green-500 font-semibold text-lg ml-2 ">
-                  $ {product.discountedPrice}
+                  ${product.discountedPrice}
                 </p>
               </div>
             )}

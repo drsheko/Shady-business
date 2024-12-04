@@ -137,7 +137,8 @@ function CartOverlay(props) {
             <div className="flex flex-row justify-content-between align-items-center w-full  border-y-1	 border-100 p-4 mt-auto ">
               <p className="text-800 text-lg">Total(USD)</p>
               <p className="text-800 font-semibold text-3xl">
-                ${orderTotalPrice() - totalTax()}
+                ${(orderTotalPrice() - totalTax()).toFixed(2)
+                }
               </p>
             </div>
             <div className="p-3 flex justify-content-end min-h-content surface-50">

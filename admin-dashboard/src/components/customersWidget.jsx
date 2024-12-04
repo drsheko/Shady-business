@@ -49,8 +49,8 @@ function CustomersWidget(props) {
     return (
         <>
         {isLoading || error ? (
-          <div className="col-12 lg:col-6 xl:col-3 p-2 ">
-            <div className="card mb-0 p-3 shadow-2 border-round-lg">
+          <div className="col-12 md:col-6 xl:col-3 p-2 ">
+            <div className="card mb-0 p-3 shadow-2 border-round-lg bg-white">
               <div className="flex justify-content-between mb-3">
                 <div>
                   <Skeleton
@@ -67,8 +67,8 @@ function CustomersWidget(props) {
             </div>
           </div>
         ) : (
-          <div className="col-12 lg:col-6 xl:col-3 p-2 ">
-            <div className="card mb-0 p-3 shadow-2 border-round-lg">
+          <div className="col-12 md:col-6 xl:col-3 p-2 ">
+            <div className="card mb-0 p-3 shadow-2 border-round-lg bg-white">
               <div className="flex justify-content-between mb-3">
                 <div>
                   <span className="block text-500 font-medium mb-3">Customers</span>

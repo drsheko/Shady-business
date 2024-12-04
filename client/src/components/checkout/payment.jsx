@@ -67,7 +67,6 @@ function Payment(props) {
         });
       }
     } catch (error) {
-      console.log(error);
       toast.current.show({
         severity: "error",
         summary: "Error",

@@ -13,36 +13,39 @@ function BestSellerProducts(props) {
           setProducts(res.data.products);
         }
       } catch (error) {
-        console.log(error);
+      
       }
     };
     getProducts();
   }, []);
   return (
-    <div className="col-12 md:col-6 lg:col-4">
-      <div className="flex flex-column gap-3">
+    <div className="col-12 md:col-5 p-2 md:max-h-30rem">
+      
+      <div className="flex flex-column gap-3 shadow-3 border-round-lg p-3 bg-white h-full overflow-y-auto bestSellerProducts-card">
+      <p className="font-semibold text-lg">Best Selling products</p>
         {products.length > 0 &&
           products.map((product) => {
             return (
-              <div className="flex flex-row justify-content-between ">
-                <div className="flex flex-row">
+              <div className="flex flex-row justify-content-between flex-wrap ">
+                <div className="flex flex-row justify-content-start ">
                   <div>
                     <img
                       src={product.photos[0]}
                       alt=""
                       width={100}
                       height={100}
+                      className="w-4rem h-4rem  mr-2 shadow-2 border-round-md"
                     />
                   </div>
-                  <div className="flex flex-column h-6rem">
-                    <p className="text-800 font-semibold mb-2">
+                  <div className="flex flex-column justify-content-start align-items-start  p-0 m-0">
+                    <p className="text-800 font-semibold m-0">
                       {product.status === "main"
                         ? product.name
                         : product.product.name}
                     </p>
 
                     {product.status === "option" && (
-                      <p className="text-500 capitalize my-0">{product.name}</p>
+                      <p className="text-500 font-semibold capitalize my-0">{product.name}</p>
                     )}
                     <Rating
                       value={
@@ -70,7 +73,7 @@ function BestSellerProducts(props) {
                     />
                   </div>
                 </div>
-                <p className="font-semibold text-green-600">${product.price}</p>
+                <p className=" font-semibold text-green-600 ml-auto p-0 my-0">${product.price}</p>
               </div>
             );
           })}

@@ -22,13 +22,13 @@ const couponSchema = new Schema({
   minimumPurchase: { type: Number }, // negative value for NO MINIUM
   maximumPurchase: { type: Number }, // negative value for NO MAXIMUM
   freeGift: { type: Schema.Types.ObjectId, ref: "product", default: null },
-  giftCount: { type: Number, default:null },
-  percentageOff:{ type: Number, default:null },
-  amountOff:{ type: Number, default:null },
+  giftCount: { type: Number, default:0 },
+  percentageOff:{ type: Number, default:0 },
+  amountOff:{ type: Number, default:0 },
   products: [{ type: Schema.Types.ObjectId, ref: "product", default: [] }],
   redeemedBy: [{ type: Schema.Types.ObjectId, ref: "user", default: [] }],
   userMaxRedeem: { type: Number },
-  data: Schema.Types.Mixed,//{photo, freeGift, giftRatio}
+  photo:{type:String, default:''},
 });
 
 module.exports = mongoose.model("coupon", couponSchema, "coupons");

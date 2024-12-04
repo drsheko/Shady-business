@@ -92,7 +92,6 @@ const isCouponValid = (coupon) => {
 };
 
 const isCouponApplicable = (coupon, orderTotal) => {
-  console.log(coupon.minimumPurchase);
   if (coupon.minimumPurchase > 0 && coupon.minimumPurchase > orderTotal()) {
     return false;
   }

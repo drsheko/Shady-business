@@ -20,8 +20,8 @@ function SingInPage(props) {
     e.preventDefault();
     setError(null)
     try{
-        let url;
-        let res = await axios.post("http://localhost:3000/api/admin/login", {
+        let url = "http://localhost:3000/api/admin/login";
+        let res = await axios.post(url, {
         email: form.email,
         password: form.password,
       });
@@ -32,7 +32,6 @@ function SingInPage(props) {
             }
         }
     }catch(error){
-        console.log(error)
         setError(error.response.data.error.message)
     }
   }

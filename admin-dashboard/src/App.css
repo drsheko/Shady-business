@@ -1,15 +1,106 @@
-html{
-    scroll-behavior: smooth;
-    padding: 0;
-    margin: 0;
+*{
+  box-sizing: border-box;
 }
-body{
-    margin: 0;
-    padding: 0;
+#root{
+  width: 100%;
+  height: 100%;
+}
+html {
+  scroll-behavior: smooth;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+}
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+
+}
+.content-container{
+  padding: 7rem 2rem 2rem 2rem;
+  height: max-content;
+  width: 100%;
+  height: 100%;
+}
+.content{
+  height: max-content;
+}
+@media only screen and (max-width:990px) {
+  .content-container{
+    margin: 0 !important;
+   
+    width: 100%;
+    max-width: 100vw !important;
+  }
+  .sidebar{
+    display: none;
+  }
+}
+
+
+.sidebar {
+    position: fixed;
+    width: 300px;
+    /*height: calc(100vh - 9rem);*/
+    z-index: 999;
+    overflow-y: auto;
+    top: 7rem;
+    left: 2rem;
+    transition: transform .2s,left .2s;
+    background-color: var(--surface-overlay);
+    border-radius: 12px;
+    padding: .5rem 1.5rem;
+    box-shadow: 0 3px 5px rgba(0,0,0,.02),0 0 2px rgba(0,0,0,.05),0 1px 4px rgba(0,0,0,.08);
+    box-sizing: border-box;
 }
 
 /* side Navigation*/
 .p-tieredmenu {
-    border: none;
-    background-color: transparent;
+  border: none;
+  background-color: transparent;
+
+}
+.p-panelmenu{
+  height: min-content !important;
+}  
+
+/*COUPONS*/
+/* TRISELECT */
+.p-multiselect.p-multiselect-chip .p-multiselect-token {
+  background: var(--primary-color) !important;
+  color: var(--surface-0) !important;
+}
+.p-inputwrapper-filled.p-multiselect.p-multiselect-chip .p-multiselect-label {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* PRODUCTS*/
+/* UPLOADPS*/
+.p-fileupload-content > div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/*RATING*/
+.p-rating .p-rating-item {
+	width: 1.2rem !important;
+	
+}
+
+/*SIGN IN PAGE*/
+.signin-page{
+  background: url("../src/assets/vape-bg.jpg") ;
+  background-repeat: no-repeat;
+  background-position: 0% 0%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }

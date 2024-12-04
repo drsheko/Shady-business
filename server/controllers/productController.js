@@ -78,8 +78,7 @@ exports.CREATE_PRODUCT = [
       });
 
       return res.status(200).json({ success: true, product });
-    } catch (error) {
-      console.log("last", error);
+    } catch (error) { 
       return res.status(401).json({ success: false, error });
     }
   },
@@ -247,3 +246,5 @@ exports.edit = async (req, res) => {
       return res.status(401).json({ success: false, error });
     });
 };
+
+

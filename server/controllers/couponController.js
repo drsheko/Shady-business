@@ -125,7 +125,7 @@ exports.Edit_Coupon = [
             expireDate: req.body.expireDate,
             minimumPurchase: req.body.minimumPurchase,
             maximumPurchase: req.body.maximumPurchase,
-            products: req.body.products,
+            products: req.body.products?req.body.products:[],
             redeemedBy: req.body.redeemedBy,
             userMaxRedeem: req.body.userMaxRedeem,
             freeGift: req.body.freeGift,

@@ -153,14 +153,12 @@ exports.All_Categories = async (req, res) => {
       .populate("products");
     return res.status(200).json({ success: true, allCategories });
   } catch (error) {
-    console.log(error);
     return res.status(401).json({ success: false, error });
   }
 };
 
 //get category by id
 exports.GET_CATEGORY_BY_Id = async (req, res) => {
-  console.log(req.body.id);
   try {
     let category = await Category.findById(req.body.id).populate({
       path: "products",

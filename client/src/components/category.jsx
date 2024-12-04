@@ -1,21 +1,20 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Link } from "react-router-dom";
 import { DataView, DataViewLayoutOptions } from "primereact/dataview";
 import { Dropdown } from "primereact/dropdown";
+import { ProgressSpinner } from "primereact/progressspinner";
 import ProductCard from "./productCard";
-
+import HomeLink from "./homeLink";
 function Category(props) {
-  const category = useLocation().state;
+  const { name, id } = useParams();
+  const [category, setCategory] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState([]);
-  const item = (i, op) => {
-    return <Link to="/">home </Link>;
-  };
-  const items = [{ label: "Computer", template: item }];
-  const home = { icon: "pi pi-home", template: item };
+  const categoryLink = [{ label: name, className: "capitalize text-800 " }];
   const [layout, setLayout] = useState("grid");
   const [sortKey, setSortKey] = useState(null);
   const [sortOrder, setSortOrder] = useState(null);
@@ -83,42 +82,76 @@ function Category(props) {
   const header = renderHeader();
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true);
       let url = "http://localhost:3000/api/categories/category";
       try {
-        let id = category._id;
         let res = await axios.post(url, { id });
-        setProducts(res.data.category.products);
+        if (res.data.success && res.data.category) {
+          setCategory(res.data.category);
+          setProducts(res.data.category.products);
+          setIsLoading(false);
+        }
       } catch (error) {
-        console.log(error);
+        setIsLoading(false);
       }
     };
     getData();
-    console.log(category);
-  }, []);
+  }, [name, id]);
 
   return (
     <div>
-      <BreadCrumb model={items} home={home} />
-      <div className="card">
-        <p className=" text-center text-4xl font-medium capitalize my-2">
-          {" "}
-          vape tanks
-        </p>
-      </div>
-      <div className="dataview-demo flex flex-row">
-        <div className="card w-full">
-          <DataView
-            value={products}
-            layout={layout}
-            header={header}
-            itemTemplate={itemTemplate}
-            paginator
-            rows={12}
-            sortOrder={sortOrder}
-            sortField={sortField}
-          />
+      {isLoading ? (
+        <div className="card flex justify-content-center py-8">
+          <ProgressSpinner />
         </div>
-      </div>
+      ) : category ? (
+        <div className="min-h-screen flex flex-column">
+          <BreadCrumb model={categoryLink} home={HomeLink} />
+          <div className="card">
+            <p className=" text-center text-4xl font-medium capitalize my-2">
+              {category.name}
+            </p>
+          </div>
+          <div className="dataview-demo flex flex-row min-h-screen">
+            <div className="card w-full h-full">
+              <DataView
+                value={products}
+                layout={layout}
+                header={header}
+                itemTemplate={itemTemplate}
+                paginator
+                paginatorClassName="border-none mt-auto"
+                rows={5}
+                rowsPerPageOptions={[5, 10, 25, 50]}
+                tableStyle={{ minWidth: "50rem" }}
+                sortOrder={sortOrder}
+                sortField={sortField}
+                lazy={true}
+                className="align-self-end "
+                pt={{
+                  grid: {
+                    className:
+                      "flex flex-row flex-wrap justify-content-stretch p-1",
+                  },
+                  root: {
+                    className: "min-h-screen flex flex-column ",
+                  },
+                  paginator: {
+                    className:
+                      "bottom-0 absolute left-0 bottom-0  bg-red-400 border-none",
+                  },
+                  emptyMessage: {
+                    className:
+                      "text-center my-8 text-300 font-semibold text-lg",
+                  },
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

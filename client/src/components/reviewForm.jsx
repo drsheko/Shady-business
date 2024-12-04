@@ -192,7 +192,6 @@ function ReviewForm({
       "custom-cancel-btn p-button-danger p-button-rounded p-button-outlined",
   };
   useEffect(() => {
-    console.log("reeeeeeeeeeeeeeeeeeeeeeeeeee");
     if (reviewFormVisible) {
       setVisible(true);
       setIsLoading(false);

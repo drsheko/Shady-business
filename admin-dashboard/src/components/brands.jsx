@@ -411,7 +411,7 @@ const productItemTemplate = (option) => {
   }, []);
 
     return (
-        <div className="p-2 sm:p-3 card flex flex-column flex-wrap gap-3 align-items-center justify-content-center sm:flex-row">
+        <div className="p-2 sm:p-3 card flex flex-column flex-wrap gap-3 align-items-center justify-content-center sm:flex-row bg-white border-round-lg shadow-2">
         <Toolbar className="mb-4" left={toolbarTemplate}></Toolbar>
              <DataTable
         value={brands}

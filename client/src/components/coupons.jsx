@@ -12,7 +12,7 @@ function Coupons(props) {
         let res = await axios.get(url);
         setCoupons(res.data.coupons);
       } catch (error) {
-        console.log(error);
+        navigate('/error')
       }
     };
     getCoupons();

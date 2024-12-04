@@ -6,7 +6,7 @@ const { body, validationResult } = require("express-validator");
 const { async } = require("@firebase/util");
 const EmailService = require("./emailController");
 
-// Add User
+// SIGN UP User
 exports.signup_post = async (req, res) => {
   var form = {
     firstName: req.body.form.firstName,
@@ -96,7 +96,25 @@ exports.login_post = function (req, res, next) {
         return res.status(401).json({ success: false, error });
       } else {
         User.findById(user._id)
-          .populate(["address", "payments"])
+        .populate([
+          {
+            path: "payments",
+          },
+          {
+            path: "address",
+          },
+          {
+            path: "cart",
+            populate: [
+              {
+                path: "product",
+              },
+              {
+                path: "option",
+              },
+            ],
+          },
+        ])
           .then((user) => {
             return res.status(200).json({ success: true, user });
           });
@@ -114,19 +132,20 @@ exports.ADMIN_LOGIN = function (req, res, next) {
     if (!user) {
       return res.status(500).json({ success: false, error: info });
     }
-    if(user.status ===" admin"){
       req.logIn(user, function (error) {
         if (error) {
           return res.status(500).json({ success: false, error });
         } else {
           User.findById(user._id)
             .then((user) => {
-              return res.status(200).json({ success: true, user });
+              if(user.status ==="admin"){
+                return res.status(200).json({ success: true, user });
+              }
+              return res.status(500).json({success:false, error:{message:"You should be admin to gain access."}})
             });
         }
       });
-    }
-    return res.status(500).json({success:false, error:{message:"You should be admin to gain access."}})
+    
   })(req, res, next);
 };
 
@@ -283,7 +302,6 @@ exports.SEND_RESET_PASSWORD_CODE = async (req, res) => {
         });
     }
   } catch (error) {
-    console.log(error);
     return res.status(401).json({ success: false, error });
   }
 };
@@ -316,3 +334,21 @@ exports.GET_ALL_USERS = async (req, res) => {
     return res.status(401).json({ success: false, error });
   }
 };
+
+
+// UPDATE CART 
+exports.UPDATE_CART = async(req,res) => { 
+  try{
+    let userId = req.body.user ;
+    let user = await User.findByIdAndUpdate(userId,{
+      $set:{
+        cart:req.body.cart
+      }
+    },{new:true})
+    (user.cart)
+    return res.status(200).json({ success: true, user });
+
+  }catch(error){
+    return res.status(500).json({success:false, error})
+  }
+}

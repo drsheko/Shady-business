@@ -12,9 +12,12 @@ import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
 import { useClickOutside } from "primereact/hooks";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { AccountIndexContext } from "./account";
 
 function Addresses(props) {
   const { user, setUser } = useContext(UserContext);
+  let {setActiveIndex} = useContext(AccountIndexContext)
+  setActiveIndex(1)
   const menuLeft = useRef(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -114,7 +117,6 @@ function Addresses(props) {
         let data = { ...form, user: user._id };
         let res = await axios.post(url, data);
         if (res.data.success && res.data.address) {
-          console.log(res.data);
           let index = addresses.findIndex((el) => el._id === form._id);
           let _addresses = [...addresses];
           let _address = res.data.address;
@@ -134,7 +136,6 @@ function Addresses(props) {
       } else {
         let url = "http://localhost:3000/api/addresses/create/address";
         let data = { ...form, user: user._id, saveNewAddress: true };
-        console.log(data);
         let res = await axios.post(url, data);
         if (res.data.success && res.data.address) {
           let adds = [...user.address];
@@ -168,7 +169,7 @@ function Addresses(props) {
   return (
     <div className="flex flex-column ">
       {addresses.length > 0 ? (
-        <div className="flex flex-row justify-content-center flex-wrap w-full">
+        <div className="flex flex-row justify-content-center flex-wrap w-full lg:px-6">
           {addresses.map((address) => {
             return (
               <div
@@ -235,7 +236,7 @@ function Addresses(props) {
           })}
         </div>
       ) : (
-        "You don`t have any address"
+        ""
       )}
 
       <Dialog
@@ -355,7 +356,7 @@ function Addresses(props) {
           </div>
         </form>
       </Dialog>
-      <div className="flex w-full my-5 p-1 sm:p-3">
+      <div className="flex w-full my-5 p-1 sm:p-3 justify-content-center">
         <Button
           label="Add Address"
           icon="pi pi-plus"

@@ -36,7 +36,7 @@ function useNavigationlinks(props) {
               label: category.name,
               command: () => {
                 setLinkClicked(true);
-                navigate(`/category/${category.name}`, { state: category });
+                navigate(`/category/${category.name}/${category._id}`, { state: category  ,replace:true});
               },
             };
             return link;
@@ -66,7 +66,7 @@ function useNavigationlinks(props) {
         });
         setLinks([brands, ...updated, coupons]);
       } catch (error) {
-        console.log(error);
+        navigate('/error')
       }
     };
     getAllCategories();

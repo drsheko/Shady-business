@@ -2,7 +2,7 @@ var Payment = require("../models/paymentModal");
 var User = require("../models/userModel");
 
 // Create A NEW PAYMENT METHOD
-exports.Create_NEW_CARD = async (req, res) => { console.log(req.body)
+exports.Create_NEW_CARD = async (req, res) => { 
   try {
     let newCard = new Payment({
       user: req.body.user,
@@ -21,7 +21,7 @@ exports.Create_NEW_CARD = async (req, res) => { console.log(req.body)
       });
     }
     return res.status(200).json({ success: true, payment });
-  } catch (error) {console.log("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",error)
+  } catch (error) {
     return res.status(401).json({ success: false, error });
   }
 };

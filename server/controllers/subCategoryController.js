@@ -109,7 +109,8 @@ exports.GET_ONE_BY_Id = async (req, res) => {
           path: "subCategory",
         },
       ],
-    })
+     
+    }).populate('category')
     .then((subCategory) => {
       return res.status(200).json({ success: true, subCategory });
     })
@@ -134,7 +135,6 @@ exports.EDIT_SUB_CATEGORY_BY_ID = [
           uploadedFileURL = `https://firebasestorage.googleapis.com/v0/b/${snapshot.ref._location.bucket}/o/${snapshot.ref._location.path_}?alt=media`;
         })
         .catch((error) => {
-          console.log("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
           return res.status(401).json({ error: error });
         });
     } else {

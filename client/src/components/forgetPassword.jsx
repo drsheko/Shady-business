@@ -49,7 +49,6 @@ function ForgetPassword(props) {
     try {
       let url = "http://localhost:3000/api/resetpassword/matchcode";
       let res = await axios.post(url, { code, email });
-      console.log(res);
       if (res.data.success) {
         setIsCodeSubmitted(true);
       } else {

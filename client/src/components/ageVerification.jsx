@@ -12,7 +12,7 @@ function AgeVerification(props) {
         className="w-full bg-red-500 text-0 border-noround text-center py-3 "
         content={
           <p className="text-0 text-sm md:text-lg uppercase font-bold">
-            AGE Verification.
+            AGE Verification
           </p>
         }
       />

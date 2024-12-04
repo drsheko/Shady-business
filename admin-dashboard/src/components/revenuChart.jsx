@@ -87,6 +87,7 @@ function RevenuChart({revenuChartMonths}) {
             aspectRatio: 0.8,
             plugins: {
               legend: {
+                position:"bottom",
                 labels: {
                   fontColor: textColor,
                 },
@@ -136,12 +137,12 @@ function RevenuChart({revenuChartMonths}) {
   }, [revenuChartMonths]);
 
   return (
-    <div>
+    <div >
       <Chart
         type="bar"
         data={chartData}
         options={chartOptions}
-        className="w-full h-screen "
+        className="w-full max-h-full "
       />
     </div>
   );

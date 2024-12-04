@@ -1,1 +1,260 @@
+body{
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    min-height: 100vh;
+}
+html{
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth;
+    width: 100%;
+    height: 100%; 
+    overflow-y: scroll;
+}
+#root{
+    min-height: 100vh;
+}
+*{
+    padding: 0;
+    margin: 0;
+}
+/*################## navLinks ############################################3*/
+.p-menubar{
+    border:none;
+    background-color: transparent;
+}
+.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link {
+	text-transform: capitalize;
+}
 
+/*inactive links */
+.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-menuitem-text{
+    color: rgba(0,0,0,0.8);
+    font-weight: 700;
+}
+.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-submenu-icon {
+	color:  rgba(0,0,0,0.8);
+    font-weight: 700;
+	margin-left: .5rem;
+}
+/* focused links*/
+.p-menubar .p-menubar-root-list > .p-menuitem.p-menuitem-active > .p-menuitem-link .p-menuitem-text, .p-menubar .p-menubar-root-list > .p-menuitem.p-menuitem-active > .p-menuitem-link:not(.p-disabled):hover .p-menuitem-text {
+	color: var(--primary-color);
+}
+
+/* hover links*/
+.p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link:not(.p-disabled):hover .p-menuitem-text {
+	color: var(--primary-color);
+}
+/* inactive sub links*/
+.p-menubar .p-menuitem-link .p-menuitem-text {
+	color: rgba(0,0,0,0.8);
+    font-weight: 500;
+}
+/* hover sub links*/
+.p-menubar .p-menuitem.p-menuitem-active > .p-menuitem-link .p-menuitem-text {
+    color: var(--primary-color);
+  }
+.p-panelmenu{
+    height: min-content !important;
+}  
+.p-panelmenu-header > a .p-panelmenu-icon {
+    margin-right: 0.5rem;
+    position: absolute;
+    right: 0;
+  }
+ .p-menuitem-text{
+    text-transform: capitalize !important;
+ } 
+@media screen and (max-width: 960px) {
+    .p-menubar .p-menubar-button {
+        display: none;
+   }
+    .p-menubar {
+        position: inherit;
+   }
+    .p-menubar .p-menubar-root-list {
+        display: flex;
+        align-items: center;
+        position: unset;
+        padding: unset;
+        background: inherit;
+        border: unset;
+        box-shadow: unset;
+        width: unset;
+   }
+}
+/*### Header's Buttons ###*/
+@media  screen and (max-width:350px) {
+    .header-button{
+        width:2rem !important;
+    }
+}
+@media  screen and (max-width:390px) {
+    .header-button{
+        width:2.5rem !important;
+    }
+}
+/* side Navigation*/
+.p-tieredmenu {
+    border: none;
+    background-color: transparent;
+}
+/*#### Sign up ####*/
+.p-dropdown .p-dropdown-label.p-placeholder {
+	 color: #abbccd !important; 
+}
+/* DataViewDemo.css */
+
+.dataview-demo .p-dropdown {
+    width: 14rem;
+    font-weight: normal;
+}
+
+.dataview-demo .product-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.dataview-demo .product-description {
+    margin: 0 0 1rem 0;
+}
+
+.dataview-demo .product-category-icon {
+    vertical-align: middle;
+    margin-right: .5rem;
+}
+
+.dataview-demo .product-category {
+    font-weight: 600;
+    vertical-align: middle;
+}
+/*
+.dataview-demo .product-list-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+}
+
+@media screen and (max-width: 576px) {
+    .dataview-demo .product-list-item {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dataview-demo .product-list-item img {
+        width: 75%;
+        margin: 2rem 0;
+    }
+
+    .dataview-demo .product-list-item .product-list-detail {
+        text-align: center;
+    }
+
+    .dataview-demo .product-list-item .product-price {
+        align-self: center;
+    }
+
+    .dataview-demo .product-list-item .product-list-action {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dataview-demo .product-list-item .product-list-action {
+        margin-top: 2rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+}
+*/
+
+/* Side Sign In form*/
+.signin-message .p-message .p-message-wrapper{
+    padding:.5rem;
+}
+
+/* override INPUT NUMBER */
+.p-inputnumber-input {
+    flex: none;
+    width: 50px;
+    text-align: center;
+}
+
+/* Override Rating Style in review card */
+ .p-rating{
+    gap:2px;
+}
+ .p-rating .p-rating-item .p-rating-icon {
+   font-size: 1rem;
+}
+
+/**/
+.p-galleria .p-galleria-thumbnail-container{
+    background-color: var(--surface-0);
+}
+.p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-prev,
+ .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-next{
+    color:var(--primary-color)
+ }
+ .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-prev:hover,
+  .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-next:hover {
+    background-color: var(--primary-color);
+  }
+
+  /* cart item */
+
+  .cart-item-qty{
+    height: 30px;
+  }
+
+  
+
+  /*REVIEW FORM*/
+  /*UPLOADS */
+  .p-fileupload-content > div {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /*CATEGORY DISPLAY*/
+  .categoryDisplay-blur{
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    width: 100%;
+    padding: 20px 10px;
+    background: transparent;
+    border-radius: 0 0  .75rem .75rem;
+    z-index: 2;
+    opacity:.9 ;
+  }
+ 
+  /*############# CHECKOUT #####################*/
+  /*STEPPER*/
+  .eXanma , .iKVQQq{
+    margin-top: 0 !important;
+  }
+ 
+  
+.gvqPsa{
+    font-size: .75rem !important;
+    height: 3rem !important;
+}
+/*progress-bar . progress*/
+.cfwewB::after{
+    background: var(--primary-color) !important;
+}
+.step.progress {
+    background: var(--primary-color);
+  }
+ /* ############### ACCOUNT ############*/
+ .p-tabview .p-tabview-panels {
+	width: 100%;
+}

@@ -5,6 +5,7 @@ const productSchema = new Schema({
   name: { type: String, minLength: 3, required: true },
   price: { type: Number, required: true },
   retail_price: { type: Number, required: true },
+  cost_price: { type: Number },
   total_stock: { type: Number, default:0 },
   brand: { type: Schema.Types.ObjectId, ref: "brand" },
   description: { type: String, required: true },
@@ -19,12 +20,10 @@ const productSchema = new Schema({
   rating:{type:Number, default:0},
   deals: [{ type: Schema.Types.ObjectId, ref: "deal", default: [] }],
   subCategory: 
-    { type: Schema.Types.ObjectId, ref: "subCategory"},
+    { type: Schema.Types.ObjectId, ref: "subCategory",default: null },
   
-  category: { type: Schema.Types.ObjectId, ref: "category" },
+  category: { type: Schema.Types.ObjectId, ref: "category", default: null },
 
 });
-
-
 
 module.exports = mongoose.model("product", productSchema, "products");

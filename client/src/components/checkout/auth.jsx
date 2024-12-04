@@ -29,7 +29,7 @@ function Auth(props) {
       if (success) {
         props.setAccountState((state) => ({ ...state, isSubmitted: true }));
         var loggedUser = res.data.user;
-        props.setCheckoutData((state) => ({ ...state, user: loggedUser }));
+        props.setCheckoutData((state) => ({ ...state, user: loggedUser , phone:loggedUser.phone, email:loggedUser.email}));
         // Save logged user to local storage
         localStorage.setItem("SHADY_BUSINESS_user", JSON.stringify(loggedUser));
         setUser(loggedUser);
@@ -51,7 +51,7 @@ function Auth(props) {
     const res = await axios.get(url);
     if (res.data.success) {
       props.setAccountState((state) => ({ ...state, isSubmitted: false }));
-      props.setCheckoutData((state) => ({ ...state, user: null }));
+      props.setCheckoutData((state) => ({ ...state, user: null, phone:null, email:null }));
       localStorage.removeItem("SHADY_BUSINESS_user");
       setUser(null);
       toast.current.show({
@@ -62,7 +62,7 @@ function Auth(props) {
       });
     }
   };
-  useEffect(() => {
+  useEffect(() => { 
     if (!user) {
       props.setAccountState({ isActive: true, isSubmitted: false });
     } else {

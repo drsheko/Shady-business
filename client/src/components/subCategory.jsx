@@ -94,7 +94,6 @@ function SubCategory(props) {
   const header = renderHeader();
 
   useEffect(() => {
-    console.log(name);
     const getData = async () => {
       setIsLoading(true);
       let url = `http://localhost:3000/api/subCategories/subcategory/${id}`;
@@ -108,7 +107,6 @@ function SubCategory(props) {
         }
       } catch (error) {
         setIsLoading(false);
-        console.log(error);
       }
     };
     getData();
@@ -144,7 +142,7 @@ function SubCategory(props) {
                 pt={{
                   grid: {
                     className:
-                      "flex flex-row flex-wrap justify-content-stretch px-6",
+                      "flex flex-row flex-wrap justify-content-stretch p-1",
                   },
                   root: {
                     className: "min-h-screen flex flex-column ",

@@ -10,7 +10,6 @@ function Search(props) {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const search = async (event) => {
     let _filteredProducts;
-
     if (!event.query.trim().length) {
       _filteredProducts = [...products];
     } else {
@@ -28,16 +27,23 @@ function Search(props) {
         onClick={() => onItemPressed(item)}
       >
         <div className="flex flex-row align-items-center">
-        <img alt={item.name} src={item.photos[0]} style={{ width: "50px" }}  className="mr-2"/>
-        <p className="text-900 font-semibold">{item.name}</p>
+          <img
+            alt={item.name}
+            src={item.photos[0]}
+            style={{ width: "50px" }}
+            className="mr-2"
+          />
+          <p className="text-900 font-semibold">{item.name}</p>
         </div>
-        
-        <p className="text-900 font-semibold mr-0 sm:mr-2 md:mr-4">${item.price}</p>
+
+        <p className="text-900 font-semibold mr-0 sm:mr-2 md:mr-4">
+          ${item.price}
+        </p>
       </div>
     );
   };
   const onItemPressed = (item) => {
-    navigate(`/product`, { state: item });
+    navigate(`/product/${item.name}/${item._id}`);
     props.setVisibleSearch(false);
   };
   useEffect(() => {
@@ -45,9 +51,9 @@ function Search(props) {
       let url = "http://localhost:3000/api/products/all";
       try {
         let res = await axios.get(url);
-         setProducts(res.data.products);
+        setProducts(res.data.products);
       } catch (error) {
-        console.log(error);
+        navigate("/error");
       }
     };
     getData();
@@ -64,7 +70,7 @@ function Search(props) {
         onChange={(e) => setValue(e.value)}
         className="min-w-full"
         field="name"
-        />
+      />
     </div>
   );
 }

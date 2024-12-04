@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, createContext, useContext, useEffect } from "react";
 import AddToCartDialog from "../components/addToCartDialog";
 import { checkCouponByCode, applyCoupon } from "../contexts/couponFunctions";
+import { UserContext } from "../App";
 const ShoppingCartContext = createContext({});
 
 export function useShoppingCart() {
@@ -9,6 +10,7 @@ export function useShoppingCart() {
 }
 
 export function ShoppingCartProvider({ children }) {
+  const { user, setUser } = useContext(UserContext);
   const [shoppingList, setShoppingList] = useState([]);
   const [discountedShoppingList, setDiscountedShoppingList] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -22,6 +24,9 @@ export function ShoppingCartProvider({ children }) {
   const [couponCode, setCouponCode] = useState(null);
   const [coupon, setCoupon] = useState(null);
   const [couponError, setCouponError] = useState(null);
+  const [savedCart, setSavedCart] = useState(() => {
+    return JSON.parse(localStorage.getItem("SHADY_BUSINESS_cart")) || []
+  });
 
   const getItemQty = (product) => {
     return shoppingList.find((item) => item._id === product._id)?.inCart || 0;
@@ -46,6 +51,7 @@ export function ShoppingCartProvider({ children }) {
       product.inCart = qty;
       setShoppingList((currItems) => [...currItems, product]);
     }
+
     setVisible(alert);
   };
 
@@ -83,7 +89,10 @@ export function ShoppingCartProvider({ children }) {
   };
   const itemTotalPrice = (product) => {
     let qty = getItemQty(product);
-    let total = qty * product.price;
+    let total =
+      typeof product.discountedPrice === "undefined"
+        ? qty * product.price
+        : qty * product.discountedPrice;
     return total;
   };
   const shoppingListQty = () => {
@@ -150,12 +159,11 @@ export function ShoppingCartProvider({ children }) {
         setCoupon(res.coupon);
       }
     } catch (error) {
-      console.log("clip error", error);
+      navigate("/error");
     }
   };
   const updateDiscount = () => {
     let off = cartTotalPrice() - cartTotalPriceAfterDiscount();
-    console.log(cartTotalPriceAfterDiscount());
     if (off > 0) {
       setDiscount(Number(off.toFixed(2)));
     }
@@ -171,7 +179,24 @@ export function ShoppingCartProvider({ children }) {
       setAmountOff
     );
   };
-
+  const processSavedCart = (cart) => {
+    let products = [];
+    cart.map((product) => {
+      let item;
+      if (product.option) {
+        item = product.option;
+        item.product = product.product;
+        item.inCart = product.inCart;
+        item.status = "option";
+      } else {
+        item = product.product;
+        item.inCart = product.inCart;
+        item.status = "main";
+      }
+      products.push(item);
+    });
+    return products;
+  };
   const unClipCoupon = () => {
     let _list = [...shoppingList];
     _list.map((product) => {
@@ -197,6 +222,47 @@ export function ShoppingCartProvider({ children }) {
     setShippingAddress(null);
     setAmountOff(0);
   };
+  const updateCart = async (cart) => {
+    try {
+      if (user) {
+        let url = "http://localhost:3000/api/shoppingcart";
+
+        let res = await axios.post(url, {
+          user,
+          cart,
+        });
+      } 
+    } catch (error) {
+      // navigate('/error')
+    }
+  };
+  const processCartProducts = () => {
+    let products = [];
+    let _list = [...shoppingList];
+    _list.map((product) => {
+      let _product = { ...product };
+      let mainProduct =
+        _product.status === "main" ? _product._id : _product.product._id;
+      let optionProduct = _product.status === "option" ? _product._id : null;
+      let purchaseProduct = {
+        product: mainProduct,
+        inCart: _product.inCart,
+        option: optionProduct,
+      };
+      products.push(purchaseProduct);
+    });
+
+    return products;
+  };
+  useEffect(() => {
+    let products = processCartProducts();
+    if(user){
+      updateCart(products);
+    }else{
+      
+    }
+    
+  }, [shoppingList]);
   useEffect(() => {
     if (discountedShoppingList.length > 0) {
       updateDiscount();
@@ -224,12 +290,17 @@ export function ShoppingCartProvider({ children }) {
     }
   }, [amountOff]);
   useEffect(() => {
-    console.log(shippingCost);
-  }, [shippingCost, shippingMethod]);
+    if (user) {
+      let products = processSavedCart(user.cart);
+      setShoppingList(products);
+    }
+  }, []);
+
   return (
     <ShoppingCartContext.Provider
       value={{
         shoppingList,
+        setShoppingList,
         discountedShoppingList,
         setDiscountedShoppingList,
         getItemQty,
@@ -258,6 +329,7 @@ export function ShoppingCartProvider({ children }) {
         clipCoupon,
         unClipCoupon,
         resetCart,
+        processSavedCart,
       }}
     >
       <AddToCartDialog

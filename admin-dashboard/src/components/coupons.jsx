@@ -195,7 +195,7 @@ function Coupons(props) {
   // #############################//...(2) CREATE/EDIT COUPON DIALOG ...\\##############################################
 
   //####################...(2-A) CREATE/EDIT FUNCTIONS ...#################
-  const onFormChange = (e) => {
+  const onFormChange = (e) => { 
     let name = e.target.name;
     let value = e.target.value;
     setCoupon({ ...coupon, [name]: value });
@@ -256,7 +256,7 @@ function Coupons(props) {
       let url = "http://localhost:3000/api/coupons/new/coupon";
 
       try {
-        let data = { ...coupon, photo: uploadedPhoto };
+        let data = { ...coupon, photo: uploadedPhoto ,products:selectedProducts};
         let res = await axios.postForm(url, data);
         let newCoupon = res.data.coupon;
         let _coupons = [...coupons];
@@ -453,7 +453,7 @@ function Coupons(props) {
   }, []);
 
   return (
-    <div className="p-2 sm:p-3 card flex flex-column flex-wrap gap-3 align-items-center justify-content-center sm:flex-row">
+    <div className="p-2 sm:p-3 card flex flex-column flex-wrap gap-3 align-items-center justify-content-center sm:flex-row bg-white border-round-lg shadow-2">
       <Toolbar className="mb-4" left={toolbarTemplate}></Toolbar>
       <DataTable
         value={coupons}
@@ -492,6 +492,7 @@ function Coupons(props) {
           field="code"
           header="Code"
           headerClassName="font-bold"
+          bodyClassName="uppercase font-semibold font-italic"
           sortable
         ></Column>
         <Column
@@ -617,9 +618,7 @@ function Coupons(props) {
                 onChange={(e) => onFormChange(e)}
                 required
                 autoFocus
-                className={classNames({
-                  "p-invalid": submitted && !coupon.code,
-                })}
+                className="uppercase"
               />
               {submitted && !coupon.code && (
                 <small className="p-error">Code is required.</small>
@@ -736,10 +735,10 @@ function Coupons(props) {
                   <MultiSelect
                     value={selectedProducts}
                     onChange={(e) => {
+  
                       setSelectedProducts(e.value);
                       onFormChange(e);
                     }}
-                    onFocus={(e) => console.log(selectedProducts)}
                     options={products}
                     name="products"
                     dataKey="name"
