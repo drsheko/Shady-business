@@ -12,7 +12,7 @@ function Brands(props) {
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
-      let url = "http://localhost:3000/api/brands/all";
+      let url = "https://shady-business-server.onrender.com/api/brands/all";
       try {
         let res = await axios.get(url);
         if (res.data.success && res.data.brands) {

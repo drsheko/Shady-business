@@ -29,7 +29,7 @@ function WarningBanner(props) {
   );
   const saveForm = async () => {
     try {
-      let url = "http://localhost:3000/api/project/warningbanner";
+      let url = "https://shady-business-server.onrender.com/api/project/warningbanner";
       let res = await axios.post(url, { warningBanner });
       if (res.data.success) {
         props.setConfiguration(res.data.project);

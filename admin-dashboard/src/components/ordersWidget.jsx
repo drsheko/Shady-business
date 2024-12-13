@@ -27,7 +27,7 @@ function OrdersWidget(props) {
   useEffect(() => {
     const getOrders = async () => {
       setIsLoading(true);
-      let url = "http://localhost:3000/api/orders/all";
+      let url = "https://shady-business-server.onrender.com/api/orders/all";
       try {
         let res = await axios.get(url);
         if (res.data.success && res.data.orders) {

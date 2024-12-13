@@ -7,7 +7,7 @@ function Coupons(props) {
 
   useEffect(() => {
     const getCoupons = async () => {
-      let url = "http://localhost:3000/api/coupons/all";
+      let url = "https://shady-business-server.onrender.com/api/coupons/all";
       try {
         let res = await axios.get(url);
         setCoupons(res.data.coupons);

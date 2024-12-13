@@ -85,7 +85,7 @@ function Categories(props) {
     setSubmitted(true);
     if (category._id) {
       // save edited category
-      let url = "http://localhost:3000/api/categories/edit/category";
+      let url = "https://shady-business-server.onrender.com/api/categories/edit/category";
       try {
         let data = { ...category, photo: uploadedPhoto };
         let res = await axios.postForm(url, data);
@@ -127,7 +127,7 @@ function Categories(props) {
       } else {
         setPhotoError(false);
       }
-      let url = "http://localhost:3000/api/categories/addCategory";
+      let url = "https://shady-business-server.onrender.com/api/categories/addCategory";
 
       try {
         let data = { ...category, photo: uploadedPhoto };
@@ -167,7 +167,7 @@ function Categories(props) {
   };
   const deleteCategory = async () => {
     try {
-      let url = "http://localhost:3000/api/categories/delete/category";
+      let url = "https://shady-business-server.onrender.com/api/categories/delete/category";
       let res = await axios.post(url, category);
       if (res.data.success) {
         let _categories = categories.filter((val) => val._id !== category._id);
@@ -204,7 +204,7 @@ function Categories(props) {
     setSubmitted(true);
     if (subCategory._id) {
       // save edited sub-category
-      let url = "http://localhost:3000/api/subCategories/edit/subCategory";
+      let url = "https://shady-business-server.onrender.com/api/subCategories/edit/subCategory";
       try {
         let data = { ...subCategory, photo: uploadedPhoto };
         let res = await axios.postForm(url, data);
@@ -251,7 +251,7 @@ function Categories(props) {
         setPhotoError(false);
       }
       // create new sub-category
-      let url = "http://localhost:3000/api/subCategories/add/subCategory";
+      let url = "https://shady-business-server.onrender.com/api/subCategories/add/subCategory";
       try {
         let data = { ...subCategory, photo: uploadedPhoto };
         let res = await axios.postForm(url, data);
@@ -293,7 +293,7 @@ function Categories(props) {
   };
   const deleteSubCategory = async () => {
     try {
-      let url = "http://localhost:3000/api/subCategories/delete/subCategory";
+      let url = "https://shady-business-server.onrender.com/api/subCategories/delete/subCategory";
       let res = await axios.post(url, subCategory);
       if (res.data.success) {
         let categoryIndex = categories.findIndex(
@@ -577,7 +577,7 @@ function Categories(props) {
   //######## Get Data From DB ###########
   useEffect(() => {
     const getCategories = async () => {
-      let url = "http://localhost:3000/api/categories/all";
+      let url = "https://shady-business-server.onrender.com/api/categories/all";
       try {
         let res = await axios.get(url);
         if (res.data.allCategories) {
@@ -593,7 +593,7 @@ function Categories(props) {
       }
     };
     const getProducts = async () => {
-      let url = "http://localhost:3000/api/products/all";
+      let url = "https://shady-business-server.onrender.com/api/products/all";
       try {
         let res = await axios.get(url);
         setProducts(res.data.products);
@@ -607,7 +607,7 @@ function Categories(props) {
       }
     };
     const getSubCategories = async () => {
-      let url = "http://localhost:3000/api/subCategories/all";
+      let url = "https://shady-business-server.onrender.com/api/subCategories/all";
       try {
         let res = await axios.get(url);
         if (res.data.subCategories) {

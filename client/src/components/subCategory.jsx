@@ -96,7 +96,8 @@ function SubCategory(props) {
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
-      let url = `http://localhost:3000/api/subCategories/subcategory/${id}`;
+      let server = "https://shady-business-server.onrender.com";
+      let url = server + `/api/subCategories/subcategory/${id}`;
       try {
         let res = await axios.get(url);
         if (res.data.success && res.data.subCategory) {

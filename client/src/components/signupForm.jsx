@@ -52,8 +52,8 @@ function Signup(props) {
 
   const onFormSubmit = async (e) => {
     e.preventDefault();
-
-    let url = "http://localhost:3000/api/signup";
+    let server = "https://shady-business-server.onrender.com";
+    let url = server + "/api/signup";
     try {
       let res = await axios.post(url, {
         form,

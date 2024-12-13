@@ -29,7 +29,7 @@ function SlideShow(props) {
 
     const saveSlideShow =async() =>{
       try{
-        let url = "http://localhost:3000/api/project/slideshow";
+        let url = "https://shady-business-server.onrender.com/api/project/slideshow";
         let res = await axios.postForm(url,{links,images, files:imagesFiles});
         console.log(res)
 

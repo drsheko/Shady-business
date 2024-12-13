@@ -4,7 +4,7 @@ import { UserContext } from '../../../client/src/App';
 const {user, setUser} = useContext(UserContext);
 export const handleLogout = async (e) => {
         e.preventDefault();
-        let url = "http://localhost:3000/api/logout";
+        let url = "https://shady-business-server.onrender.com/api/logout";
         const res = await axios.get(url);
         if (res.data.success) {
           localStorage.removeItem("SHADY_BUSINESS_ADMIN");

@@ -53,7 +53,8 @@ function ReviewForm({
 
   const onFormSubmit = async () => {
     setIsLoading(true);
-    let url = "http://localhost:3000/api/reviews/review/new";
+    let server = "https://shady-business-server.onrender.com";
+    let url = server + "/api/reviews/review/new";
     try {
       var formData = new FormData();
       formData.append("user", user._id);

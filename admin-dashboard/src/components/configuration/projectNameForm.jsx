@@ -10,7 +10,7 @@ function ProjectNameForm(props) {
 
   const saveForm = async () => {
     try {
-      let url = "http://localhost:3000/api/project/name";
+      let url = "https://shady-business-server.onrender.com/api/project/name";
       let res = await axios.post(url, { projectName: projectName.value });
       if (res.data.success) {
         props.setConfiguration(res.data.project);

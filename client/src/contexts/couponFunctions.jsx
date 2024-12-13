@@ -75,7 +75,8 @@ const getCouponByCode = async (code) => {
     code: code,
   };
   try {
-    let url = "http://localhost:3000/api/coupons/code/coupon";
+    let server = "https://shady-business-server.onrender.com";
+    let url = server+"/api/coupons/code/coupon";
     let res = await axios.post(url, data);
     if (res.data.success && res.data.coupon) {
       return { success: true, coupon: res.data.coupon };

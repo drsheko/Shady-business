@@ -20,7 +20,7 @@ function SingInPage(props) {
     e.preventDefault();
     setError(null)
     try{
-        let url = "http://localhost:3000/api/admin/login";
+        let url = "https://shady-business-server.onrender.com/api/admin/login";
         let res = await axios.post(url, {
         email: form.email,
         password: form.password,

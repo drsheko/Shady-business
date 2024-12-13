@@ -179,7 +179,7 @@ function Brands(props) {
     setSubmitted(true);
     if (brand._id) {
       // save edited brand
-      let url = "http://localhost:3000/api/brands/edit/brand";
+      let url = "https://shady-business-server.onrender.com/api/brands/edit/brand";
       try {
         let data = { ...brand, photo: uploadedPhoto };
         let res = await axios.postForm(url, data);
@@ -212,7 +212,7 @@ function Brands(props) {
       }
     } else {
       //---------------CREATE A NEW BRAND------------------
-      let url = "http://localhost:3000/api/brands/new/brand";
+      let url = "https://shady-business-server.onrender.com/api/brands/new/brand";
 
       try {
         let data = { ...brand, photo: uploadedPhoto};
@@ -278,7 +278,7 @@ const productItemTemplate = (option) => {
   const deleteBrand = async () => {
     try {
       let id = brand._id;
-      let url = "http://localhost:3000/api/brands/delete/onebrand";
+      let url = "https://shady-business-server.onrender.com/api/brands/delete/onebrand";
       let res = await axios.post(url, { id });
       if (res.data.success) {
         let _brands = brands.filter((val) => val._id !== brand._id);
@@ -327,7 +327,7 @@ const productItemTemplate = (option) => {
     let ids = [];
     selectedBrands.map((brand) => ids.push(brand._id));
     try {
-      let url = "http://localhost:3000/api/brands/delete/multiplebrands";
+      let url = "https://shady-business-server.onrender.com/api/brands/delete/multiplebrands";
       let res = await axios.post(url, { ids });
       if (res.data.success) {
         let _brands = brands.filter((val) => !selectedBrands.includes(val));
@@ -379,7 +379,7 @@ const productItemTemplate = (option) => {
    //######## Getting Coupons && Products From DB ###########
    useEffect(() => {
     const getBrands = async () => {
-      let url = "http://localhost:3000/api/brands/all";
+      let url = "https://shady-business-server.onrender.com/api/brands/all";
       try {
         let res = await axios.get(url);
         setBrands(res.data.brands);
@@ -393,7 +393,7 @@ const productItemTemplate = (option) => {
       }
     };
     const getProducts = async () => {
-      let url = "http://localhost:3000/api/products/all";
+      let url = "https://shady-business-server.onrender.com/api/products/all";
       try {
         let res = await axios.get(url);
         setProducts(res.data.products);

@@ -48,7 +48,8 @@ function Search(props) {
   };
   useEffect(() => {
     const getData = async () => {
-      let url = "http://localhost:3000/api/products/all";
+      let server = "https://shady-business-server.onrender.com";
+      let url = server + "/api/products/all";
       try {
         let res = await axios.get(url);
         setProducts(res.data.products);

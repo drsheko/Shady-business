@@ -51,7 +51,8 @@ function Shipping(props) {
   const onFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      let url = "http://localhost:3000/api/addresses/create/address";
+      let server = "https://shady-business-server.onrender.com";
+      let url = server+"/api/addresses/create/address";
       let data = { ...form, user: user._id, saveNewAddress };
       let res = await axios.post(url, data);
       if (res.data.success && res.data.address) {

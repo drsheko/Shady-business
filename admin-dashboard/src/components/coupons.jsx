@@ -220,7 +220,7 @@ function Coupons(props) {
     setSubmitted(true);
     if (coupon._id) {
       // save edited coupon
-      let url = "http://localhost:3000/api/coupons/edit/coupon";
+      let url = "https://shady-business-server.onrender.com/api/coupons/edit/coupon";
       try {
         let data = { ...coupon, photo: uploadedPhoto };
         let res = await axios.postForm(url, data);
@@ -253,7 +253,7 @@ function Coupons(props) {
       }
     } else {
       //---------------CREATE A NEW COUPON------------------
-      let url = "http://localhost:3000/api/coupons/new/coupon";
+      let url = "https://shady-business-server.onrender.com/api/coupons/new/coupon";
 
       try {
         let data = { ...coupon, photo: uploadedPhoto ,products:selectedProducts};
@@ -319,7 +319,7 @@ function Coupons(props) {
   const deleteCoupon = async () => {
     try {
       let id = coupon._id;
-      let url = "http://localhost:3000/api/coupons/remove/coupon";
+      let url = "https://shady-business-server.onrender.com/api/coupons/remove/coupon";
       let res = await axios.post(url, { id });
       if (res.data.success) {
         let _coupons = coupons.filter((val) => val._id !== coupon._id);
@@ -368,7 +368,7 @@ function Coupons(props) {
     let ids = [];
     selectedCoupons.map((coupon) => ids.push(coupon._id));
     try {
-      let url = "http://localhost:3000/api/coupons/removeMany/coupons";
+      let url = "https://shady-business-server.onrender.com/api/coupons/removeMany/coupons";
       let res = await axios.post(url, { ids });
       if (res.data.success) {
         let _coupons = coupons.filter((val) => !selectedCoupons.includes(val));
@@ -421,7 +421,7 @@ function Coupons(props) {
   //######## Getting Coupons && Products From DB ###########
   useEffect(() => {
     const getCoupons = async () => {
-      let url = "http://localhost:3000/api/coupons/all";
+      let url = "https://shady-business-server.onrender.com/api/coupons/all";
       try {
         let res = await axios.get(url);
         setCoupons(res.data.coupons);
@@ -435,7 +435,7 @@ function Coupons(props) {
       }
     };
     const getProducts = async () => {
-      let url = "http://localhost:3000/api/products/all";
+      let url = "https://shady-business-server.onrender.com/api/products/all";
       try {
         let res = await axios.get(url);
         setProducts(res.data.products);

@@ -21,7 +21,7 @@ function Auth(props) {
   const handleFormSubmit = async (e) => {
     try {
       e.preventDefault();
-      var res = await axios.post("http://localhost:3000/api/login", {
+      var res = await axios.post("https://shady-business-server.onrender.com/api/login", {
         email: form.email,
         password: form.password,
       });
@@ -47,7 +47,8 @@ function Auth(props) {
 
   const handleLogout = async (e) => {
     e.preventDefault();
-    let url = "http://localhost:3000/api/logout";
+    let server = "https://shady-business-server.onrender.com";
+    let url = server+"/api/logout";
     const res = await axios.get(url);
     if (res.data.success) {
       props.setAccountState((state) => ({ ...state, isSubmitted: false }));

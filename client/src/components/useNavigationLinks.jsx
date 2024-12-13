@@ -25,7 +25,8 @@ function useNavigationlinks(props) {
   useEffect(() => {
     // get All Categories ;
     const getAllCategories = async () => {
-      let url = "http://localhost:3000/api/categories/all";
+      let server = "https://shady-business-server.onrender.com";
+      let url = server + "/api/categories/all";
       try {
         let res = await axios.get(url);
         let categoryLinks = res.data.allCategories;

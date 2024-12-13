@@ -87,7 +87,7 @@ function Brand(props) {
     useEffect(() => {
         const getData = async () => {
           setIsLoading(true);
-          let url = "http://localhost:3000/api/brands/brand";
+          let url = "https://shady-business-server.onrender.com/api/brands/brand";
           try {
             let res = await axios.post(url, {id});
             if (res.data.success && res.data.brand) {

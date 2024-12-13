@@ -112,7 +112,7 @@ function Configuration(props) {
   }, [slideShowRef]);
   useEffect(() => {
     const getConfiguration = async () => {
-      let url = "http://localhost:3000/api/project/configuration";
+      let url = "https://shady-business-server.onrender.com/api/project/configuration";
       try {
         let res = await axios.get(url);
         if (res.data.success && res.data.project) {

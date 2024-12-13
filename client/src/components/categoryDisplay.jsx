@@ -10,7 +10,7 @@ function CategoryDisplay(props) {
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     const getAllCategories = async () => {
-      let url = "http://localhost:3000/api/categories/all";
+      let url = "https://shady-business-server.onrender.com/api/categories/all";
       try {
         let res = await axios.get(url);
         if (res.data.success && res.data.allCategories) {

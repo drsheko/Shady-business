@@ -50,7 +50,8 @@ function Payment(props) {
   const onFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      let url = "http://localhost:3000/api/payments/new/payment";
+      let server = "https://shady-business-server.onrender.com";
+      let url = server+"/api/payments/new/payment";
       let data = { ...form, user: user._id, saveToAccount: saveNewCard };
       let res = await axios.post(url, data);
       if (res.data.success && res.data.payment) {

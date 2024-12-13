@@ -32,7 +32,7 @@ function ForgetPassword(props) {
     e.preventDefault();
     resetErrors();
     try {
-      let url = "http://localhost:3000/api/resetpassword/sendcode";
+      let url = "https://shady-business-server.onrender.com/api/resetpassword/sendcode";
       let res = await axios.post(url, { email });
       if (res.data.success) {
         setIsCodeSent(true);
@@ -47,7 +47,7 @@ function ForgetPassword(props) {
     e.preventDefault();
     resetErrors();
     try {
-      let url = "http://localhost:3000/api/resetpassword/matchcode";
+      let url = "https://shady-business-server.onrender.com/api/resetpassword/matchcode";
       let res = await axios.post(url, { code, email });
       if (res.data.success) {
         setIsCodeSubmitted(true);
@@ -66,7 +66,8 @@ function ForgetPassword(props) {
       return;
     }
     try {
-      let url = "http://localhost:3000/api/resetpassword/resetpassword";
+      let server = "https://shady-business-server.onrender.com";
+      let url = server + "/api/resetpassword/resetpassword";
       let res = await axios.post(url, { email, password: form.password });
       if (res.data.success && res.data.user) {
         setSuccess(true);

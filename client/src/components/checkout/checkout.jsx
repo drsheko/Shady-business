@@ -134,7 +134,8 @@ function Checkout(props) {
   };
   const submitOrder = async () => {
     try {
-      let url = "http://localhost:3000/api/orders/new/order";
+      let server = "https://shady-business-server.onrender.com";
+      let url = server+"/api/orders/new/order";
       let data = { ...checkoutData, discount };
       function isCyclic(obj) {
         var seenObjects = [];

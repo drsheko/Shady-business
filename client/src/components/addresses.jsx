@@ -84,7 +84,7 @@ function Addresses(props) {
   };
   const deleteAddress = async () => {
     try {
-      let url = "http://localhost:3000/api/addresses/delete/address";
+      let url = "https://shady-business-server.onrender.com/api/addresses/delete/address";
       let res = await axios.post(url, selectedAddress);
       if (res.data.success) {
         let _addresses = [...addresses];
@@ -113,7 +113,7 @@ function Addresses(props) {
     e.preventDefault();
     try {
       if (form._id) {
-        let url = "http://localhost:3000/api/addresses/edit/address";
+        let url = "https://shady-business-server.onrender.com/api/addresses/edit/address";
         let data = { ...form, user: user._id };
         let res = await axios.post(url, data);
         if (res.data.success && res.data.address) {
@@ -134,7 +134,7 @@ function Addresses(props) {
           });
         }
       } else {
-        let url = "http://localhost:3000/api/addresses/create/address";
+        let url = "https://shady-business-server.onrender.com/api/addresses/create/address";
         let data = { ...form, user: user._id, saveNewAddress: true };
         let res = await axios.post(url, data);
         if (res.data.success && res.data.address) {

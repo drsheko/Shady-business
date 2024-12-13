@@ -49,7 +49,7 @@ function RevenuChart({revenuChartMonths}) {
     let months = getMonths(monthsCount);
     const getRevenu = async () => {
       setIsLoading(true);
-      let url = "http://localhost:3000/api/orders/revenu";
+      let url = "https://shady-business-server.onrender.com/api/orders/revenu";
       try {
         let res = await axios.post(url);
         if (res.data.success && res.data.data) {

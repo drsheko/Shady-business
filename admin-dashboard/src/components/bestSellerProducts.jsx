@@ -7,7 +7,7 @@ function BestSellerProducts(props) {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        let url = "http://localhost:3000/api/orders/bestseller/products";
+        let url = "https://shady-business-server.onrender.com/api/orders/bestseller/products";
         let res = await axios.post(url);
         if (res.data.success && res.data.products) {
           setProducts(res.data.products);

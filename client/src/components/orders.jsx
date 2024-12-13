@@ -60,7 +60,8 @@ function Orders(props) {
 
   useEffect(() => {
     const getOrders = async () => {
-      let url = "http://localhost:3000/api/orders/user/all";
+      let server = "https://shady-business-server.onrender.com";
+      let url = server+ "/api/orders/user/all";
       try {
         if (user) {
           let res = await axios.post(url, { userId: user._id });

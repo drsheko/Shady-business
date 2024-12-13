@@ -56,7 +56,8 @@ function ProductPage(props) {
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
-      let url = "http://localhost:3000/api/products/product";
+      let server = "https://shady-business-server.onrender.com";
+      let url = server + "/api/products/product";
       try {
         let res = await axios.post(url, { id });
         if (res.data.success && res.data.product) {

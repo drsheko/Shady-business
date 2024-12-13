@@ -214,7 +214,7 @@ function Products(props) {
     setSubmitted(true);
     if (product._id) {
       // save edited product
-      let url = "http://localhost:3000/api/products/edit/product";
+      let url = "https://shady-business-server.onrender.com/api/products/edit/product";
       try {
         let data = { ...product, FileList: files };
         let res = await axios.postForm(url, data);
@@ -247,7 +247,7 @@ function Products(props) {
       }
     } else {
       //---------------CREATE A NEW Product------------------
-      let url = "http://localhost:3000/api/products/addProduct";
+      let url = "https://shady-business-server.onrender.com/api/products/addProduct";
       try {
         let data = { ...product, FileList: files };
         let res = await axios.postForm(url, data);
@@ -436,7 +436,7 @@ function Products(props) {
       let name = product.name;
       let id = product._id;
       let photos = product.photos;
-      let url = "http://localhost:3000/api/products/remove/product";
+      let url = "https://shady-business-server.onrender.com/api/products/remove/product";
       let res = await axios.post(url, { id, photos });
       if (res.data.success) {
         let _products = products.filter((val) => val._id !== product._id);
@@ -516,7 +516,7 @@ function Products(props) {
   //######## Get Data From DB ###########
   useEffect(() => {
     const getProducts = async () => {
-      let url = "http://localhost:3000/api/products/all";
+      let url = "https://shady-business-server.onrender.com/api/products/all";
       try {
         let res = await axios.get(url);
         setProducts(res.data.products);
@@ -530,7 +530,7 @@ function Products(props) {
       }
     };
     const getCategories = async () => {
-      let url = "http://localhost:3000/api/categories/all";
+      let url = "https://shady-business-server.onrender.com/api/categories/all";
       try {
         let res = await axios.get(url);
         if (res.data.allCategories) {
@@ -546,7 +546,7 @@ function Products(props) {
       }
     };
     const getSubCategories = async () => {
-      let url = "http://localhost:3000/api/subCategories/all";
+      let url = "https://shady-business-server.onrender.com/api/subCategories/all";
       try {
         let res = await axios.get(url);
         if (res.data.subCategories) {

@@ -45,7 +45,7 @@ function AccountSettings(props) {
   const onInfoSubmit = async (e) => {
     e.preventDefault();
     try {
-      let url = "http://localhost:3000/api/account/edit/info";
+      let url = "https://shady-business-server.onrender.com/api/account/edit/info";
       let data = { ...infoForm, id: user._id };
       let res = await axios.post(url, data);
       if (res.data.success && res.data.user) {
@@ -99,7 +99,7 @@ function AccountSettings(props) {
       return;
     }
     try {
-      let url = "http://localhost:3000/api/account/password/edit";
+      let url = "https://shady-business-server.onrender.com/api/account/password/edit";
       let data = { ...passwordForm, id: user._id };
       let res = await axios.post(url, data);
       if (res.data.success && res.data.user) {

@@ -83,7 +83,7 @@ function Category(props) {
   useEffect(() => {
     const getData = async () => {
       setIsLoading(true);
-      let url = "http://localhost:3000/api/categories/category";
+      let url = "https://shady-business-server.onrender.com/api/categories/category";
       try {
         let res = await axios.post(url, { id });
         if (res.data.success && res.data.category) {

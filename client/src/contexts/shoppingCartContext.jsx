@@ -225,8 +225,8 @@ export function ShoppingCartProvider({ children }) {
   const updateCart = async (cart) => {
     try {
       if (user) {
-        let url = "http://localhost:3000/api/shoppingcart";
-
+        let server = "https://shady-business-server.onrender.com";
+        let url = server+ "/api/shoppingcart";
         let res = await axios.post(url, {
           user,
           cart,

@@ -29,7 +29,9 @@ function SignInSidebar(props) {
     msgs.current.clear();
     try {
       e.preventDefault();
-      var res = await axios.post("http://localhost:3000/api/login", {
+      let server = "https://shady-business-server.onrender.com";
+      let url = server + "/api/login"
+      var res = await axios.post(url, {
         email: form.email,
         password: form.password,
       });
@@ -60,7 +62,8 @@ function SignInSidebar(props) {
 
   const handleLogout = async (e) => {
     e.preventDefault();
-    let url = "http://localhost:3000/api/logout";
+    let server = "https://shady-business-server.onrender.com";
+    let url = server + "/api/logout";
     const res = await axios.get(url);
     if (res.data.success) {
       localStorage.removeItem("SHADY_BUSINESS_user");
