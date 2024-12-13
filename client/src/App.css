@@ -67,6 +67,10 @@ html{
  .p-menuitem-text{
     text-transform: capitalize !important;
  } 
+ /*################ List& Grid Options*/
+ .p-dataview-layout-options{
+    box-shadow: none !important;
+ }
 @media screen and (max-width: 960px) {
     .p-menubar .p-menubar-button {
         display: none;

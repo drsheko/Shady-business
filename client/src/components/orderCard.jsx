@@ -222,7 +222,7 @@ function OrderCard(props) {
                       .toFixed(2)}
                   </p>
                 </div>
-                {order.discount && (
+                {order.discount>0 && (
                   <div className="flex flex-row justify-content-between  mx-4 my-1">
                     <p className="text-red-500">Discount</p>
                     <p className="text-red-500">- ${order.discount}</p>

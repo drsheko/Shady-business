@@ -3,7 +3,7 @@ import { Button } from "primereact/button";
 import { Rating } from "primereact/rating";
 import { Link, useNavigate } from "react-router-dom";
 
-function ProductCard({ product, layout }) {
+function ProductCard2({ product, layout }) {
   const navigate = useNavigate();
 
   return (
@@ -79,17 +79,15 @@ function ProductCard({ product, layout }) {
           </div>
         </div>
       ) : (
-        <div className="col-6  md:col-4  lg:col-3 xl:col-2 align-self-stretch">
+        <div className="col-12 sm:col-6 md:col-4  lg:col-3 m-2 shadow-3 border-round-lg surface-ground	max-w-10rem	sm:max-w-12rem	">
           {" "}
           {/* render product as a grid item*/}
-          <div className="p-2 h-full">
-          <div className="flex flex-column justify-content-stretch card border-round-lg shadow-4 h-full">
+          <div className="flex flex-column card border-round-lg shadow-4">
             <img
               src={product.photos[0]}
               alt=""
-              className="h-full w-full border-round-md"
+              className="w-full border-noround border-round-top-lg h-10rem sm:h-12rem"
             />
-            <div className="mt-auto ">
             <div className="flex flex-column p-3 text-center">
               <p className="font-semibold text-lg sm:text-xl text-primary cursor-pointer  capitalize">
                 {product.name}
@@ -150,13 +148,11 @@ function ProductCard({ product, layout }) {
                 }
               />
             </div>
-            </div>
           </div>
-        </div>
         </div>
       )}
     </>
   );
 }
 
-export default ProductCard;
+export default ProductCard2;

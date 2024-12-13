@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import "primereact/resources/primereact.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 import "primeflex/primeflex.css"; // flex
-import "../src/primereact-theme/theme.css"; // theme
+import "../src/primereact-theme/theme2.css"; // theme
 //import "primereact/resources/themes/lara-light-teal/theme.css"
 import "./App.css";
 import Warning from "./components/warning";

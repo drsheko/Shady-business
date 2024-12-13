@@ -8,6 +8,7 @@ import { Dropdown } from "primereact/dropdown";
 import { ProgressSpinner } from "primereact/progressspinner";
 import ProductCard from "./productCard";
 
+
 function SubCategory(props) {
   const { id, name } = useParams();
   const [subcategory, setSubcategory] = useState(null);
@@ -127,7 +128,7 @@ function SubCategory(props) {
             </p>
           </div>
           <div className="dataview-demo flex flex-row min-h-screen ">
-            <div className="card w-full h-full">
+            <div className="card w-full h-full ">
               <DataView
                 value={products}
                 layout={layout}
@@ -141,9 +142,15 @@ function SubCategory(props) {
                 sortField={sortField}
                 className="align-self-end "
                 pt={{
+                  header:{
+                      className:"shadow-none"
+                  },
+                  content:{
+                    className:"px-0 sm:px-2 md:px-4 lg:px-7 flex flex-row justify-content-center"
+                  },
                   grid: {
                     className:
-                      "flex flex-row flex-wrap justify-content-stretch p-1",
+                      "flex flex-row flex-wrap justify-content-strech p-1 px-3 ",
                   },
                   root: {
                     className: "min-h-screen flex flex-column ",

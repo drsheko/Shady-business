@@ -39,7 +39,9 @@ function OrderConfirm(props) {
       </div>
     );
   };
-
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
   return (
     <div className="p-3">
       <p className="text-5xl text-center font-medium mb-3">
@@ -54,8 +56,9 @@ function OrderConfirm(props) {
       <p className="text-base font-light text-700 text-center">
         We sent an email to{" "}
         <span className="font-semibold text-primary">{order.user.email}</span>{" "}
-        with your order confirmation and receipt.If the email hasn't arrived
-        within two minutes,please check your span folder.
+        with your order confirmation and receipt.<br/>
+        <span>If the email hasn't arrived within two minutes, please check your span folder.</span>
+        
       </p>
       <div className="flex flex-column  align-items-center gap-1 my-5">
         <Card
@@ -75,7 +78,7 @@ function OrderConfirm(props) {
           )}
 
           <div className="border-1 border-100 m-2 "></div>
-          {order.discount && (
+          {order.discount>0 && (
             <div className="flex flex-row justify-content-between  mx-4 my-1">
               <p className="text-red-500">Discount</p>
               <p className="text-red-500">- ${order.discount}</p>

@@ -129,9 +129,15 @@ function Category(props) {
                 lazy={true}
                 className="align-self-end "
                 pt={{
+                  header:{
+                      className:"shadow-none"
+                  },
+                  content:{
+                    className:"px-0 sm:px-2 md:px-4 lg:px-7 flex flex-row flex-wrap justify-content-center align-content-between"
+                  },
                   grid: {
                     className:
-                      "flex flex-row flex-wrap justify-content-stretch p-1",
+                      "flex flex-row flex-wrap justify-content-stretch p-1 px-3 ",
                   },
                   root: {
                     className: "min-h-screen flex flex-column ",

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from "axios";
 import { ProgressSpinner } from "primereact/progressspinner";
-import ProductCard from './productCard';
+import ProductCard from './productCard2';
 import { useParams } from 'react-router-dom';
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Link } from "react-router-dom";

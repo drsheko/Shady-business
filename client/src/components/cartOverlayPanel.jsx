@@ -51,9 +51,9 @@ function CartOverlay(props) {
     <div>
       <div className="w-max h-max p-0 m-0 relative">
         <Button
-          icon="pi pi-shopping-cart font-bold"
+          icon="pi pi-shopping-bag font-bold"
           size="small"
-          className="header-button hover:bg-primary  "
+          className="header-button hover:bg-primary"
           text
           raised
           onClick={() => setVisible(!visible)}
