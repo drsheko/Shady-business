@@ -203,7 +203,7 @@ function Checkout(props) {
       discount: discount,
     }));
   }, [discount]);
-
+ 
   return (
     <div>
       <p className="font-bold text-2xl text-center mb-3 mt-3">Checkout</p>
