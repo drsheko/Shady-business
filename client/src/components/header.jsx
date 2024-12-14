@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Toast } from "primereact/toast";
-import NavLinks from "./navLinks";
+import { Menubar } from "primereact/menubar";
+import useNavigationlinks from "./useNavigationLinks";
 import SideNavbar from "./sidebar";
 import CartOverlay from "./cartOverlayPanel";
 import SignInSidebar from "./sign-in-sidebar";
@@ -10,6 +11,7 @@ import Search from "./search";
 import { Button } from "primereact/button";
 function Header(props) {
   const toast = useRef(null);
+  const { links } = useNavigationlinks();
   const [visible, setVisible] = useState(false);
   const [visibleSearch, setVisibleSearch] = useState(false);
   const [signInVisible, setSignInVisible] = useState(false);
@@ -45,7 +47,10 @@ function Header(props) {
           </Link>
         </p>
         <div className="hidden lg:block ">
-          <NavLinks />
+            <div className="card">
+                <Menubar model={links} breakpoint="360px" 
+              />
+              </div>
         </div>
 
         <div className="card  flex justify-content-between align-items-center text-base py-3 sm:py-4 mr-1 sm:mr-4">
