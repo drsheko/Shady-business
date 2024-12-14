@@ -133,11 +133,11 @@ function Category(props) {
                       className:"shadow-none"
                   },
                   content:{
-                    className:"px-0 sm:px-2 md:px-4 lg:px-7 flex flex-row flex-wrap justify-content-center align-content-between"
+                    className:"px-0 sm:px-2 md:px-4 lg:px-7 flex flex-row flex-wrap justify-content-center align-content-between w-full"
                   },
                   grid: {
                     className:
-                      "flex flex-row flex-wrap justify-content-stretch p-1 px-3 ",
+                      "flex flex-row flex-wrap justify-content-stretch p-1 px-3 lg:px-6 w-full",
                   },
                   root: {
                     className: "min-h-screen flex flex-column ",

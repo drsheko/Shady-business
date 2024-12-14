@@ -79,7 +79,7 @@ function ProductCard({ product, layout }) {
           </div>
         </div>
       ) : (
-        <div className="col-6  md:col-4  lg:col-3 xl:col-2 align-self-stretch">
+        <div className="col-6  md:col-4  xl:col-3  align-self-stretch">
           {" "}
           {/* render product as a grid item*/}
           <div className="p-2 h-full">
