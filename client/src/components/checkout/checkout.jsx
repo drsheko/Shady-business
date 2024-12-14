@@ -6,14 +6,14 @@ import Auth from "./auth";
 import Shipping from "./shipping";
 import Billing from "./billing";
 import Payment from "./payment";
-import { Stepper, Step, useStepper, StepTitle } from "react-progress-stepper";
 import { Button } from "primereact/button";
+import { Steps } from 'primereact/steps';
 import { UserContext } from "../../App";
 import { useShoppingCart } from "../../contexts/shoppingCartContext";
 import OrderSummary from "./orderSummary";
 
 function Checkout(props) {
-  const { step } = useStepper(0, 4);
+
   const { user } = useContext(UserContext);
   let navigate = useNavigate();
   const {
@@ -43,7 +43,7 @@ function Checkout(props) {
   const goToStep = (number) => {
     setActive(number);
   };
-  const [active, setActive] = useState(step);
+  const [active, setActive] = useState(1);
   const [accountState, setAccountState] = useState({
     isActive: true,
     isSubmitted: false,
@@ -203,25 +203,68 @@ function Checkout(props) {
       discount: discount,
     }));
   }, [discount]);
- 
+  useEffect(()=>{
+    if(user){
+      setActive(2)
+    }
+  },[])
+  const itemRenderer = (item, itemIndex) => {
+    const isActiveItem = active === itemIndex;
+    const isCheckedItem = active> itemIndex;
+    const backgroundColor = isCheckedItem?"green":isActiveItem ? 'var(--primary-color)' : 'var(--surface-b)';
+    const textColor = isActiveItem ? 'var(--surface-b)' : 'var(--text-color-secondary)';
+
+    return (
+      <div className="flex flex-row">
+        <div className="flex flex-column"> 
+
+        
+        <span
+            className="inline-flex align-items-center justify-content-center align-items-center border-circle  border-1 h-2rem w-2rem z-1 mt-1"
+            style={{ backgroundColor: backgroundColor, color: textColor, marginTop: '-25px' }}
+            
+        >
+          {isCheckedItem?<i className="pi pi-check text-white"></i>: isActiveItem?<span className="font-bold text-white p-0"> {itemIndex +1}</span>:<span className="font-bold"> {itemIndex +1}</span>}
+          
+           
+        </span>
+        <div className="font-bold text-xs">{item.label}</div>
+        </div>
+        
+        </div>
+    );
+};
+
+const items = [
+    {
+        icon: 'pi pi-user',
+        label:"Account",
+        template: (item) => itemRenderer(item, 0)
+    },
+    {
+        icon: 'pi pi-calendar',
+        label:"Shipping",
+        template: (item) => itemRenderer(item, 1)
+    },
+    {
+        icon: 'pi pi-check',
+        label:"Billing",
+        template: (item) => itemRenderer(item, 2)
+    },
+    {
+        icon: 'pi pi-calendar',
+        label:"Payment",
+        template: (item) => itemRenderer(item, 3)
+    },
+];
   return (
     <div>
       <p className="font-bold text-2xl text-center mb-3 mt-3">Checkout</p>
       <div className="card shadow-0 h-5rem px-4 sm:px-6 md:px-8">
-        <Stepper step={active}>
-          <Step>
-            <StepTitle>Account</StepTitle>
-          </Step>
-          <Step>
-            <StepTitle>Shipping</StepTitle>
-          </Step>
-          <Step>
-            <StepTitle>Billing</StepTitle>
-          </Step>
-          <Step>
-            <StepTitle>Payment</StepTitle>
-          </Step>
-        </Stepper>
+      <div className="card p-0">
+            <Steps model={items} activeIndex={active}  />
+        </div>
+      
       </div>
 
       <div className="flex flex-column md:flex-row p-1 sm:p-3 lg:p-5">

@@ -28,7 +28,7 @@ function CategoryDisplay(props) {
         categories.map((category) => {
           return (
             <div
-              className=" col-12 md:col-6 card "
+              className=" col-12 sm:col-6 card lg:col-4 px-3 sm:px-1"
               onClick={() =>
                 navigate(`/category/${category.name}/${category._id}`, {
                   replace: true,
