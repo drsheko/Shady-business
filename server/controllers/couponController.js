@@ -13,7 +13,7 @@ exports.Create_COUPON = [
     // upload coupon image
     const file = req.file;
     if (file) {
-      const fileName = file.originalname + new Date();
+      const fileName = file.originalname + new Date().valueOf();
       const imageRef = ref(storage, fileName);
       const metatype = { contentType: file.mimetype, name: file.originalname };
       await uploadBytes(imageRef, file.buffer, metatype)
